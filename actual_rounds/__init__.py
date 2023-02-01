@@ -36,7 +36,7 @@ class Player(BasePlayer):
 
     original_size = models.IntegerField()
     role_type = models.StringField()
-    invitation = models.StringField()
+    invitation = models.StringField(initial="-1")
     survive = models.BooleanField(initial=False)
     
 
@@ -255,7 +255,7 @@ class Seeker_confirm(Page):
             "num_remain": player.num_remain, 
         }
 
-page_sequence = [Hider_build, Hider_wait_matching, Hider_matched]
+page_sequence = [Hider_build, Hider_wait_matching, Hider_matched, Seeker_dismantle, Wait_dismantle, Seeker_confirm]
 
 
 # page_sequence = [Hider_build, Hider_wait_matching, Hider_matched, Seeker_dismantle, Wait_dismantle, Seeker_confirm]
