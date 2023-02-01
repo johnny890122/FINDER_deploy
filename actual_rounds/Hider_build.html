@@ -1,0 +1,116 @@
+{{ block title }}
+    Round {{which_round}} Build
+{{ endblock }}
+{{ block content }}
+    <head>
+      <script src="//unpkg.com/force-graph"></script>
+      <script>
+          let focus_node = null;
+          let nodes_chosen = new Array();
+          function yes(){
+            nodes_chosen.push(document.getElementById('node_id').value);
+            document.getElementById("id_invitation").value = nodes_chosen;
+            document.getElementById('confirm_block').style.display = 'none';
+            highlightNodes.add(focus_node);
+          }
+          function no(){
+            document.getElementById('confirm_block').style.display = 'none';
+          }
+      </script>
+    </head>
+
+    <body>
+        {{ formfield 'invitation' }}
+
+        <div class="table" id="tab">
+            Node Information <br>
+            id : <input id ="node_id" type="text" value="" disabled="disabled"/> <br>
+            degree : <input id ="degree" type="text" value="" disabled="disabled"/> <br>
+            geo_d : <input id ="geo_d" type="text" value="" disabled="disabled"/> <br>
+            common_neighbor : <input id ="common_neighbor" type="text" value="" disabled="disabled"/>
+        </div>
+
+        <div id="confirm_block" style="display: none;">
+            <p>確定要選擇此節點嗎？</p>
+            <div id="yes_button" class="otree-btn-next btn btn-primary" onclick="yes()" >
+                是的。
+            </div>
+            <div id="no_button" class="otree-btn-next btn btn-primary" 
+                style="background-color: gray; border-color: gray;" onclick="no()">
+                否。
+            </div>   
+        </div>
+        <div id="graph" style="border-color:black;border-width:1px;border-style:solid;padding:5px;"></div>
+    </body>
+
+    <script>
+        // Random tree
+        const gData = {
+            nodes: {{nodes}}, 
+            links: {{links}}
+        }
+        const NODE_R = 5;
+
+        const highlightNodes = new Set();
+        const highlightLinks = new Set();
+        let hoverNode = null;
+
+        const elem = document.getElementById('graph');
+
+        const Graph = ForceGraph()
+          (document.getElementById('graph'))
+            .width(800)
+            .height(500)
+            .nodeLabel('id')
+            .graphData(gData)
+
+            .onNodeClick(node => {
+              document.getElementById("node_id").value = node.id == {{me}} ? node.id + " (You)": node.id;
+              document.getElementById("degree").value = node.degree;
+              document.getElementById("geo_d").value = node.geo_d;
+              document.getElementById("common_neighbor").value = node.common_neighbor;
+              document.getElementById('confirm_block').style.display = 'block';
+
+              // highlightNodes.clear();
+              // highlightLinks.clear();
+              if (node) {
+                // highlightNodes.add(node);
+                focus_node = node;
+                if (node.neighbors) {
+                    node.neighbors.forEach(neighbor => {
+                        highlightNodes.add(neighbor)
+                    });
+                if (node.links) {
+                    node.links.forEach(link => highlightLinks.add(link));
+                    }    
+                }
+              }
+              hoverNode = node || null;
+              console.log(highlightNodes);
+              console.log(typeof highlightNodes);
+            })
+            .autoPauseRedraw(false) // keep redrawing after engine has stopped
+            .nodeCanvasObject((node, ctx) => {
+              ctx.beginPath();
+              if (node.id == {{me}}){
+                ctx.fillStyle = "#2F4F4F";
+                // 
+                ctx.arc(node.x, node.y, NODE_R*2, 0, 2 * Math.PI, false);
+              }
+
+              else if (highlightNodes.has(node)){
+                ctx.fillStyle = "#8FBC8F";
+                ctx.fillRect(node.x - 6, node.y - 6, 12, 12);
+                // ctx.arc(node.x, node.y, NODE_R, 0, 2 * Math.PI, false);
+              }
+              else {
+                ctx.fillStyle = "#2F4F4F"
+                ctx.arc(node.x, node.y, NODE_R, 0, 2 * Math.PI, false);
+              }
+              ctx.fill();
+            });
+    </script>
+
+{{ next_button }}
+
+{{ endblock }}

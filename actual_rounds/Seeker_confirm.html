@@ -1,0 +1,98 @@
+{{ block title }}
+    Round {{which_round}} 結果
+{{ endblock }}
+{{ block content }}
+    <head>
+        <script src="https://d3js.org/d3.v4.js"></script>
+    </head>
+
+    <body>
+        <div>
+            您移除的是編號 {{caught}} 的節點。
+        </div>
+        
+        <div>
+            您這回合一共移除 {{num_removed}} 個節點。
+        </div>
+        
+        <div>
+            剩餘 {{num_remain}} 個節點。
+        </div>
+
+
+        <div id="chart"></div>
+
+        <script>
+
+            var dataset = {{line_plot}}; 
+
+            var min = d3.min(dataset, function(d) {
+              return d[1];
+            })
+            var max = d3.max(dataset, function(d) {
+              return d[1];
+            })
+
+
+            // 图表的宽度和高度
+            var width = 600;
+            var height = 600;
+            // 预留给轴线的距离
+            var padding = { top: 50, right: 50, bottom: 50, left: 50 };
+
+            var xScale = d3.scaleLinear()
+                          .domain([0, 10])
+                          .range([0, width - padding.left - padding.right]);
+            var yScale = d3.scaleLinear()
+                          .domain([0, max])
+                          .range([height - padding.top - padding.bottom, 0]);
+            var svg = d3.select('#chart')
+                        .append('svg')
+                        .attr('width', width + 'px')
+                        .attr('height', height + 'px');
+            var xAxis = d3.axisBottom()
+                          .scale(xScale);
+            var yAxis = d3.axisLeft()
+                          .scale(yScale);
+
+            svg.append('g')
+              .attr('class', 'axis')
+              .attr('transform', 'translate(' + padding.left + ',' + (height - padding.bottom) + ')')
+              .call(xAxis);
+            svg.append('g')
+              .attr('class', 'axis')
+              .attr('transform', 'translate(' + padding.left + ',' + padding.top + ')')
+              .call(yAxis);
+
+
+            var linePath = d3.line()
+                            .x(function(d){ return xScale(d[0]) })
+                            .y(function(d){ return yScale(d[1]) });
+
+            svg.append('g')
+              .append('path')
+              .attr('class', 'line-path')
+              .attr('transform', 'translate(' + padding.left + ',' + padding.top + ')')
+              .attr('d', linePath(dataset))
+              .attr('fill', 'none')
+              .attr('stroke-width', 3)
+              .attr('stroke', 'green');
+
+            svg.append('g')
+              .selectAll('circle')
+              .data(dataset)
+              .enter()
+              .append('circle')
+              .attr('r', 5)
+              .attr('transform', function(d){
+                return 'translate(' + (xScale(d[0]) + padding.left) + ',' + (yScale(d[1]) + padding.top) + ')'
+              })
+              .attr('fill', 'green');
+
+        </script>  
+    </body>
+
+
+{{ next_button }}
+
+{{ endblock }}

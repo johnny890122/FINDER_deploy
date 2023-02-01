@@ -16,7 +16,7 @@ SESSION_CONFIGS = [
     dict(
         name='human_hider_human_seeker',
         # app_sequence=['seeker_instruction', 'hider_instruction', 'practice_rounds', 'actual_rounds'], 
-        app_sequence=['seeker_instruction', 'hider_instruction'], # for test
+        app_sequence=['seeker_instruction', 'hider_instruction', 'practice_rounds', 'actual_rounds'], # for test
         num_demo_participants=15, 
         hider='human', 
         seeker='human',

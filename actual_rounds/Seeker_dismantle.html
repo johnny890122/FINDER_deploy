@@ -1,0 +1,52 @@
+{{ block title }}
+    Round {{which_round}}
+{{ endblock }}
+{{ block content }}
+    <head>
+      <script src="//unpkg.com/force-graph"></script>
+
+      <script>
+          function cancel() {
+            document.getElementById("id_to_be_removed").value = null;
+            document.getElementById('confirm_block').style.display = "none";
+          }
+      </script>
+    </head>
+
+    <body>
+        {{ formfield 'to_be_removed'}}
+
+        <div id="confirm_block" style="display: none;">
+            <p>確定要選擇此節點嗎？</p>
+            <button id="yes_button" class="otree-btn-next btn btn-primary">
+                是，前往下一頁。
+            </button>
+
+            <!-- Fake button -->
+            <div id="no_button" class="otree-btn-next btn btn-primary" onclick="cancel()" 
+                style="background-color: gray; border-color: gray;">
+                否，取消。
+            </div>         
+        </div>
+
+        <div id="graph" style="border-color:black;border-width:1px;border-style:solid;padding:5px;"></div>
+
+        <script>
+            // Random tree
+            const gData = {
+                nodes: {{nodes}}, 
+                links: {{links}}
+            }
+            const Graph = ForceGraph()
+                (document.getElementById('graph'))
+                .graphData(gData)
+                .width(800)
+                .height(500)
+                .onNodeClick(node => {
+                    document.getElementById("id_to_be_removed").value = node.id;
+                    document.getElementById('confirm_block').style.display = "block";
+                })
+        </script>
+    </body>
+
+{{ endblock }}
