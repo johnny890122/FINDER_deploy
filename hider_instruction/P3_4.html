@@ -1,0 +1,103 @@
+{{ block title }}
+    P3_4
+{{ endblock }}
+{{ block content }}
+
+<head>
+  <script src="//unpkg.com/force-graph"></script>
+</head>
+
+<body>
+    <div>
+        遊戲規則說明（說明可進行：展示媒合後的成果）
+    </div> 
+  <div id="graph"></div>
+
+
+  <div class="table" id="tab">
+    id : <input id ="node_id" type="text" value="" disabled="disabled"/> <br>
+    degree : <input id ="degree" type="text" value="" disabled="disabled"/> <br>
+    geo_d : <input id ="geo_d" type="text" value="" disabled="disabled"/> <br>
+    common_neighbor : <input id ="common_neighbor" type="text" value="" disabled="disabled"/>
+  </div>
+
+  <script>
+    // Random tree
+    const gData = {
+        nodes: {{nodes}}, 
+        links: {{links}}
+    }
+
+    // cross-link node objects
+    gData.links.forEach(link => {
+      const a = gData.nodes[link.source];
+      const b = gData.nodes[link.target];
+      !a.neighbors && (a.neighbors = []);
+      !b.neighbors && (b.neighbors = []);
+      a.neighbors.push(b);
+      b.neighbors.push(a);
+
+      !a.links && (a.links = []);
+      !b.links && (b.links = []);
+      a.links.push(link);
+      b.links.push(link);
+    });
+    const NODE_R = 5;
+
+    const highlightNodes = new Set();
+    const highlightLinks = new Set();
+    let hoverNode = null;
+
+    const elem = document.getElementById('graph');
+
+    const Graph = ForceGraph()
+      (document.getElementById('graph'))
+        .width(300)
+        .height(300)
+        .nodeLabel('id')
+        .graphData(gData)
+        .onNodeClick(node => {
+          document.getElementById("node_id").value = node.id == {{me}} ? node.id + " (You)": node.id;
+          document.getElementById("degree").value = node.degree;
+          document.getElementById("geo_d").value = node.geo_d;
+          document.getElementById("common_neighbor").value = node.common_neighbor;
+
+          highlightNodes.clear();
+          highlightLinks.clear();
+          if (node) {
+            highlightNodes.add(node);
+            node.neighbors.forEach(neighbor => {
+                highlightNodes.add(neighbor)
+            }
+            );
+            node.links.forEach(link => highlightLinks.add(link));
+          }
+          hoverNode = node || null;
+        })
+
+        .autoPauseRedraw(false) // keep redrawing after engine has stopped
+        .nodeCanvasObject((node, ctx) => {
+          ctx.beginPath();
+          if (node.id == {{me}}){
+            ctx.fillStyle = "#2F4F4F";
+            // 
+            ctx.arc(node.x, node.y, NODE_R*2, 0, 2 * Math.PI, false);
+          }
+
+          else if (node === hoverNode){
+            ctx.fillStyle = "#8FBC8F";
+            ctx.fillRect(node.x - 6, node.y - 6, 12, 12);
+            // ctx.arc(node.x, node.y, NODE_R, 0, 2 * Math.PI, false);
+          }
+          else {
+            ctx.fillStyle = "#2F4F4F"
+            ctx.arc(node.x, node.y, NODE_R, 0, 2 * Math.PI, false);
+          }
+          ctx.fill();
+        });
+  </script>
+</body>
+    
+    {{ next_button }}
+
+{{ endblock }}

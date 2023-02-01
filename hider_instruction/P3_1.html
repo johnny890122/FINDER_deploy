@@ -1,0 +1,44 @@
+{{ block title }}
+    P3_1
+{{ endblock }}
+{{ block content }}
+    <div>
+        遊戲規則說明（展示 information set）
+    </div>
+
+
+    您總共有 {{total_rounds}} 回合，每回合中有以下步驟
+
+    <ol>
+        <li> 您可以點擊其他代表其他玩家的圓圈，查看該玩家的基本資訊。 </li>
+        <li> 您的編號為：{{id}} </li>
+    </ol>
+
+    <div>
+        number of links to j (node j 的 degree) <br>
+        {{degree}}
+    </div>
+
+    <br>
+
+    <div>
+        the number of mutual neighbors with j <br>
+        {{common_neighbor}}
+    </div>
+
+    <br>
+
+    <div>
+        The sum of geodesic distances from j <br>
+        {{geo_dist_dct}}
+    </div>
+
+    <br>
+
+    <div>
+        [示意圖]
+    </div>
+    
+    {{ next_button }}
+
+{{ endblock }}
