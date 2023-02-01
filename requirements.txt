@@ -4,7 +4,6 @@
 otree==5.10.2
 psycopg2>=2.8.4
 sentry-sdk>=0.7.9
-cython==0.29.13 
 networkx==2.3 
 numpy==1.17.3 
 pandas==0.25.2 
