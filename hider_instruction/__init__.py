@@ -103,7 +103,15 @@ class P3_1(Page):
     def vars_for_template(player: Player):
         constant = C()
 
-        G = nx.complete_graph(4)
+        G = nx.Graph()
+
+        players = player.session.config['num_demo_participants']
+        if player.session.config['seeker'] == 'human':
+            for n in range(2, players+1):
+                G.add_node(n)
+        else:
+            for n in range(1, players+1):
+                G.add_node(n)
 
         # 每個 node 的 degree
         degree = {node: degree for (node, degree) in G.degree}
