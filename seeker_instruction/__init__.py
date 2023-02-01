@@ -35,7 +35,7 @@ def creating_session(subsession: Subsession):
 
 
 # PAGES
-class Mypage(Page):
+class MyPage(Page):
 
     @staticmethod
     def is_displayed(player: Player):
