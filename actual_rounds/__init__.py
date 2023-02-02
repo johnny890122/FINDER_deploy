@@ -141,13 +141,26 @@ class Hider_build(Page):
 
         invitation = []
         for i in range(start_index, player.in_round(1).original_size+2):
-            if i != player.id_in_group and random.random() > 2/3:
+            if i != player.id_in_group and random.random() > 15/16:
                 invitation.append(str(i))
 
         player.invitation = ",".join(invitation)
 
 
 class Hider_wait_matching(WaitPage):
+    title_text = "等待 hider 配對"
+    body_text = "Custom body text"
+
+    def is_displayed(player: Player):
+        if len(player.group.G.nodes()) != 0 and player.role_type == 'seeker':
+            return True
+        else:
+            if player.round_number == 1:
+                return True
+            else:
+                return player.in_round(player.round_number-1).survive
+        return False
+
     @staticmethod
     def after_all_players_arrive(group: Group):
         for player in group.get_players():
@@ -205,7 +218,7 @@ class Seeker_dismantle(Page):
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
-        
+        print(list(player.group.G.nodes()))
         player.to_be_removed = random.choice(list(player.group.G.nodes()))
         print("G", player.group.G.nodes(), player.to_be_removed)
         removed = [n for n in player.group.G.neighbors(player.to_be_removed)]
@@ -218,25 +231,34 @@ class Seeker_dismantle(Page):
 
         player.num_remain = len(player.group.G.nodes())
 
-
-        print("p", 12)
         for p in player.group.get_players():
-
             if p.id_in_group in player.group.G.nodes():
-
                 p.survive = True
             else:
                 p.survive = False
 
 class Wait_dismantle(WaitPage):
-    title_text = "Custom title text"
+    title_text = "等待 seeker dismantle"
     body_text = "Custom body text"
+    def is_displayed(player: Player):
+        if player.role_type == 'hider':
+            if player.round_number == 1:
+                return True
+            else:
+                return player.in_round(player.round_number-1).survive
+        return False
 
 class Seeker_confirm(Page):
     @staticmethod
     def is_displayed(player: Player):
-        if player.num_remain == 0 and player.role_type == 'seeker':
-            return True
+        if player.role_type == 'seeker':
+            if player.round_number == 1:
+                return True
+            else:
+                hiders = player.in_round(player.round_number-1).get_others_in_group()
+                for hider in hiders:
+                    if hider.survive:
+                        return True
         return False
 
     @staticmethod
@@ -255,7 +277,19 @@ class Seeker_confirm(Page):
             "num_remain": player.num_remain, 
         }
 
-page_sequence = [Hider_build, Hider_wait_matching, Hider_matched, Seeker_dismantle, Wait_dismantle, Seeker_confirm]
+class Hider_confirm(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        if player.role_type == 'hider':
+            return player.survive
+        return False
 
+    @staticmethod
+    def vars_for_template(player: Player):
+        return {
+            "which_round": player.round_number, 
+            "survive": player.survive, 
+        }
 
-# page_sequence = [Hider_build, Hider_wait_matching, Hider_matched, Seeker_dismantle, Wait_dismantle, Seeker_confirm]
+page_sequence = [Hider_build, Hider_wait_matching, Hider_matched, Seeker_dismantle, Wait_dismantle, Seeker_confirm, Hider_confirm]
+
