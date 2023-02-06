@@ -5,17 +5,25 @@
     <head>
       <script src="//unpkg.com/force-graph"></script>
       <script>
-          let focus_node = null;
-          let nodes_chosen = new Array();
-          function yes(){
-            nodes_chosen.push(document.getElementById('node_id').value);
-            document.getElementById("id_invitation").value = nodes_chosen;
-            document.getElementById('confirm_block').style.display = 'none';
-            highlightNodes.add(focus_node);
-          }
-          function no(){
-            document.getElementById('confirm_block').style.display = 'none';
-          }
+        function show_all(){
+            document.getElementById('yes_block').style.display = 'inline-block';
+            document.getElementById('cancel_block').style.display = 'inline-block';
+            document.getElementById('back_block').style.display = 'inline-block'; 
+        }
+
+        function hide_all(){
+            document.getElementById('yes_block').style.display = 'none';
+            document.getElementById('cancel_block').style.display = 'none';
+            document.getElementById('back_block').style.display = 'none';
+            reset_value();
+        }
+
+        function reset_value() {
+            document.getElementById("node_id").value = "";
+            document.getElementById("degree").value = "";
+            document.getElementById("geo_d").value = "";
+            document.getElementById("common_neighbor").value = "";
+        }
       </script>
     </head>
 
@@ -30,16 +38,27 @@
             common_neighbor : <input id ="common_neighbor" type="text" value="" disabled="disabled"/>
         </div>
 
-        <div id="confirm_block" style="display: none;">
-            <p>確定要選擇此節點嗎？</p>
-            <div id="yes_button" class="otree-btn-next btn btn-primary" onclick="yes()" >
+        <div id="yes_block" style="display: none;">
+            <p>確定與此節點連接嗎？</p>
+            <div id="yes_button" class="otree-btn-next btn btn-primary" onclick="yes()">
                 是的。
             </div>
-            <div id="no_button" class="otree-btn-next btn btn-primary" 
-                style="background-color: gray; border-color: gray;" onclick="no()">
-                否。
-            </div>   
         </div>
+
+        <div id="cancel_block" style="display: none;">
+            <p>取消與此節點連接嗎？</p>
+            <div id="cancel_button" class="otree-btn-next btn btn-primary" onclick="cancel()" >
+                是的。
+            </div> 
+        </div>
+
+        <div id="back_block" style="display: none;">
+            <div id="back_button" class="otree-btn-next btn btn-primary" onclick="hide_all()">
+                <!-- style="background-color: gray; border-color: gray;"  -->
+                Back
+            </div>  
+        </div>
+
         <div id="graph" style="border-color:black;border-width:1px;border-style:solid;padding:5px;"></div>
     </body>
 
@@ -51,8 +70,8 @@
         }
         const NODE_R = 5;
 
-        const highlightNodes = new Set();
-        const highlightLinks = new Set();
+        let highlightNodes = new Set();
+        let highlightLinks = new Set();
         let hoverNode = null;
 
         const elem = document.getElementById('graph');
@@ -63,18 +82,32 @@
             .height(500)
             .nodeLabel('id')
             .graphData(gData)
-
             .onNodeClick(node => {
-              document.getElementById("node_id").value = node.id == {{me}} ? node.id + " (You)": node.id;
-              document.getElementById("degree").value = node.degree;
-              document.getElementById("geo_d").value = node.geo_d;
-              document.getElementById("common_neighbor").value = node.common_neighbor;
-              document.getElementById('confirm_block').style.display = 'block';
+              // 自己不能點擊 
+              if (node.id == {{me}})  {
+                hide_all();
+              }
+              // 自己的鄰居不能點擊 
+              else if ({{neighbors}}.indexOf(node.id) !== -1) {
+                hide_all();
+              }
+              // 其餘可以點
+              else {
+                if (highlightNodes.has(node)) {
+                    document.getElementById("cancel_block").style.display = "inline-block";
+                    document.getElementById("back_block").style.display = "inline-block";
+                }
+                else {
+                    document.getElementById("yes_block").style.display = "inline-block";
+                    document.getElementById("back_block").style.display = "inline-block";
+                }
+                document.getElementById("node_id").value = node.id == {{me}} ? node.id + " (You)": node.id;
+                document.getElementById("degree").value = node.degree;
+                document.getElementById("geo_d").value = node.geo_d;
+                document.getElementById("common_neighbor").value = node.common_neighbor;
+              }
 
-              // highlightNodes.clear();
-              // highlightLinks.clear();
-              if (node) {
-                // highlightNodes.add(node);
+              if (node) {   
                 focus_node = node;
                 if (node.neighbors) {
                     node.neighbors.forEach(neighbor => {
@@ -82,35 +115,80 @@
                     });
                 if (node.links) {
                     node.links.forEach(link => highlightLinks.add(link));
-                    }    
+                    }
                 }
               }
               hoverNode = node || null;
-              console.log(highlightNodes);
-              console.log(typeof highlightNodes);
             })
             .autoPauseRedraw(false) // keep redrawing after engine has stopped
             .nodeCanvasObject((node, ctx) => {
               ctx.beginPath();
               if (node.id == {{me}}){
                 ctx.fillStyle = "#2F4F4F";
-                // 
-                ctx.arc(node.x, node.y, NODE_R*2, 0, 2 * Math.PI, false);
+                ctx.beginPath(); ctx.moveTo(node.x, node.y - 6); ctx.lineTo(node.x - 6, node.y + 6); ctx.lineTo(node.x + 6, node.y + 6);
               }
 
               else if (highlightNodes.has(node)){
-                ctx.fillStyle = "#8FBC8F";
-                ctx.fillRect(node.x - 6, node.y - 6, 12, 12);
-                // ctx.arc(node.x, node.y, NODE_R, 0, 2 * Math.PI, false);
-              }
-              else {
-                ctx.fillStyle = "#2F4F4F"
+                ctx.fillStyle = "#FFA07A";
+                ctx.strokeStyle = "#FFA07A";
                 ctx.arc(node.x, node.y, NODE_R, 0, 2 * Math.PI, false);
               }
-              ctx.fill();
-            });
-    </script>
+              else {
+                ctx.fillStyle = "#2F4F4F";
+                ctx.strokeStyler = "#2F4F4F";
+                ctx.arc(node.x, node.y, NODE_R, 0, 2 * Math.PI, false);
+                ctx.lineWidth = 0.4;
 
+              }
+              ctx.fill();
+            })
+        </script>
+
+        <script>
+        let focus_node = null;
+        let arr_chosen_nodes = new Array();
+        let tmp_gData = new Array();
+
+        function yes(){
+            let chosen_node = document.getElementById('node_id').value;
+            arr_chosen_nodes.push(chosen_node);
+            document.getElementById("id_invitation").value = arr_chosen_nodes;
+
+            highlightNodes.add(focus_node);
+
+            const { nodes, links } = Graph.graphData();
+            let tmp_links = tmp_gData;
+            tmp_links.push({ source: {{me}}, target: parseInt(chosen_node)});
+
+            Graph.graphData({
+                nodes: [...nodes],
+                links: [...links, ...tmp_links]
+            });
+
+            hide_all();
+        }
+
+        function cancel(){
+            let chosen_node = parseInt(document.getElementById('node_id').value);
+            tmp_gData = tmp_gData.filter(e => e.target.id != chosen_node);
+
+
+            highlightNodes = Array.from(highlightNodes);
+            highlightNodes.forEach(e => {console.log(e.id, typeof e.id, chosen_node, typeof chosen_node)})
+            highlightNodes = highlightNodes.filter( e => e.id != chosen_node);
+            highlightNodes = new Set(highlightNodes);
+
+            const { nodes, links } = Graph.graphData();
+            Graph.graphData({
+                nodes: [...nodes],
+                links: [...{{links}}, ...tmp_gData]
+            });
+
+            hide_all();
+        }
+
+
+    </script>
 {{ next_button }}
 
 {{ endblock }}

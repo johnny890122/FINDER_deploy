@@ -60,19 +60,21 @@
               ctx.beginPath();
               if (node.id == {{me}}){
                 ctx.fillStyle = "#2F4F4F";
-                ctx.arc(node.x, node.y, NODE_R*2, 0, 2 * Math.PI, false);
+                ctx.beginPath(); ctx.moveTo(x, y - 5); ctx.lineTo(x - 5, y + 5); ctx.lineTo(x + 5, y + 5);
+                ctx.fill();
               }
 
               else if (highlightNodes.has(node)){
                 ctx.fillStyle = "#8FBC8F";
-                ctx.fillRect(node.x - 6, node.y - 6, 12, 12);
+                // ctx.fillRect(node.x - 6, node.y - 6, 12, 12);
                 // ctx.arc(node.x, node.y, NODE_R, 0, 2 * Math.PI, false);
+                ctx.beginPath(); ctx.moveTo(x, y - 5); ctx.lineTo(x - 5, y + 5); ctx.lineTo(x + 5, y + 5);
               }
               else {
                 ctx.fillStyle = "#2F4F4F"
-                ctx.arc(node.x, node.y, NODE_R, 0, 2 * Math.PI, false);
+                // ctx.arc(node.x, node.y, NODE_R, 0, 2 * Math.PI, false);
               }
-              ctx.fill();
+              
             });
     </script>
 

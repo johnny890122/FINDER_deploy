@@ -19,7 +19,8 @@ class Subsession(BaseSubsession):
     pass
 
 class Group(BaseGroup):
-    G = nx.Graph()
+    # G = nx.Graph()
+    G = nx.path_graph(3)
 
 # 在有 human seeker 的情況下，P1 為 seeker
 class Player(BasePlayer):
@@ -118,7 +119,6 @@ class Hider_build(Page):
             if player.round_number == 1:
                 return True
             else:
-                print(player.round_number, player.in_round(player.round_number-1))
                 return player.in_round(player.round_number-1).survive
         return False
 
@@ -126,6 +126,7 @@ class Hider_build(Page):
     def vars_for_template(player: Player):
         return {
             "nodes": G_nodes(player.group.G, player),
+            "neighbors": list(player.group.G.neighbors(player.id_in_group)), 
             "links": G_links(player.group.G),
             "which_round": player.round_number,
             "me": player.id_in_group, 
