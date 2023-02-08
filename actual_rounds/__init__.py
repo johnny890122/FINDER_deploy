@@ -19,27 +19,25 @@ class Subsession(BaseSubsession):
     pass
 
 class Group(BaseGroup):
-    # G = nx.Graph()
-    G = nx.path_graph(3)
+    G = nx.Graph()
 
 # 在有 human seeker 的情況下，P1 為 seeker
 class Player(BasePlayer):
     cons = C()
     to_be_removed = models.IntegerField(
-        initial=-1,
         label= "您選擇的節點為："
     )
     num_removed = models.IntegerField(initial=-1)
-    num_remain = models.IntegerField(initial=-1)
+    node_remain = models.IntegerField(initial=-1)
+    edge_remain = models.IntegerField(initial=-1)
     confirm = models.BooleanField(
         label = "確定要刪除這個節點嗎？"
     )
 
     original_size = models.IntegerField()
     role_type = models.StringField()
-    invitation = models.StringField(initial="-1")
+    invitation = models.StringField(initial="")
     survive = models.BooleanField(initial=False)
-    
 
 def creating_session(subsession: Subsession):
 
@@ -76,8 +74,8 @@ def creating_session(subsession: Subsession):
 def G_links(G):
     links = []
     for (i, j) in G.edges():
-        links.append({"source": i, "target": j})
-        links.append({"source": j, "target": i})
+        links.append({"source": i, "target": j, 'dashed': "False"})
+        links.append({"source": j, "target": i, 'dashed': "False"})
 
     return links
 
@@ -142,7 +140,7 @@ class Hider_build(Page):
 
         invitation = []
         for i in range(start_index, player.in_round(1).original_size+2):
-            if i != player.id_in_group and random.random() > 15/16:
+            if i != player.id_in_group and random.random() < 3/4:
                 invitation.append(str(i))
 
         player.invitation = ",".join(invitation)
@@ -198,7 +196,6 @@ class Hider_matched(Page):
             "me": player.id_in_group, 
         }
 
-
 class Seeker_dismantle(Page):
     form_model = 'player'
     form_fields = ['to_be_removed']
@@ -219,9 +216,7 @@ class Seeker_dismantle(Page):
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
-        print(list(player.group.G.nodes()))
         player.to_be_removed = random.choice(list(player.group.G.nodes()))
-        print("G", player.group.G.nodes(), player.to_be_removed)
         removed = [n for n in player.group.G.neighbors(player.to_be_removed)]
         removed.append(player.to_be_removed)
 
@@ -230,7 +225,7 @@ class Seeker_dismantle(Page):
         for n in removed:
             player.group.G.remove_node(n)
 
-        player.num_remain = len(player.group.G.nodes())
+        player.node_remain = len(player.group.G.nodes())
 
         for p in player.group.get_players():
             if p.id_in_group in player.group.G.nodes():
@@ -264,18 +259,18 @@ class Seeker_confirm(Page):
 
     @staticmethod
     def vars_for_template(player: Player):
-        line_plot = [[0, player.in_round(1).original_size]]
+        node_line_plot = [[0, player.in_round(1).original_size]]
         for (x, p) in zip(range(1, player.round_number), player.in_previous_rounds()):
-            line_plot.append([x, p.num_remain])
+            node_line_plot.append([x, p.node_remain])
 
-        line_plot.append([player.round_number, player.num_remain])
+        node_line_plot.append([player.round_number, player.node_remain])
 
         return {
-            "line_plot": line_plot, 
+            "node_line_plot": node_line_plot, 
             "which_round": player.round_number, 
             "caught": player.to_be_removed, 
             "num_removed": player.num_removed,
-            "num_remain": player.num_remain, 
+            "node_remain": player.node_remain, 
         }
 
 class Hider_confirm(Page):

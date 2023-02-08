@@ -16,7 +16,7 @@
         </div>
         
         <div>
-            剩餘 {{num_remain}} 個節點。
+            剩餘 {{node_remain}} 個節點。
         </div>
 
 
@@ -24,8 +24,7 @@
 
         <script>
 
-            var dataset = {{line_plot}}; 
-
+            var dataset = {{node_line_plot}};
             var min = d3.min(dataset, function(d) {
               return d[1];
             })
@@ -69,11 +68,16 @@
                             .x(function(d){ return xScale(d[0]) })
                             .y(function(d){ return yScale(d[1]) });
 
+            var linePath2 = d3.line()
+                            .x(function(d){ return xScale(d[1]) })
+                            .y(function(d){ return yScale(d[0]) });
+
             svg.append('g')
               .append('path')
               .attr('class', 'line-path')
               .attr('transform', 'translate(' + padding.left + ',' + padding.top + ')')
               .attr('d', linePath(dataset))
+              // .attr('d', linePath2(dataset))
               .attr('fill', 'none')
               .attr('stroke-width', 3)
               .attr('stroke', 'green');
