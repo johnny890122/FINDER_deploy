@@ -19,11 +19,16 @@ class Subsession(BaseSubsession):
     pass
 
 class Group(BaseGroup):
-    G = nx.Graph()
+    G = nx.Graph() # 所有玩家在畫面中看到的 graph
 
 # 在有 human seeker 的情況下，P1 為 seeker
 class Player(BasePlayer):
+    # 實驗的參數
     cons = C()
+    original_size = models.IntegerField()
+    role_type = models.StringField()
+
+    # seeker 需要的 field
     to_be_removed = models.IntegerField(
         label= "您選擇的節點為："
     )
@@ -34,16 +39,15 @@ class Player(BasePlayer):
         label = "確定要刪除這個節點嗎？"
     )
 
-    original_size = models.IntegerField()
-    role_type = models.StringField()
+    # hider 需要的 field
     invitation = models.StringField(initial="")
     survive = models.BooleanField(initial=False)
 
 def creating_session(subsession: Subsession):
 
+    # 若有 human seeker，|G| = N-1，反之，|G| = N。
     group = subsession.get_groups()[0]
     players = subsession.get_players()
-
     if group.session.config['seeker'] == 'human':
         for n in range(2, len(players)+1):
             group.G.add_node(n)
@@ -51,6 +55,7 @@ def creating_session(subsession: Subsession):
         for n in range(1, len(players)+1):
             group.G.add_node(n)
 
+    # 初始化每個 player 的 role，以及其他 filed。
     for player in players:
         if player.round_number == 1:
             if player.session.config['seeker'] == 'human':
@@ -65,12 +70,12 @@ def creating_session(subsession: Subsession):
                 player.original_size = len(players)
                 player.role_type = 'hider'
         else:
-
             player.role_type = player.in_round(1).role_type
             if player.role_type == 'seeker':
                 player.invitation = "1"
             
 
+# Utility: 用來將 G 的 link 轉換成前端接受的格式
 def G_links(G):
     links = []
     for (i, j) in G.edges():
@@ -79,17 +84,19 @@ def G_links(G):
 
     return links
 
+# Utility: 用來將 G 的 node attributes 轉換成前端接受的格式
 def G_nodes(G, player):
+    # node degree
     degree = {node: degree for (node, degree) in G.degree}
 
-    # 每個 node 的 geo-distance
+    # node geo-distance
     geo_dist_dct = { 
         key: np.sum(list(val.values()))
             for key, val in dict(nx.shortest_path_length(G)).items()
     }
     
+    # player 和其他玩家之間共同鄰居的數量
     if player.role_type == 'hider':
-        # player 和其他玩家之間共同鄰居的數量
         common_neighbor = dict()
         for n in G.nodes():
             common_neighbor[n] = len(list(nx.common_neighbors(G, player.id_in_group, n)))
@@ -102,15 +109,18 @@ def G_nodes(G, player):
             nodes.append({"id": i, "degree": degree[i], "geo_d": geo_dist_dct[i]})
     return nodes
 
+# Utility
 def to_list(string):
     if string == "":
         return []
     return [int(n) for n in string.split(",")]
 
-# PAGES
+# PAGES: 
 class Hider_build(Page):
     form_model = 'player'
     form_fields = ['invitation']
+
+    # 此畫面只顯示給：Hider & 上回合 survive
     @staticmethod
     def is_displayed(player: Player):
         if player.role_type == 'hider':
@@ -120,6 +130,7 @@ class Hider_build(Page):
                 return player.in_round(player.round_number-1).survive
         return False
 
+    # 傳送前端需要的資訊
     @staticmethod
     def vars_for_template(player: Player):
         return {
@@ -129,10 +140,10 @@ class Hider_build(Page):
             "which_round": player.round_number,
             "me": player.id_in_group, 
         }
+
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
-
-        # for test: 向所有人發出邀請
+        # 這裡是為了測試方便，隨機向其他玩家發出邀請。
         if player.session.config['seeker'] == 'human':
             start_index = 2
         else:
@@ -146,9 +157,11 @@ class Hider_build(Page):
         player.invitation = ",".join(invitation)
 
 
+
 class Hider_wait_matching(WaitPage):
     title_text = "等待 hider 配對"
-    body_text = "Custom body text"
+    body_text = ""
+
 
     def is_displayed(player: Player):
         if len(player.group.G.nodes()) != 0 and player.role_type == 'seeker':
@@ -160,12 +173,12 @@ class Hider_wait_matching(WaitPage):
                 return player.in_round(player.round_number-1).survive
         return False
 
+    # 當所有人到齊，表示所有 hider 完成 build，在此進行配對。
     @staticmethod
     def after_all_players_arrive(group: Group):
         for player in group.get_players():
             if player.role_type == 'hider':
                 if player.round_number != 1:
-                    print(player.round_number, player.in_round(player.round_number-1))
                     if not player.in_round(player.round_number-1).survive:
                         continue
                 for n in to_list(player.invitation):
@@ -173,10 +186,8 @@ class Hider_wait_matching(WaitPage):
                     if player.id_in_group in invitation:
                         group.G.add_edge(player.id_in_group, n)
 
-        print(group.G)
-
+# Hider 配對後的結果
 class Hider_matched(Page):
-
     @staticmethod
     def is_displayed(player: Player):
         if player.role_type == 'hider':
@@ -196,6 +207,8 @@ class Hider_matched(Page):
             "me": player.id_in_group, 
         }
 
+
+# Seeker 破壞的頁面
 class Seeker_dismantle(Page):
     form_model = 'player'
     form_fields = ['to_be_removed']
@@ -235,7 +248,7 @@ class Seeker_dismantle(Page):
 
 class Wait_dismantle(WaitPage):
     title_text = "等待 seeker dismantle"
-    body_text = "Custom body text"
+    body_text = ""
     def is_displayed(player: Player):
         if player.role_type == 'hider':
             if player.round_number == 1:
@@ -244,6 +257,7 @@ class Wait_dismantle(WaitPage):
                 return player.in_round(player.round_number-1).survive
         return False
 
+# Seeker 確認該回合的破壞成果
 class Seeker_confirm(Page):
     @staticmethod
     def is_displayed(player: Player):
@@ -273,6 +287,7 @@ class Seeker_confirm(Page):
             "node_remain": player.node_remain, 
         }
 
+# Hider 確認幾是否存活
 class Hider_confirm(Page):
     @staticmethod
     def is_displayed(player: Player):

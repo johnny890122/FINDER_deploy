@@ -68,27 +68,25 @@
     </body>
 
     <script>
-        // Random tree
-
+        // Graph information from back-end
         const nodes = {{nodes}}
         const links = {{links}}.map( i => ({
                 source: i.source, 
                 target: i.target, 
                 dashed: (i.dashed === "True")
             }))
-
         const gData = {
             nodes: nodes, 
             links: links
         }
 
-        const NODE_R = 5;
-
+        // 用來記錄哪些 node 需要不同的顯示樣式。
         let invite_node = new Set();
         let highlight_node = new Set();
         let highlightLinks = new Set();
 
-        const elem = document.getElementById('graph');
+        // node size
+        const NODE_R = 5;
 
         const Graph = ForceGraph()
           (document.getElementById('graph'))
@@ -97,8 +95,13 @@
             .nodeLabel('id')
             .graphData(gData)
             .autoPauseRedraw(false) // keep redrawing after engine has stopped
+            .minZoom(1)
+            .maxZoom(2.75)
+            .cooldownTicks(10)
+            // 點擊每一個 node 的行為。
             .onNodeClick(node => {
-              if (node.id == {{me}} || {{neighbors}}.indexOf(node.id) !== -1) { // 自己不能點擊 
+              // 自己不能點 
+              if (node.id == {{me}} || {{neighbors}}.indexOf(node.id) !== -1) { 
                 hide_all();
               }
               // 其餘可以點
@@ -112,6 +115,7 @@
                 }
               }
 
+              // 顯示點擊 node 的資訊。
               document.getElementById("node_id").value = node.id == {{me}} ? node.id + " (You)": node.id;
               document.getElementById("degree").value = node.degree;
               document.getElementById("geo_d").value = node.geo_d;
@@ -124,9 +128,7 @@
                 highlight_node.add(node);
               }
             })
-            .minZoom(1)
-            .maxZoom(2.75)
-            .cooldownTicks(10)
+            // 將 node 依照各自的 format 上色
             .nodeCanvasObject((node, ctx) => {
               ctx.lineWidth = 2.5;
               ctx.fillStyle = "#ffffff";
@@ -155,12 +157,11 @@
               ctx.fill();
             })
 
-        Graph.d3Force('center', null);
-
         // fit to canvas when engine stops
+        Graph.d3Force('center', null);
         Graph.onEngineStop(() => Graph.zoomToFit(400));
 
-        // Dash animation
+        // 虛線的效果
         const dashLen = 3;
         const gapLen = 4;
         const st = +new Date();
@@ -171,7 +172,7 @@
           Graph.linkLineDash(link => link.dashed && lineDash);
 
           requestAnimationFrame(animate);
-        })(); // IIFE
+        })(); 
         </script>
 
         <script>
@@ -179,6 +180,7 @@
         let arr_chosen_nodes = new Array();
         let tmp_gData = new Array();
 
+        // 按 yes button 後的行為
         function yes(){
             let chosen_node = parseInt(document.getElementById('node_id').value);
             arr_chosen_nodes.push(chosen_node);
@@ -198,6 +200,7 @@
             highlight_node.clear();
         }
 
+        // 按 cancel button 後的行為
         function cancel(){
             let chosen_node = parseInt(document.getElementById('node_id').value);
 
