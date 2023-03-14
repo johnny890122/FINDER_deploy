@@ -10,7 +10,7 @@ seeker only（P1 為 seeker）。
 
 
 class C(BaseConstants):
-    NAME_IN_URL = 'seeker_instruction'
+    NAME_IN_URL = 'seeker_training'
     PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 1
 
@@ -45,8 +45,7 @@ class MyPage(Page):
 
     @staticmethod
     def vars_for_template(player: Player):
-
-        return {"practice": player.session.config["practice"]}
+        pass
 
 
 page_sequence = [MyPage]

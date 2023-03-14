@@ -1,43 +1,67 @@
 from os import environ
 
 SESSION_CONFIGS = [
-    # dict(
-    #     name='FINDER',
-    #     app_sequence=['hider_instruction', 'practice_rounds', 'actual_rounds', 'questionnaires'],
-    #     num_demo_participants=1,
-    # ),
-
-    # dict(
-    #     name='human_seeker_training', 
-    #     app_sequence=['seeker_instruction', 'seeker_training', 'seeker_training_result'], 
-    #     num_demo_participants=1,
-    # ),
-
     dict(
         name='human_hider_human_seeker', 
-        # app_sequence=['seeker_instruction', 'hider_instruction', 'practice_rounds', 'actual_rounds', 'payoff'], 
-        app_sequence=['actual_rounds', 'payoff'], # for test
-        num_demo_participants=10, 
+        # app_sequence=['seeker_instruction', 'hider_instruction', 'actual_rounds', 'payoff'], 
+        app_sequence=['actual_rounds', 'link_page'], 
+        num_demo_participants=4,
         hider='human', 
         seeker='human',
-    ), 
+        practice=True, 
+    ),
 
-    # dict(
-    #     name='human_hider_finder_seeker',
-    #     # app_sequence=['seeker_instruction', 'hider_instruction', 'practice_rounds', 'actual_rounds'], 
-    #     app_sequence=['actual_rounds'], # for test
-    #     num_demo_participants=4, 
-    #     hider='human', 
-    #     seeker='finder',
-    # ), 
+    dict(
+        name='human_hider_human_seeker_no_practice', 
+        # app_sequence=['seeker_instruction', 'hider_instruction', 'actual_rounds', 'payoff'], 
+        app_sequence=['actual_rounds'], 
+        num_demo_participants=4,
+        hider='human', 
+        seeker='human',
+        practice=False, 
+    ),
 
-    # dict(
-    #     name='synthetic_hider_human_seeker',
-    #     app_sequence=['seeker_instruction', 'actual_rounds'], 
-    #     num_demo_participants=1, 
-    #     hider='synthetic', 
-    #     seeker='human',
-    # ), 
+    dict(
+        name='only_human_seeker', 
+        # app_sequence=['seeker_instruction', 'hider_instruction', 'actual_rounds', 'payoff'], 
+        app_sequence=['actual_rounds'], 
+        num_demo_participants=1,
+        hider='not_human', 
+        seeker='human',
+        num_demo=8, 
+        practice=True, 
+    ),
+
+    dict(
+        name='only_human_seeker_no_practice', 
+        # app_sequence=['seeker_instruction', 'hider_instruction', 'actual_rounds', 'payoff'], 
+        app_sequence=['actual_rounds'], 
+        num_demo_participants=1,
+        hider='not_human', 
+        seeker='human',
+        num_demo=8, 
+        practice=False, 
+    ),
+
+    dict(
+        name='only_human_hider', 
+        # app_sequence=['seeker_instruction', 'hider_instruction', 'actual_rounds', 'payoff'], 
+        app_sequence=['actual_rounds'], 
+        num_demo_participants=4,
+        hider='human', 
+        seeker='not_human',
+        practice=True, 
+    ),
+
+    dict(
+        name='only_human_hider_no_practice', 
+        # app_sequence=['seeker_instruction', 'hider_instruction', 'actual_rounds', 'payoff'], 
+        app_sequence=['actual_rounds'], 
+        num_demo_participants=4,
+        hider='human', 
+        seeker='not_human',
+        practice=False, 
+    ),
 ]
 
 # if you set a property in SESSION_CONFIG_DEFAULTS, it will be inherited by all configs
