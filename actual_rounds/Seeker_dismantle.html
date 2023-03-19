@@ -1,10 +1,13 @@
 {{ block title }}
-    Round {{which_round}}
+    {{ if practice == 0}}
+        Round {{which_round}}
+    {{ else }}
+        Practice Round {{which_round}}
+    {{ endif }}
 {{ endblock }}
 {{ block content }}
     <head>
       <script src="//unpkg.com/force-graph"></script>
-
       <script>
           function cancel() {
             document.getElementById("id_to_be_removed").value = null;
@@ -15,7 +18,12 @@
     </head>
 
     <body>
-        {{ formfield 'to_be_removed'}}
+        <div class="mb-3 _formfield">
+            <label class="col-form-label" for="id_to_be_removed">您選擇的節點為：</label>
+            <div class="controls">
+                <input type="number" class="form-control" inputmode="numeric" id="id_to_be_removed" min="0" name="to_be_removed" required="" value="" placeholder="尚未選擇任何節點">
+            </div>
+        </div>
 
         <div id="confirm_block" style="display: none;">
             <p>確定要選擇此節點嗎？</p>
@@ -45,7 +53,7 @@
                 (document.getElementById('graph'))
                 .graphData(gData)
                 .width(1200)
-                .height(900)
+                .height(700)
                 .minZoom(1)
                 .maxZoom(2.75)
                 .onNodeClick(node => {

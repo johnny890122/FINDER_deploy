@@ -35,15 +35,7 @@ def creating_session(subsession: Subsession):
 
 # PAGES
 class MyPage(Page):
-    @staticmethod
-    def is_displayed(player: Player):
-        if player.role_type == 'hider':
-            return True
-        return False
-
-    @staticmethod
-    def vars_for_template(player: Player):
-        pass
+    pass 
 
 
 page_sequence = [MyPage]

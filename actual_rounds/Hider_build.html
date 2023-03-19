@@ -29,7 +29,15 @@
     </head>
 
     <body>
-        {{ formfield 'invitation' }}
+        <div class="mb-3 _formfield">
+            
+                <label class="col-form-label" for="id_invitation">Invitation</label>
+                <div class="controls">
+                    <input type="text" class="form-control" id="id_invitation" name="invitation" required="" value=""
+                        placeholder="請選擇要建立連結的節點" 
+                    >
+                </div>
+        </div>
 
         <div class="table" id="tab">
             Node Information <br>
@@ -61,9 +69,6 @@
             </div>  
         </div>
 
-        <div>1. 跟老師確認本頁的樣式後，加入圖標。</div>
-        <div>2. 需要整張 graph 不能拖動</div>
-
         <div id="graph" style="border-color:black;border-width:1px;border-style:solid;padding:5px; width: fit-content"></div>
     </body>
 
@@ -91,7 +96,7 @@
         const Graph = ForceGraph()
           (document.getElementById('graph'))
             .width(1200)
-            .height(900)
+            .height(500)
             .nodeLabel('id')
             .graphData(gData)
             .autoPauseRedraw(false) // keep redrawing after engine has stopped

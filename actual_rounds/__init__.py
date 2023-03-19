@@ -96,6 +96,8 @@ class Player(BasePlayer):
         label = "確定要刪除這個節點嗎？"
     )
 
+    sub_practice_end = models.BooleanField(initial=False)
+
     # hider 需要的 field
     invitation = models.StringField(initial="")
     survive = models.BooleanField(initial=False)
@@ -259,6 +261,8 @@ class Hider_matched(Page):
         }
 
 class Pesudo_dismantle(WaitPage):
+    title_text = "等待 seeker dismantle"
+    body_text = ""
     @staticmethod
     def is_displayed(player: Player):
         if not player.session.config["practice"] or player.role_type == 'seeker':
@@ -303,10 +307,18 @@ class Seeker_dismantle(Page):
         else:
             G = player.group.G
 
+        num_past_practice_round = 0
+        if player.session.config['practice']:
+            for p in player.in_previous_rounds():
+                if p.sub_practice_end:
+                    num_past_practice_round = p.round_number
+
         return {
+            "num_past_practice_round": num_past_practice_round, 
+            "practice": int(player.session.config['practice']), 
             "nodes": G_nodes(G, player),
             "links": G_links(G), 
-            "which_round": player.round_number,
+            "which_round": player.round_number - num_past_practice_round,
         }
 
     @staticmethod
@@ -328,7 +340,7 @@ class Seeker_dismantle(Page):
                     [node1, node2] = random.sample(nodes, 2)
                     player.group.G_seeker_practice.add_edge(node1, node2)
                 except:
-                    pass 
+                    pass
 
 class Wait_dismantle(WaitPage):
     title_text = "等待 seeker dismantle"
@@ -349,11 +361,13 @@ class Seeker_confirm(Page):
             if player.round_number == 1:
                 return True
             else:
+                hiders = player.in_round(player.round_number).get_others_in_group()
                 if player.session.config['practice']:
-                    if len(player.group.G_seeker_practice) > 0:
+                    if len(player.group.G_seeker_practice) >0: 
                         return True
+                    elif len(player.group.G_seeker_practice) == 0 and len(player.group.G_hider_practice) != 0:
+                        return True 
                 else:
-                    hiders = player.in_round(player.round_number-1).get_others_in_group()
                     for hider in hiders:
                         if hider.survive:
                             return True
@@ -361,19 +375,37 @@ class Seeker_confirm(Page):
 
     @staticmethod
     def vars_for_template(player: Player):
+        num_past_practice_round = 0
+        if player.session.config['practice']:
+            for p in player.in_previous_rounds(): 
+                if p.sub_practice_end:
+                    num_past_practice_round = p.round_number
+
         node_line_plot = [[0, player.in_round(1).original_size]]
-        for (x, p) in zip(range(1, player.round_number), player.in_previous_rounds()):
+        for (x, p) in zip(
+                range(1, player.round_number-num_past_practice_round), player.in_previous_rounds()[num_past_practice_round:]
+            ):
             node_line_plot.append([x, p.node_remain])
 
-        node_line_plot.append([player.round_number, player.node_remain])
+        node_line_plot.append([player.round_number- num_past_practice_round, player.node_remain])
 
         return {
+            "num_past_practice_round": num_past_practice_round, 
+            "current_size": len(player.group.G_seeker_practice), 
+            "original_size": player.in_round(1).original_size, 
+            "practice": int(player.session.config['practice']),
             "node_line_plot": node_line_plot, 
-            "which_round": player.round_number, 
+            "which_round": player.round_number - num_past_practice_round, 
             "caught": player.to_be_removed, 
             "num_removed": player.num_removed,
             "node_remain": player.node_remain, 
         }
+
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        if player.session.config['practice']:
+            if len(player.group.G_seeker_practice) == 0:
+                player.sub_practice_end = True
 
 # Hider 確認是否存活
 class Hider_confirm(Page):
@@ -407,9 +439,16 @@ class Seeker_new_round(Page):
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
-        for n in range(1, player.session.config['num_demo_participants']+1):
+        for n in range(2, player.session.config['num_demo_participants']+1):
             player.group.G_seeker_practice.add_node(n)
 
+    @staticmethod
+    def vars_for_template(player: Player):
+        hiders = player.get_others_in_subsession()
+
+        return {
+            "num_hiders": len(hiders[0].group.G_hider_practice.nodes())
+        }
 
 class Wait_All_finished(WaitPage):
     title_text = "等待所有人進入下一階段"
