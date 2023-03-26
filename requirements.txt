@@ -5,3 +5,6 @@ networkx
 numpy
 pandas
 scipy
+requests 
+pygsheets
+bs4
