@@ -30,13 +30,14 @@ class Player(BasePlayer):
 
 
 def getLinks():
-    auth_file = "finderlink-381806-aa232dd1eff5.json"
-    gc = pygsheets.authorize(service_file = auth_file)
 
+    gc = pygsheets.authorize(service_file='finderlink-381806-aa232dd1eff5.json')
     # setting sheet
     sheet_url = "https://docs.google.com/spreadsheets/d/15t8MjE9mLmHGQDWzGGqEPiri402DKU1Ux8EX9XyxwcA/" 
     sheet = gc.open_by_url(sheet_url)
     data = sheet.worksheet_by_title("link").get_all_records()
+
+
 
     return [d["link"] for d in data]
 
