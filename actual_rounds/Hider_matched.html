@@ -7,7 +7,11 @@
     </head>
 
     <body>
-        媒合的結果 & Payoff
+        媒合的結果 & Payoff <br>
+
+        您本回合獲得的報酬為：{{payoff}} <br>
+
+        累積報酬為：{{accumlative_payoff}}
         <div id="graph" style="border-color:black;border-width:1px;border-style:solid;padding:5px; width: fit-content"></div>
     </body>
 
@@ -27,6 +31,8 @@
           (document.getElementById('graph'))
             .width(1200)
             .height(500)
+            .linkWidth(5)
+            .linkColor(["black"])
             .nodeLabel('id')
             .graphData(gData)
             .minZoom(1)

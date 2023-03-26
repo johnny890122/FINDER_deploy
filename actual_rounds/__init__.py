@@ -3,6 +3,10 @@ import sys, os, random, json, io
 import networkx as nx
 import numpy as np
 
+doc = """
+Your app description
+"""
+
 # Utility: 用來將 G 的 link 轉換成前端接受的格式
 def G_links(G):
     links = []
@@ -15,7 +19,7 @@ def G_links(G):
 # Utility: 用來將 G 的 node attributes 轉換成前端接受的格式
 def G_nodes(G, player):
     # node degree
-    degree = {node: degree for (node, degree) in G.degree}
+    degree = {node: degree for (node, degree) in G.degree()}
 
     # node geo-distance
     geo_dist_dct = { 
@@ -59,14 +63,41 @@ def remove_from_G(player, G):
         else:
             p.survive = False
 
-doc = """
-Your app description
-"""
+def hider_payoff(player, G):
+    constant =C()
+    c = constant.c
+    delta = constant.delta
+
+    nodes = { node["id"]: {"degree": node["degree"], "geo_d": node["geo_d"]} for node in G_nodes(G, player) }
+
+    payoff = 0
+    geo_d = [node["geo_d"] for node in nodes.values()]
+    for i, d in enumerate(geo_d):
+        if d == 0 or i+1 == player.id_in_group:
+            pass
+        else:
+            payoff += delta**d
+
+    payoff -= c*nodes[player.id_in_group]["degree"]
+
+    return payoff
+
+def getRobustness(G, sol):
+    G = G.copy()
+    GCCsize = len(max(nx.connected_components(G), key=len))
+    G.remove_node(sol)
+    newGCCsize = len(max(nx.connected_components(G), key=len))
+
+    print(GCCsize, newGCCsize)
+
+    return (GCCsize - newGCCsize) / ((G.number_of_nodes() * G.number_of_nodes()))
 
 class C(BaseConstants):
     NAME_IN_URL = 'actual_rounds'
     PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 20 # 理論上，設定成一個很大的數字即可。或是試試看動態決定。
+    c = 0.1
+    delta = 0.9
 
 class Subsession(BaseSubsession):
     pass
@@ -94,12 +125,14 @@ class Player(BasePlayer):
     confirm = models.BooleanField()
 
     sub_practice_end = models.BooleanField(initial=False)
+    seeker_payoff = models.FloatField()
 
     # hider 需要的 field
     invitation = models.StringField(initial="", label="您選擇的節點為：")
     survive = models.BooleanField(initial=False)
 
     G_nodes = models.StringField()
+    hider_payoff = models.FloatField()
 
 def creating_session(subsession: Subsession):
     is_practice = subsession.session.config['practice']
@@ -190,8 +223,8 @@ class Hider_build(Page):
 
         invitation = []
         for i in range(start_index, player.session.config["num_demo_participants"]):
-            if i != player.id_in_group and random.random() < 8/9:
-                invitation.append(str(i))
+            # if i != player.id_in_group and random.random() > 17/18:
+            invitation.append(str(i))
 
         player.invitation = ",".join(invitation)
 
@@ -229,8 +262,19 @@ class Hider_wait_matching(WaitPage):
                         continue
                 for n in to_list(player.invitation):
                     invitation = to_list(group.get_player_by_id(n).invitation)
-                    if player.id_in_group in invitation:
-                        group.G.add_edge(player.id_in_group, n)
+                    if player.id_in_group in invitation and n != player.id_in_group:
+                        G.add_edge(player.id_in_group, n)
+
+                # 計算報酬
+                if player.round_number == 1:
+                    player.hider_payoff = hider_payoff(player, G)
+                    print("round1")
+                elif player.in_round(player.round_number-1).survive:
+                    player.hider_payoff = hider_payoff(player, G)
+                    print("survive")
+                else:
+                    player.hider_payoff = 0
+                    print("die")
 
 # Hider 配對後的結果
 class Hider_matched(Page):
@@ -255,6 +299,8 @@ class Hider_matched(Page):
             "links": G_links(G),
             "which_round": player.round_number,
             "me": player.id_in_group, 
+            "payoff": player.hider_payoff,
+            "accumlative_payoff": np.sum([p.hider_payoff for p in player.in_previous_rounds() ]) + player.hider_payoff, 
         }
 
 class Pesudo_dismantle(WaitPage):
@@ -326,7 +372,12 @@ class Seeker_dismantle(Page):
         else:
             G = player.group.G
 
+
         player.to_be_removed = random.choice(list(G.nodes()))
+
+        # 計算 reward
+        player.seeker_payoff = getRobustness(G, player.to_be_removed)
+
         remove_from_G(player, G)
 
         if player.session.config['practice']:
@@ -386,12 +437,21 @@ class Seeker_confirm(Page):
 
         node_line_plot.append([player.round_number- num_past_practice_round, player.node_remain])
 
+        payoff_line_plot = [[0, 0]]
+        for (x, p) in zip(
+                range(1, player.round_number-num_past_practice_round), player.in_previous_rounds()[num_past_practice_round:]
+            ):
+            payoff_line_plot.append([x, p.seeker_payoff])
+
+        payoff_line_plot.append([player.round_number- num_past_practice_round, player.seeker_payoff])
+
         return {
             "num_past_practice_round": num_past_practice_round, 
             "current_size": len(player.group.G_seeker_practice), 
             "original_size": player.in_round(1).original_size, 
             "practice": int(player.session.config['practice']),
             "node_line_plot": node_line_plot, 
+            "payoff_line_plot": payoff_line_plot, 
             "which_round": player.round_number - num_past_practice_round, 
             "caught": player.to_be_removed, 
             "num_removed": player.num_removed,
