@@ -9,12 +9,14 @@
             document.getElementById('yes_block').style.display = 'inline-block';
             document.getElementById('cancel_block').style.display = 'inline-block';
             document.getElementById('back_block').style.display = 'inline-block'; 
+            document.getElementById("node_block").style.display = 'inline-block';
         }
 
         function hide_all(){
             document.getElementById('yes_block').style.display = 'none';
             document.getElementById('cancel_block').style.display = 'none';
             document.getElementById('back_block').style.display = 'none';
+            document.getElementById("node_block").style.display = 'none';
             reset_value();
             highlight_node.clear();
         }
@@ -25,48 +27,59 @@
             document.getElementById("geo_d").value = "";
             document.getElementById("common_neighbor").value = "";
         }
+
+        function allow_empty() {
+            if (document.getElementById("id_invitation").value == "") {
+                document.getElementById("id_invitation").value = "-1";
+            }
+        }
       </script>
     </head>
 
     <body>
-        <div class="mb-3 _formfield">
-            
+        <div style="margin: 2rem; ">
+            <div class="mb-3 _formfield" style="display: inline-block; border-right: 10rem solid white; vertical-align: top;">
                 <label class="col-form-label" for="id_invitation">Invitation</label>
                 <div class="controls">
                     <input type="text" class="form-control" id="id_invitation" name="invitation" required="" value=""
                         placeholder="請選擇要建立連結的節點" 
                     >
                 </div>
-        </div>
 
-        <div class="table" id="tab">
-            Node Information <br>
-            id : <input id ="node_id" type="text" value="" disabled="disabled"/> <br>
-            degree : <input id ="degree" type="text" value="" disabled="disabled"/> <br>
-            geo_d : <input id ="geo_d" type="text" value="" disabled="disabled"/> <br>
-            common_neighbor : <input id ="common_neighbor" type="text" value="" disabled="disabled"/>
-        </div>
+                <div id="yes_block" style="display: none;">
+                    <p>確定與此節點連接嗎？</p>
+                    <div id="yes_button" class="otree-btn-next btn btn-primary" onclick="yes()">
+                        是的。
+                    </div>
+                </div>
 
-        <div id="yes_block" style="display: none;">
-            <p>確定與此節點連接嗎？</p>
-            <div id="yes_button" class="otree-btn-next btn btn-primary" onclick="yes()">
-                是的。
+                <div id="cancel_block" style="display: none;">
+                    <p>取消與此節點連接嗎？</p>
+                    <div id="cancel_button" class="otree-btn-next btn btn-primary" onclick="cancel()" >
+                        是的。
+                    </div> 
+                </div>
+
+                <div id="back_block" style="display: none;">
+                    <div id="back_button" class="otree-btn-next btn btn-primary" onclick="hide_all()"
+                        style="background-color: gray; border-color: gray;" >
+                        Back
+                    </div>  
+                </div>
             </div>
-        </div>
 
-        <div id="cancel_block" style="display: none;">
-            <p>取消與此節點連接嗎？</p>
-            <div id="cancel_button" class="otree-btn-next btn btn-primary" onclick="cancel()" >
-                是的。
-            </div> 
-        </div>
+            <div id="node_block" class="card" style="display: none; border-right: 10rem solid white; vertical-align: top;">
+              <h5 class="card-header">Node <p id ="node_id" style="display: inline;"/> Information</h5>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">Degree: <p id ="degree" style="display: inline;"/></li>
+                <li class="list-group-item">Geo-Distance: <p id ="geo_d" style="display: inline;"/></li>
+                <li class="list-group-item">Common Neighbor: <p id ="common_neighbor" style="display: inline;"/></li>
+              </ul>
+            </div>           
 
-        <div id="back_block" style="display: none;">
-            <div id="back_button" class="otree-btn-next btn btn-primary" onclick="hide_all()"
-                style="background-color: gray; border-color: gray;" >
-                
-                Back
-            </div>  
+            <div class="card" style="display: none; vertical-align: top;">
+                <h5 class="card-header">說明</h5>
+            </div>
         </div>
 
         <div id="graph" style="border-color:black;border-width:1px;border-style:solid;padding:5px; width: fit-content"></div>
@@ -97,6 +110,8 @@
           (document.getElementById('graph'))
             .width(1200)
             .height(500)
+            .linkWidth(5)
+            .linkColor(["black"])
             .nodeLabel('id')
             .graphData(gData)
             .autoPauseRedraw(false) // keep redrawing after engine has stopped
@@ -112,6 +127,7 @@
               // 其餘可以點
               else {
                 document.getElementById("back_block").style.display = "inline-block";
+                document.getElementById("node_block").style.display = "inline-block";
                 if (invite_node.has(node)) {
                     document.getElementById("cancel_block").style.display = "inline-block";
                 }
@@ -121,10 +137,10 @@
               }
 
               // 顯示點擊 node 的資訊。
-              document.getElementById("node_id").value = node.id == {{me}} ? node.id + " (You)": node.id;
-              document.getElementById("degree").value = node.degree;
-              document.getElementById("geo_d").value = node.geo_d;
-              document.getElementById("common_neighbor").value = node.common_neighbor;
+              document.getElementById("node_id").innerHTML = node.id == {{me}} ? node.id + " (You)": node.id;
+              document.getElementById("degree").innerHTML = node.degree;
+              document.getElementById("geo_d").innerHTML = node.geo_d;
+              document.getElementById("common_neighbor").innerHTML = node.common_neighbor;
 
               highlight_node.clear();
 
@@ -187,7 +203,7 @@
 
         // 按 yes button 後的行為
         function yes(){
-            let chosen_node = parseInt(document.getElementById('node_id').value);
+            let chosen_node = parseInt(document.getElementById('node_id').innerHTML);
             arr_chosen_nodes.push(chosen_node);
             document.getElementById("id_invitation").value = arr_chosen_nodes;
             
@@ -207,7 +223,7 @@
 
         // 按 cancel button 後的行為
         function cancel(){
-            let chosen_node = parseInt(document.getElementById('node_id').value);
+            let chosen_node = parseInt(document.getElementById('node_id').innerHTML);
 
             arr_chosen_nodes = arr_chosen_nodes.filter(e=> e!= chosen_node);
             document.getElementById("id_invitation").value = arr_chosen_nodes;
@@ -228,6 +244,7 @@
             highlight_node.clear();
         }
     </script>
-{{ next_button }}
+
+<button class="otree-btn-next btn btn-primary" onclick="allow_empty()">Next</button>
 
 {{ endblock }}

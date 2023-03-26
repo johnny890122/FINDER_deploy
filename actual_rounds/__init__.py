@@ -86,20 +86,17 @@ class Player(BasePlayer):
 
     # seeker 需要的 field
     to_be_removed = models.IntegerField(
-        label= "您選擇的節點為：",
         initial=-1, 
     )
     num_removed = models.IntegerField(initial=-1)
     node_remain = models.IntegerField(initial=-1)
     edge_remain = models.IntegerField(initial=-1)
-    confirm = models.BooleanField(
-        label = "確定要刪除這個節點嗎？"
-    )
+    confirm = models.BooleanField()
 
     sub_practice_end = models.BooleanField(initial=False)
 
     # hider 需要的 field
-    invitation = models.StringField(initial="")
+    invitation = models.StringField(initial="", label="您選擇的節點為：")
     survive = models.BooleanField(initial=False)
 
     G_nodes = models.StringField()

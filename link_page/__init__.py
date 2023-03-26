@@ -3,6 +3,8 @@ import sys,os
 import random, json
 import networkx as nx
 import io
+import pygsheets
+import pandas as pd
 
 doc = """
 Your app description
@@ -24,19 +26,37 @@ class Group(BaseGroup):
 
 class Player(BasePlayer):
     role_type = models.StringField()
+    link = models.StringField()
+
+
+def getLinks():
+    auth_file = "finderlink-381806-aa232dd1eff5.json"
+    gc = pygsheets.authorize(service_file = auth_file)
+
+    # setting sheet
+    sheet_url = "https://docs.google.com/spreadsheets/d/15t8MjE9mLmHGQDWzGGqEPiri402DKU1Ux8EX9XyxwcA/" 
+    sheet = gc.open_by_url(sheet_url)
+    data = sheet.worksheet_by_title("link").get_all_records()
+
+    return [d["link"] for d in data]
 
 def creating_session(subsession: Subsession):
+    links = getLinks()
     for player in subsession.get_players():
+        player.link = links[player.id_in_group-1]
         if player.session.config['seeker'] == 'human' and player.id_in_group == 1:
             player.role_type = 'seeker'
         else:
             player.role_type = 'hider'
 
-
 # PAGES
 class MyPage(Page):
-    pass 
+    @staticmethod
+    def vars_for_template(player: Player):
 
+        return{
+            "link": player.link
+        }
 
 page_sequence = [MyPage]
 
