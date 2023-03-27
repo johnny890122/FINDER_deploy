@@ -12,6 +12,16 @@ SESSION_CONFIGS = [
     ),
 
     dict(
+        name='link_demo', 
+        # app_sequence=['seeker_instruction', 'hider_instruction', 'actual_rounds', 'payoff'], 
+        app_sequence=['link_page'], 
+        num_demo_participants=20,
+        hider='human', 
+        seeker='human',
+        practice=True, 
+    ),
+
+    dict(
         name='human_hider_human_seeker_no_practice', 
         # app_sequence=['seeker_instruction', 'hider_instruction', 'actual_rounds', 'payoff'], 
         app_sequence=['actual_rounds'], 
