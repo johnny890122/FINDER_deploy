@@ -13,7 +13,7 @@ SESSION_CONFIGS = [
     dict(
         name='human_hider_human_seeker_no_practice', 
         app_sequence=['actual_rounds', 'payoff'], 
-        num_demo_participants=20,
+        num_demo_participants=3,
         hider='human', 
         seeker='human',
         practice=False, 
