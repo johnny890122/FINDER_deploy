@@ -4,7 +4,7 @@ SESSION_CONFIGS = [
     dict(
         name='human_hider_human_seeker',
         app_sequence=['seeker_instruction', 'hider_instruction', 'actual_rounds', 'link_page'],
-        num_demo_participants=4,
+        num_demo_participants=6,
         hider='human',
         seeker='human',
         practice=True,
