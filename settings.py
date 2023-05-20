@@ -1,14 +1,14 @@
 from os import environ
 
 SESSION_CONFIGS = [
-    dict(
-        name='human_hider_human_seeker',
-        app_sequence=['seeker_instruction', 'hider_instruction', 'actual_rounds', 'link_page'],
-        num_demo_participants=6,
-        hider='human',
-        seeker='human',
-        practice=True,
-    ),
+    # dict(
+    #     name='human_hider_human_seeker',
+    #     app_sequence=['seeker_instruction', 'hider_instruction', 'actual_rounds', 'link_page'],
+    #     num_demo_participants=6,
+    #     hider='human',
+    #     seeker='human',
+    #     practice=True,
+    # ),
     # '''
     # dict(
     #     name='human_hider_human_seeker_no_practice',
@@ -20,16 +20,21 @@ SESSION_CONFIGS = [
     # ),
     # '''
 
-    # dict(
-    #     name='only_human_seeker',
-    #     # app_sequence=['seeker_instruction', 'hider_instruction', 'actual_rounds', 'payoff'],
-    #     app_sequence=['actual_rounds'],
-    #     num_demo_participants=1,
-    #     hider='not_human',
-    #     seeker='human',
-    #     num_demo=8,
-    #     practice=True,
-    # ),
+    dict(
+        name='only_human_seeker',
+        # app_sequence=['seeker_instruction', 'hider_instruction', 'actual_rounds', 'payoff'],
+        app_sequence=['actual_rounds'],
+        num_demo_participants=1, 
+        hider='not_human',
+        seeker='human',
+        practice=False,
+
+        num_sythetic_hider=20, 
+        density=0.1, 
+        degree_distribution=None,
+        generating_process="ba_graph",
+        visualization=None,
+    ),
 
     # dict(
     #     name='only_human_seeker_no_practice',

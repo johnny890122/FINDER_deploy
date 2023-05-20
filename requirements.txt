@@ -1,6 +1,4 @@
 otree==5.10.2
-psycopg2
-sentry-sdk
 networkx 
 numpy
 pandas

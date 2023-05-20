@@ -92,10 +92,20 @@ def getRobustness(G, sol):
 
     return (GCCsize - newGCCsize) / ((G.number_of_nodes() * G.number_of_nodes()))
 
+
+def generate_ba_graph_with_density(n, density):
+    total_possible_edges = (n * (n - 1)) / 2
+    desired_num_edges = density * total_possible_edges
+    avg_edges_per_node = round(desired_num_edges / n)
+    m = max(avg_edges_per_node, 1)  # Ensure m is at least 1
+    ba_graph = nx.barabasi_albert_graph(n, m)
+
+    return ba_graph
+
 class C(BaseConstants):
     NAME_IN_URL = 'actual_rounds'
     PLAYERS_PER_GROUP = None
-    NUM_ROUNDS = 20 # 理論上，設定成一個很大的數字即可。或是試試看動態決定。
+    NUM_ROUNDS = 3 # 理論上，設定成一個很大的數字即可。或是試試看動態決定。
     c = 0.1
     delta = 0.9
 
@@ -125,7 +135,7 @@ class Player(BasePlayer):
     confirm = models.BooleanField()
 
     sub_practice_end = models.BooleanField(initial=False)
-    seeker_payoff = models.FloatField()
+    seeker_payoff = models.FloatField(initial=0)
 
     # hider 需要的 field
     invitation = models.StringField(initial="", label="您選擇的節點為：")
@@ -138,14 +148,14 @@ def creating_session(subsession: Subsession):
     is_practice = subsession.session.config['practice']
     is_human_seeker = (subsession.session.config['seeker'] == 'human')
     is_human_hider = (subsession.session.config['hider'] == 'human')
-    num_participants = subsession.session.config['num_demo_participants']
+    num_demo_participants = subsession.session.config['num_demo_participants']
     players = subsession.get_players()
 
     # grouping
     if is_practice and is_human_seeker and is_human_hider:
-        group_matrix = [[1], [i for i in range(2, num_participants+1)]]
+        group_matrix = [[1], [i for i in range(2, num_demo_participants+1)]]
     else:
-        group_matrix = [[i for i in range(1, num_participants+1)]]
+        group_matrix = [[i for i in range(1, num_demo_participants+1)]]
     subsession.set_group_matrix(group_matrix)
 
     # player role。
@@ -170,18 +180,55 @@ def creating_session(subsession: Subsession):
             for n in range(1, len(players)):
                 subsession.get_groups()[1].G_hider_practice.add_node(n)
         elif is_human_seeker and not is_human_hider:
-            for n in range(2, subsession.session.config["num_demo"]+1):
-                subsession.get_groups()[0].G_seeker_practice.add_node(n)
+            # for n in range(2, subsession.session.config["num_sythetic_hider"]+2):
+            #     subsession.get_groups()[0].G_seeker_practice.add_node(n)
+            if subsession.session.config["generating_process"]:
+                G = generate_ba_graph_with_density(
+                    n=subsession.session.config["num_sythetic_hider"], 
+                    density=subsession.session.config["density"]
+                )
+
+                G = nx.relabel_nodes(G, lambda x: x + 2)
+                for n in G.nodes():
+                    subsession.get_groups()[0].G.add_node(n)
+                for e in G.edges():
+                    subsession.get_groups()[0].G.add_edge(e[0], e[1])
+
+                G_seeker_practice = generate_ba_graph_with_density(
+                    n=subsession.session.config["num_sythetic_hider"], 
+                    density=subsession.session.config["density"]
+                )
+
+                G_seeker_practice = nx.relabel_nodes(G, lambda x: x + 2)
+                for n in G_seeker_practice.nodes():
+                    subsession.get_groups()[0].G_seeker_practice.add_node(n)
+                for e in G_seeker_practice.edges():
+                    subsession.get_groups()[0].G_seeker_practice.add_edge(e[0], e[1])
+
         elif not is_human_seeker and is_human_hider:
             for n in range(1, len(players)+1):
                 subsession.get_groups()[0].G_hider_practice.add_node(n)
     else:
-        if is_human_seeker:
+        if is_human_seeker and is_human_hider: 
             for n in range(2, len(players)+1):
                 subsession.get_groups()[0].G.add_node(n)
-        else:
+        elif is_human_seeker and not is_human_hider:
+            # subsession.get_groups()[0].G = 
+            G = generate_ba_graph_with_density(
+                n=subsession.session.config["num_sythetic_hider"], 
+                density=subsession.session.config["density"]
+            )
+
+            G = nx.relabel_nodes(G, lambda x: x + 2)
+            for n in G.nodes():
+                subsession.get_groups()[0].G.add_node(n)
+            for e in G.edges():
+                subsession.get_groups()[0].G.add_edge(e[0], e[1])
+
+        elif not is_human_seeker and is_human_hider:
             for n in range(1, len(players)+1):
                 subsession.get_groups()[0].G.add_node(n)
+
 
 class Hider_build(Page):
     form_model = 'player'
@@ -338,6 +385,7 @@ class Seeker_dismantle(Page):
             G = player.group.G_seeker_practice
         else:
             G = player.group.G
+            print(G.nodes(), "ss")
 
         if len(G.nodes()) != 0 and player.role_type == 'seeker':
             return True
@@ -380,15 +428,15 @@ class Seeker_dismantle(Page):
 
         remove_from_G(player, G)
 
-        if player.session.config['practice']:
-            nodes = player.group.G_seeker_practice.nodes()
+        # if player.session.config['practice']:
+        #     nodes = player.group.G_seeker_practice.nodes()
 
-            for _ in range(random.randint(0, len(nodes))):
-                try:
-                    [node1, node2] = random.sample(nodes, 2)
-                    player.group.G_seeker_practice.add_edge(node1, node2)
-                except:
-                    pass
+        #     for _ in range(random.randint(0, len(nodes))):
+        #         try:
+        #             [node1, node2] = random.sample(nodes, 2)
+        #             player.group.G_seeker_practice.add_edge(node1, node2)
+        #         except:
+        #             pass
 
 class Wait_dismantle(WaitPage):
     title_text = "等待 seeker dismantle"
@@ -460,9 +508,20 @@ class Seeker_confirm(Page):
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
+        is_human_seeker = player.session.config['seeker'] == 'human'
+        is_human_hider = player.session.config['hider'] == 'human'
         if player.session.config['practice']:
             if len(player.group.G_seeker_practice) == 0:
                 player.sub_practice_end = True
+
+        if is_human_seeker and not is_human_hider and player.session.config['practice']:
+            # TODO : "人工添加 edge"
+            pass
+
+        if is_human_seeker and not is_human_hider and not player.session.config['practice']:
+            # TODO : "人工添加 edge" 
+            pass 
+
 
 # Hider 確認是否存活
 class Hider_confirm(Page):
