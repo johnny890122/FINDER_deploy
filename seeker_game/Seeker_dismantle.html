@@ -1,0 +1,82 @@
+{{ block title }}
+    {{ if practice == 0}}
+        Round {{which_round}}
+    {{ else }}
+        Practice Round {{which_round}}
+    {{ endif }}
+{{ endblock }}
+{{ block content }}
+    <head>
+      <script src="//unpkg.com/force-graph"></script>
+      <script>
+          function cancel() {
+            document.getElementById("id_to_be_removed").value = null;
+            document.getElementById('confirm_block').style.display = "none";
+            highlight_node.clear()
+          }
+      </script>
+    </head>
+
+    <body>
+        <div class="mb-3 _formfield">
+            <label class="col-form-label" for="id_to_be_removed">您選擇的節點為：</label>
+            <div class="controls">
+                <input type="number" class="form-control" inputmode="numeric" id="id_to_be_removed" min="0" name="to_be_removed" required="" value="" placeholder="尚未選擇任何節點">
+            </div>
+        </div>
+
+        <div id="confirm_block" style="display: none;">
+            <p>確定要選擇此節點嗎？</p>
+            <button id="yes_button" class="otree-btn-next btn btn-primary">
+                是，前往下一頁。
+            </button>
+
+            <!-- Fake button -->
+            <div id="no_button" class="otree-btn-next btn btn-primary" onclick="cancel()" 
+                style="background-color: gray; border-color: gray;">
+                否，取消。
+            </div>         
+        </div>
+
+        <div id="graph" style="border-color:black;border-width:1px;border-style:solid;padding:5px; width:fit-content;"></div>
+
+        <script>
+            // Random tree
+            const gData = {
+                nodes: {{nodes}}, 
+                links: {{links}}
+            }
+            const NODE_R = 5;
+            let highlight_node = new Set();
+
+            const Graph = ForceGraph()
+                (document.getElementById('graph'))
+                .graphData(gData)
+                .width(1200)
+                .height(700)
+                .minZoom(1)
+                .maxZoom(2.75)
+                .onNodeClick(node => {
+                    highlight_node.clear();
+                    document.getElementById("id_to_be_removed").value = node.id;
+                    document.getElementById('confirm_block').style.display = "block";
+                    highlight_node.add(node);
+                })
+                .nodeCanvasObject((node, ctx) => {
+                  ctx.fillStyle = "#ffffff";
+                  ctx.strokeStyle = '#568EA6';
+                  if (highlight_node.has(node)) {
+                    ctx.fillStyle = "#B22222";
+                    ctx.strokeStyle = "#B22222";
+                  }
+                  ctx.beginPath(); ctx.arc(node.x, node.y, NODE_R, 0, 2 * Math.PI, false); ctx.closePath();
+                  ctx.fill()
+                  ctx.stroke()
+                })
+        Graph.d3Force('center', null);
+        // fit to canvas when engine stops
+        Graph.onEngineStop(() => Graph.zoomToFit(400));
+        </script>
+    </body>
+
+{{ endblock }}

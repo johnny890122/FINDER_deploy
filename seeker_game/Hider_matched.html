@@ -1,0 +1,67 @@
+{{ block title }}
+    Round {{which_round}} Matching Result
+{{ endblock }}
+{{ block content }}
+    <head>
+      <script src="//unpkg.com/force-graph"></script>
+    </head>
+
+    <body>
+        媒合的結果 & Payoff <br>
+
+        您本回合獲得的報酬為：{{payoff}} <br>
+
+        累積報酬為：{{accumlative_payoff}}
+        <div id="graph" style="border-color:black;border-width:1px;border-style:solid;padding:5px; width: fit-content"></div>
+    </body>
+
+    <script>
+        // Random tree
+        const gData = {
+            nodes: {{nodes}}, 
+            links: {{links}}
+        }
+        const NODE_R = 5;
+
+        let hoverNode = null;
+
+        const elem = document.getElementById('graph');
+
+        const Graph = ForceGraph()
+          (document.getElementById('graph'))
+            .width(1200)
+            .height(500)
+            .linkWidth(5)
+            .linkColor(["black"])
+            .nodeLabel('id')
+            .graphData(gData)
+            .minZoom(1)
+            .maxZoom(3)
+            .cooldownTicks(10)
+            // .enableNodeDrag(false)
+            // .enableZoomInteraction(false)
+            .autoPauseRedraw(false) // keep redrawing after engine has stopped
+            .nodeCanvasObject((node, ctx) => {
+              ctx.beginPath();
+              ctx.fillStyle = "#ffffff";
+              ctx.strokeStyle = '#568EA6';
+              if (node.id == {{me}}){
+                    ctx.beginPath(); ctx.moveTo(node.x, node.y - 6); ctx.lineTo(node.x - 5.5, node.y + 5.5); ctx.lineTo(node.x + 5.5, node.y + 5.5); ctx.closePath();
+              }
+              else {
+                ctx.arc(node.x, node.y, NODE_R, 0, 2 * Math.PI, false);
+              }
+
+              ctx.fill();
+              ctx.stroke();
+              
+            });
+        Graph.d3Force('center', null);
+
+        // fit to canvas when engine stops
+        Graph.onEngineStop(() => Graph.zoomToFit(400));
+    </script>
+
+{{ next_button }}
+
+{{ endblock }}

@@ -21,20 +21,34 @@ SESSION_CONFIGS = [
     # '''
 
     dict(
-        name='only_human_seeker',
-        # app_sequence=['seeker_instruction', 'hider_instruction', 'actual_rounds', 'payoff'],
-        app_sequence=['actual_rounds'],
+        name='seeker_game', 
+        app_sequence=['seeker_game'], 
         num_demo_participants=1, 
-        hider='not_human',
-        seeker='human',
         practice=False,
 
-        num_sythetic_hider=20, 
+        size=20,
         density=0.1, 
         degree_distribution=None,
-        generating_process="ba_graph",
+        generating_process='ba_graph', 
         visualization=None,
+
     ),
+
+    # dict(
+    #     name='only_human_seeker',
+    #     # app_sequence=['seeker_instruction', 'hider_instruction', 'actual_rounds', 'payoff'],
+    #     app_sequence=['actual_rounds'],
+    #     num_demo_participants=1, 
+    #     hider='not_human',
+    #     seeker='human',
+    #     practice=False,
+
+    #     num_sythetic_hider=20, 
+    #     density=0.1, 
+    #     degree_distribution=None,
+    #     generating_process="ba_graph",
+    #     visualization=None,
+    # ),
 
     # dict(
     #     name='only_human_seeker_no_practice',
