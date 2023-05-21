@@ -21,12 +21,23 @@ SESSION_CONFIGS = [
     # '''
 
     dict(
-        name='seeker_game', 
-        app_sequence=['seeker_game'], 
+        name='seeker_instruction',
+        app_sequence=['seeker_instruction'],
         num_demo_participants=1, 
+        
         practice=False,
 
-        size=20,
+    ), 
+
+    dict(
+        name='seeker_game', 
+        app_sequence=['seeker_instruction', 'seeker_game'], 
+
+        num_demo_participants=1, 
+        seeker='human', 
+        practice=False,
+
+        size=50,
         density=0.1, 
         degree_distribution=None,
         generating_process='ba_graph', 
