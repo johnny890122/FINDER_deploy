@@ -21,15 +21,6 @@ SESSION_CONFIGS = [
     # '''
 
     dict(
-        name='seeker_instruction',
-        app_sequence=['seeker_instruction'],
-        num_demo_participants=1, 
-        
-        practice=False,
-
-    ), 
-
-    dict(
         name='seeker_game', 
         app_sequence=['seeker_instruction', 'seeker_game'], 
 

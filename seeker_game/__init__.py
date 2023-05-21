@@ -106,7 +106,7 @@ class Seeker_dismantle(Page):
     def before_next_page(player: Player, timeout_happened):
         G = get_current_graph(player)
 
-        player.to_be_removed = random.choice(list(G.nodes()))
+        # player.to_be_removed = random.choice(list(G.nodes()))
 
         # 計算 reward
         player.seeker_payoff = getRobustness(G, player.to_be_removed)
