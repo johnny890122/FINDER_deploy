@@ -38,6 +38,7 @@
 
         <script>
             var dataset = {{node_line_plot}};
+            var finder = {{node_plot_finder}};
             var min = d3.min(dataset, function(d) {
               return d[1];
             })
@@ -106,9 +107,32 @@
                 return 'translate(' + (xScale(d[0]) + padding.left) + ',' + (yScale(d[1]) + padding.top) + ')'
               })
               .attr('fill', 'green');
+
+
+            svg.append('g')
+              .selectAll('circle')
+              .data(finder)
+              .enter()
+              .append('circle')
+              .attr('r', 5)
+              .attr('transform', function(d){
+                return 'translate(' + (xScale(d[0]) + padding.left) + ',' + (yScale(d[1]) + padding.top) + ')'
+              })
+              .attr('fill', 'red');
+
+            svg.append('g')
+              .append('path')
+              .attr('class', 'line-path')
+              .attr('transform', 'translate(' + padding.left + ',' + padding.top + ')')
+              .attr('d', linePath(finder))
+              .attr('fill', 'none')
+              .attr('stroke-width', 3)
+              .attr('stroke', 'red');
         </script> 
         <script>
             var dataset = {{payoff_line_plot}};
+            var finder = {{payoff_finder}};
+
             var min = d3.min(dataset, function(d) {
               return d[1];
             })
@@ -177,6 +201,26 @@
                 return 'translate(' + (xScale(d[0]) + padding.left) + ',' + (yScale(d[1]) + padding.top) + ')'
               })
               .attr('fill', 'green');
+            // finder payoff
+            svg.append('g')
+              .append('path')
+              .attr('class', 'line-path')
+              .attr('transform', 'translate(' + padding.left + ',' + padding.top + ')')
+              .attr('d', linePath(finder))
+              .attr('fill', 'none')
+              .attr('stroke-width', 3)
+              .attr('stroke', 'red');
+
+            svg.append('g')
+              .selectAll('circle')
+              .data(finder)
+              .enter()
+              .append('circle')
+              .attr('r', 5)
+              .attr('transform', function(d){
+                return 'translate(' + (xScale(d[0]) + padding.left) + ',' + (yScale(d[1]) + padding.top) + ')'
+              })
+              .attr('fill', 'red');
         </script> 
     </body>
 

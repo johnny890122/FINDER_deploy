@@ -22,8 +22,8 @@ SESSION_CONFIGS = [
 
     dict(
         name='seeker_game', 
-        app_sequence=['seeker_instruction', 'seeker_game'], 
-
+        # app_sequence=['seeker_instruction', 'seeker_game'], 
+        app_sequence=['seeker_game'], 
         num_demo_participants=1, 
         seeker='human', 
         practice=False,

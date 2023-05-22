@@ -15,7 +15,7 @@ def G_links(G):
     return links
 
 # Utility: 用來將 G 的 node attributes 轉換成前端接受的格式
-def G_nodes(G, player):
+def G_nodes(G):
 
     degree = {node: degree for (node, degree) in G.degree()}
     closeness = {node: closeness for (node, closeness) in nx.closeness_centrality(G).items()}
@@ -23,10 +23,29 @@ def G_nodes(G, player):
     pagerank = {node: pagerank for (node, pagerank) in nx.pagerank(G).items()}
 
     nodes = [
-        {"id": n, "degree": degree[n], "closeness": closeness[n], "betweenness": betweenness[n], "pagerank": pagerank[n]} 
+        {"id": n, "degree": round(degree[n], 2), "closeness": round(closeness[n], 2), "betweenness": round(betweenness[n], 2), "pagerank": round(pagerank[n], 2)}
             for n in G.nodes()
     ]
     return nodes
+
+def node_centrality_criteria(G):
+    degree, closeness, betweenness, pagerank = [], [], [], []
+    for node in G_nodes(G):
+        degree.append((node["id"], node["degree"]))
+        closeness.append((node["id"], node["closeness"]))
+        betweenness.append((node["id"], node["betweenness"]))
+        pagerank.append((node["id"], node["pagerank"]))
+
+    highest_degree_id, _ = sorted(degree, key=lambda x: x[1], reverse=True)[0]
+    highest_closeness_id, _ = sorted(closeness, key=lambda x: x[1], reverse=True)[0]
+    highest_betweenness_id, _ = sorted(betweenness, key=lambda x: x[1], reverse=True)[0]
+    highest_page_rank_id, _ = sorted(pagerank, key=lambda x: x[1], reverse=True)[0]
+    return {
+        "degree": highest_degree_id, 
+        "closeness": highest_closeness_id,
+        "betweenness": highest_betweenness_id, 
+        "page_rank": highest_page_rank_id, 
+    }
 
 # Utility
 def to_list(string):
@@ -52,9 +71,7 @@ def getRobustness(G, sol):
 def generate_ba_graph_with_density(n, density):
     total_possible_edges = (n * (n - 1)) / 2
     desired_num_edges = density * total_possible_edges
-    avg_edges_per_node = round(desired_num_edges / n)
+    avg_edges_per_node = int(desired_num_edges / n)
     m = max(avg_edges_per_node, 1)  # Ensure m is at least 1
-
     ba_graph = nx.barabasi_albert_graph(n, m)
-
     return ba_graph

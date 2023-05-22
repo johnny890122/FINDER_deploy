@@ -27,6 +27,14 @@
 
         <div id="confirm_block" style="display: none;">
             <p>確定要選擇此節點嗎？</p>
+            Highest in: <p id ="info" style="display: inline;"/>
+            <ul>
+                <li>Degree: <p id ="degree" style="display: inline;"/></li>
+                <li>Closeness: <p id ="closeness" style="display: inline;"/></li>
+                <li>Betweenness: <p id ="betweenness" style="display: inline;"/></li>
+                <li>Pagerank: <p id ="pagerank" style="display: inline;"/></li>
+            </ul>
+            
             <button id="yes_button" class="otree-btn-next btn btn-primary">
                 是，前往下一頁。
             </button>
@@ -57,13 +65,50 @@
                 .minZoom(1)
                 .maxZoom(2.75)
                 .onNodeClick(node => {
+                    let info = ''
+                    if (node.id == {{highest_degree_id}}) {
+                        info += "Degree, "
+                    }
+                    if (node.id == {{highest_closeness_id}}){
+                        info += "Closeness, "
+                    }
+                    if (node.id == {{highest_betweenness_id}}){
+                        info += "Betweenness, "
+                    }
+                    if (node.id == {{highest_page_rank_id}}){
+                        info += "Page Rank, "
+                    }
+
                     highlight_node.clear();
                     document.getElementById("id_to_be_removed").value = node.id;
                     document.getElementById('confirm_block').style.display = "block";
+                    document.getElementById("degree").innerHTML = node.degree;
+                    document.getElementById("closeness").innerHTML = node.closeness;
+                    document.getElementById("betweenness").innerHTML = node.betweenness;
+                    document.getElementById("pagerank").innerHTML = node.pagerank;
+                    document.getElementById("info").innerHTML = info;
+
                     highlight_node.add(node);
                 })
                 .nodeCanvasObject((node, ctx) => {
-                  ctx.fillStyle = "#ffffff";
+                  if (node.id == {{highest_degree_id}}) {
+                    ctx.fillStyle = "#9FE2BF";
+                  }
+                  else if (node.id == {{highest_degree_id}}){
+                    ctx.fillStyle = "#9FE2BF"; // TODO
+                  }
+                  else if (node.id == {{highest_closeness_id}}){
+                    ctx.fillStyle = "#9FE2BF"; // TODO
+                  }
+                  else if (node.id == {{highest_betweenness_id}}){
+                    ctx.fillStyle = "#9FE2BF"; // TODO
+                  }
+                  else if (node.id == {{highest_page_rank_id}}){
+                    ctx.fillStyle = "#9FE2BF"; // TODO
+                  }
+                  else{
+                    ctx.fillStyle = "#ffffff";
+                  }
                   ctx.strokeStyle = '#568EA6';
                   if (highlight_node.has(node)) {
                     ctx.fillStyle = "#B22222";
