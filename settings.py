@@ -28,8 +28,9 @@ SESSION_CONFIGS = [
         seeker='human', 
         practice=False,
 
-        size=50,
-        density=0.1, 
+        # size=50,
+        # density=0.1, 
+        graph_config = "size_low",
         degree_distribution=None,
         generating_process='ba_graph', 
         visualization=None,

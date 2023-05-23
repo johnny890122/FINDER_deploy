@@ -43,13 +43,18 @@ class Player(BasePlayer):
 def creating_session(subsession: Subsession):
     is_practice = subsession.session.config['practice']
     generating_process = subsession.session.config["generating_process"]
-    size = subsession.session.config["size"]
-    density = subsession.session.config["density"]
+    # size = subsession.session.config["size"]
+    # density = subsession.session.config["density"]
+    graph_config = subsession.session.config["graph_config"]
+
+    assert graph_config in ["size_low", "size_high", "density_low", "density_high"]
 
     # 初始化 graph
     if generating_process == "ba_graph":
-        initial_G = generate_ba_graph_with_density(n=size, density=density)
-        initial_G = nx.relabel_nodes(initial_G, lambda x: x + 2)
+        # initial_G = generate_ba_graph_with_density(n=size, density=density)
+        initial_G = nx.read_adjlist("input/ba/{}_{}.txt".format(graph_config, random.randint(0, 4)))
+        size = len(initial_G.nodes())
+        initial_G = nx.relabel_nodes(initial_G, lambda x: int(x) + 2)
 
     elif generating_process == "covert":
         file_name = 'input/covert/covert_test.txt'
@@ -92,6 +97,7 @@ class Seeker_dismantle(Page):
         centrality = node_centrality_criteria(G)
 
         return {
+            "graph_config": player.session.config['graph_config'],  
             "practice": int(player.session.config['practice']), 
             "nodes": G_nodes(G), 
             "highest_degree_id": centrality["degree"],
