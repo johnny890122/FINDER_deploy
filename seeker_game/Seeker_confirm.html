@@ -8,220 +8,98 @@
 {{ block content }}
     <head>
         <script src="https://d3js.org/d3.v4.js"></script>
+
+        <script>
+          function plot(block_id, seeker_data, finder_data) {
+
+            let min = d3.min(seeker_data.concat(finder_data), function(d) {
+              return d[1];
+            })
+            let max = d3.max(seeker_data.concat(finder_data), function(d) {
+              return d[1];
+            })
+
+            let original_size = {{original_size}};
+
+            // 图表的宽度和高度
+            let width = 600;
+            let height = 600;
+
+            // 预留给轴线的距离
+            let padding = { top: 50, right: 50, bottom: 50, left: 50 };
+
+            let xScale = d3.scaleLinear().domain([0, 10]).range([0, width - padding.left - padding.right]);
+            let yScale = d3.scaleLinear().domain([0, max]).range([height - padding.top - padding.bottom, 0]);
+
+            let xAxis = d3.axisBottom().ticks(10).scale(xScale);
+            let yAxis = d3.axisLeft().ticks(original_size / 10).scale(yScale);
+
+            let svg = d3.select('#'+ block_id)
+                        .append('svg')
+                        .attr('width', width + 'px')
+                        .attr('height', height + 'px');
+
+            let linePath = d3.line().x(function(d){ return xScale(d[0])}).y(function(d){ return yScale(d[1])});
+
+            svg.append('g')
+              .attr('class', 'axis')
+              .attr('transform', 'translate(' + padding.left + ',' + (height - padding.bottom) + ')')
+              .call(xAxis);
+
+            svg.append('g')
+              .attr('class', 'axis')
+              .attr('transform', 'translate(' + padding.left + ',' + padding.top + ')')
+              .call(yAxis);
+
+            for (let type of ["seeker", "finder"]) {
+              data = type == "seeker" ? seeker_data : finder_data;
+              color = type == "seeker" ? "green" : "red";
+
+              svg.append('g')
+                .selectAll('circle')
+                .data(data)
+                .enter()
+                .append('circle')
+                .attr('r', 5)
+                .attr('transform', function(d){
+                  return 'translate(' + (xScale(d[0]) + padding.left) + ',' + (yScale(d[1]) + padding.top) + ')'
+                })
+                .attr('fill', color);
+
+              svg.append('g')
+                .append('path')
+                .attr('class', 'line-path')
+                .attr('transform', 'translate(' + padding.left + ',' + padding.top + ')')
+                .attr('d', linePath(data))
+                .attr('fill', 'none')
+                .attr('stroke-width', 3)
+                .attr('stroke', color);
+            }
+          }
+        </script>
     </head>
 
     <body>
         <div>
-            您移除的是編號 {{caught}} 的節點。
-        </div>
-        
-        <div>
-            您這回合一共移除 {{num_node_removed}} 個節點。
-        </div>
-        
-        <div>
-            剩餘 {{node_remain}} 個節點。
-        </div>
+            <p>您移除的是編號 {{caught}} 的節點。</p>
 
+            <p>您這回合一共移除 {{num_node_removed}} 個節點。</p>
 
-        <div>
+            <p>剩餘 {{node_remain}} 個節點。</p>
+
             {{ if current_size == 0}} 
-                您已移除全部的節點。
+                <p>您已移除全部的節點。</p>
             {{ endif }}
-        </div>
-
 
         <div style="width: 2000px;">
             <div id="chart" style="display:inline-block; width: 700px;"></div>
             <div id="payoff_chart" style="display:inline-block; width: 700px;"></div>      
         </div>
-
         <script>
-            var dataset = {{node_line_plot}};
-            var finder = {{node_plot_finder}};
-            var min = d3.min(dataset, function(d) {
-              return d[1];
-            })
-            var max = d3.max(dataset, function(d) {
-              return d[1];
-            })
+          plot("chart", {{node_line_plot}}, {{node_plot_finder}});
+          plot("payoff_chart", {{payoff_line_plot}}, {{payoff_finder}});
+        </script>
 
-            // 图表的宽度和高度
-            var width = 600;
-            var height = 600;
-            // 预留给轴线的距离
-            var padding = { top: 50, right: 50, bottom: 50, left: 50 };
-
-            var xScale = d3.scaleLinear()
-                          .domain([0, 10])
-                          .range([0, width - padding.left - padding.right]);
-
-            var yScale = d3.scaleLinear()
-                          .domain([0, max])
-                          .range([height - padding.top - padding.bottom, 0]);
-            var svg = d3.select('#chart')
-                        .append('svg')
-                        .attr('width', width + 'px')
-                        .attr('height', height + 'px');
-            var xAxis = d3.axisBottom()
-                          .ticks(10)
-                          .scale(xScale);
-            var yAxis = d3.axisLeft()
-                          .ticks({{original_size}})
-                          .scale(yScale);
-
-            svg.append('g')
-              .attr('class', 'axis')
-              .attr('transform', 'translate(' + padding.left + ',' + (height - padding.bottom) + ')')
-              .call(xAxis);
-            svg.append('g')
-              .attr('class', 'axis')
-              .attr('transform', 'translate(' + padding.left + ',' + padding.top + ')')
-              .call(yAxis);
-
-
-            var linePath = d3.line()
-                            .x(function(d){ return xScale(d[0]) })
-                            .y(function(d){ return yScale(d[1]) });
-
-            var linePath2 = d3.line()
-                            .x(function(d){ return xScale(d[1]) })
-                            .y(function(d){ return yScale(d[0]) });
-
-            svg.append('g')
-              .append('path')
-              .attr('class', 'line-path')
-              .attr('transform', 'translate(' + padding.left + ',' + padding.top + ')')
-              .attr('d', linePath(dataset))
-              .attr('fill', 'none')
-              .attr('stroke-width', 3)
-              .attr('stroke', 'green');
-
-            svg.append('g')
-              .selectAll('circle')
-              .data(dataset)
-              .enter()
-              .append('circle')
-              .attr('r', 5)
-              .attr('transform', function(d){
-                return 'translate(' + (xScale(d[0]) + padding.left) + ',' + (yScale(d[1]) + padding.top) + ')'
-              })
-              .attr('fill', 'green');
-
-
-            svg.append('g')
-              .selectAll('circle')
-              .data(finder)
-              .enter()
-              .append('circle')
-              .attr('r', 5)
-              .attr('transform', function(d){
-                return 'translate(' + (xScale(d[0]) + padding.left) + ',' + (yScale(d[1]) + padding.top) + ')'
-              })
-              .attr('fill', 'red');
-
-            svg.append('g')
-              .append('path')
-              .attr('class', 'line-path')
-              .attr('transform', 'translate(' + padding.left + ',' + padding.top + ')')
-              .attr('d', linePath(finder))
-              .attr('fill', 'none')
-              .attr('stroke-width', 3)
-              .attr('stroke', 'red');
-        </script> 
-        <script>
-            var dataset = {{payoff_line_plot}};
-            var finder = {{payoff_finder}};
-
-            var min = d3.min(dataset, function(d) {
-              return d[1];
-            })
-            var max = d3.max(dataset, function(d) {
-              return d[1];
-            })
-
-            // 图表的宽度和高度
-            var width = 600;
-            var height = 600;
-            // 预留给轴线的距离
-            var padding = { top: 50, right: 50, bottom: 50, left: 50 };
-
-            var xScale = d3.scaleLinear()
-                          .domain([0, 10])
-                          .range([0, width - padding.left - padding.right]);
-
-            var yScale = d3.scaleLinear()
-                          .domain([0, max])
-                          .range([height - padding.top - padding.bottom, 0]);
-            var svg = d3.select('#payoff_chart')
-                        .append('svg')
-                        .attr('width', width + 'px')
-                        .attr('height', height + 'px');
-            var xAxis = d3.axisBottom()
-                          .ticks(10)
-                          .scale(xScale);
-            var yAxis = d3.axisLeft()
-                          .ticks({{original_size}})
-                          .scale(yScale);
-
-            svg.append('g')
-              .attr('class', 'axis')
-              .attr('transform', 'translate(' + padding.left + ',' + (height - padding.bottom) + ')')
-              .call(xAxis);
-            svg.append('g')
-              .attr('class', 'axis')
-              .attr('transform', 'translate(' + padding.left + ',' + padding.top + ')')
-              .call(yAxis);
-
-
-            var linePath = d3.line()
-                            .x(function(d){ return xScale(d[0]) })
-                            .y(function(d){ return yScale(d[1]) });
-
-            var linePath2 = d3.line()
-                            .x(function(d){ return xScale(d[1]) })
-                            .y(function(d){ return yScale(d[0]) });
-
-            svg.append('g')
-              .append('path')
-              .attr('class', 'line-path')
-              .attr('transform', 'translate(' + padding.left + ',' + padding.top + ')')
-              .attr('d', linePath(dataset))
-              .attr('fill', 'none')
-              .attr('stroke-width', 3)
-              .attr('stroke', 'green');
-
-            svg.append('g')
-              .selectAll('circle')
-              .data(dataset)
-              .enter()
-              .append('circle')
-              .attr('r', 5)
-              .attr('transform', function(d){
-                return 'translate(' + (xScale(d[0]) + padding.left) + ',' + (yScale(d[1]) + padding.top) + ')'
-              })
-              .attr('fill', 'green');
-            // finder payoff
-            svg.append('g')
-              .append('path')
-              .attr('class', 'line-path')
-              .attr('transform', 'translate(' + padding.left + ',' + padding.top + ')')
-              .attr('d', linePath(finder))
-              .attr('fill', 'none')
-              .attr('stroke-width', 3)
-              .attr('stroke', 'red');
-
-            svg.append('g')
-              .selectAll('circle')
-              .data(finder)
-              .enter()
-              .append('circle')
-              .attr('r', 5)
-              .attr('transform', function(d){
-                return 'translate(' + (xScale(d[0]) + padding.left) + ',' + (yScale(d[1]) + padding.top) + ')'
-              })
-              .attr('fill', 'red');
-        </script> 
     </body>
 
 

@@ -47,30 +47,16 @@ def creating_session(subsession: Subsession):
     # density = subsession.session.config["density"]
     graph_config = subsession.session.config["graph_config"]
 
+    assert generating_process in ["ba_graph", "covert", "dark"]
     assert graph_config in ["size_low", "size_high", "density_low", "density_high"]
 
     # 初始化 graph
-    if generating_process == "ba_graph":
-        # initial_G = generate_ba_graph_with_density(n=size, density=density)
-        initial_G = nx.read_adjlist("input/ba/{}_{}.txt".format(graph_config, random.randint(0, 4)))
-        size = len(initial_G.nodes())
-        initial_G = nx.relabel_nodes(initial_G, lambda x: int(x) + 2)
-
-    elif generating_process == "covert":
-        file_name = 'input/covert/covert_test.txt'
-        initial_G = nx.read_adjlist(file_name)
-        initial_G = nx.relabel_nodes(initial_G, lambda x: x + 2)
-
-
-    elif generating_process == "dark":
-        file_name = 'input/dark/dark_test.txt'
-        initial_G = nx.read_adjlist(file_name)
-        initial_G = nx.relabel_nodes(initial_G, lambda x: x + 2)
-    else:
-        raise NotImplementedError("{} is not implemented.".format(generating_process))
+    file_name = f"input/{generating_process}/{graph_config}_{random.randint(0, 4)}.txt"
+    initial_G = nx.read_adjlist(file_name)
+    initial_G = nx.relabel_nodes(initial_G, lambda x: int(x) + 2)
 
     for player in subsession.get_players():
-        player.num_node = size
+        player.num_node = len(initial_G.nodes())
 
         if player.round_number == 1:
             G = subsession.get_groups()[0].G_seeker_practice if is_practice else subsession.get_groups()[0].G
