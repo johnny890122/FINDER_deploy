@@ -30,11 +30,12 @@ SESSION_CONFIGS = [
 
         # size=50,
         # density=0.1, 
-        graph_config = "size_low",
+        
         degree_distribution=None,
         generating_process='ba_graph', 
         visualization=None,
-
+        graph_config = "density_low", 
+        randint=1, 
     ),
 
     # dict(

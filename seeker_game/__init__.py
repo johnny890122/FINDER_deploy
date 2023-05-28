@@ -46,17 +46,33 @@ def creating_session(subsession: Subsession):
     # size = subsession.session.config["size"]
     # density = subsession.session.config["density"]
     graph_config = subsession.session.config["graph_config"]
+    randint = subsession.session.config["randint"]
 
     assert generating_process in ["ba_graph", "covert", "dark"]
     assert graph_config in ["size_low", "size_high", "density_low", "density_high"]
 
     # 初始化 graph
-    file_name = f"input/{generating_process}/{graph_config}_{random.randint(0, 4)}.txt"
+    # randint = random.randint(0, 4)
+    # randint = 
+    file_name = f"input/{generating_process}/{graph_config}_{randint}.txt"
     initial_G = nx.read_adjlist(file_name)
     initial_G = nx.relabel_nodes(initial_G, lambda x: int(x) + 2)
 
+    # hist = np.loadtxt(f"input/{generating_process}/finder_hist/{graph_config}_{randint}.txt", delimiter=",").tolist()
+    # hist_G = nx.read_adjlist(file_name)
+
+    # lst = list()
+    # cnt = 0
+    # for (i, n) in hist:
+    #     try: 
+    #         lst.append([cnt, hist_G.size()])
+    #         hist_G = remove_node_and_neighbor(str(int(n)), hist_G)
+    #         cnt += 1
+    #     except:
+    #         pass
+
     for player in subsession.get_players():
-        player.num_node = len(initial_G.nodes())
+        player.num_node = initial_G.number_of_nodes()
 
         if player.round_number == 1:
             G = subsession.get_groups()[0].G_seeker_practice if is_practice else subsession.get_groups()[0].G
@@ -73,7 +89,7 @@ class Seeker_dismantle(Page):
     @staticmethod
     def is_displayed(player: Player):
         G = get_current_graph(player)
-        if len(G.nodes()) != 0:
+        if G.number_of_nodes() != 0:
             return True
         return False
 
@@ -101,12 +117,12 @@ class Seeker_dismantle(Page):
 
         # 計算 reward
         player.seeker_payoff = getRobustness(G, player.to_be_removed)
-        player.num_node = len(G.nodes())
+        player.num_node = G.number_of_nodes()
         player.num_edge = len(G.edges())
         
-        G = remove_node_and_neighbor(player, G)
+        G = remove_node_and_neighbor(player.to_be_removed, G)
         
-        player.node_remain = len(G.nodes())
+        player.node_remain = G.number_of_nodes()
         player.edge_remain = len(G.edges())
         edge_remain = len(G.edges())
 
@@ -117,7 +133,7 @@ class Seeker_confirm(Page):
     @staticmethod
     def is_displayed(player: Player):
         G = get_current_graph(player)
-        if len(G.nodes()) > 0:
+        if G.number_of_nodes() > 0:
             return True
         return False
 
@@ -141,18 +157,43 @@ class Seeker_confirm(Page):
 
         # Finder dismantle history
         # FIXIT 
-        node_plot_finder = np.loadtxt("input/covert/covert_test_finder.txt", delimiter=",").tolist()
-        # print(hist)
-        payoff_finder = np.loadtxt("input/covert/covert_test_finder_payoff.txt", delimiter=",").tolist()
+        # node_plot_finder = np.loadtxt("input/covert/covert_test_finder.txt", delimiter=",").tolist()
+        # payoff_finder = np.loadtxt("input/covert/covert_test_finder_payoff.txt", delimiter=",").tolist()
 
+        generating_process = player.session.config["generating_process"]
+        graph_config = player.session.config["graph_config"]
+        randint = player.session.config["randint"]
+
+        file_name = f"input/{generating_process}/{graph_config}_{randint}.txt"
+
+        hist = np.loadtxt(f"input/{generating_process}/finder_hist/{graph_config}_{randint}.txt", delimiter=",").tolist()
+        hist_G = nx.read_adjlist(file_name)
+        node_plot_finder = list()
+        payoff_finder = [0]
+        cnt = 0
+        for (i, n) in hist:
+            try: 
+                payoff_finder.append(getRobustness(hist_G, str(int(n))))
+                # payoff = [0] + [p.seeker_payoff for p in player.in_previous_rounds()] + [player.seeker_payoff]
+
+                node_plot_finder.append([cnt, len(hist_G.nodes())])
+                hist_G = remove_node_and_neighbor(str(int(n)), hist_G)
+                cnt += 1
+
+                print("remove", n+2)
+            except:
+                print("not found", n+2)
+        
+        payoff_finder = [[i, p] for (i, p) in enumerate(np.add.accumulate(payoff_finder))]
+        print(payoff_finder)
         return {
             "current_size": len(player.group.G_seeker_practice) if player.session.config['practice'] else len(player.group.G), 
             "original_size": player.in_round(1).num_node, 
             "practice": int(player.session.config['practice']),
-            "node_plot_finder": node_plot_finder,
-            "payoff_finder": payoff_finder,  
-            "node_line_plot": node_plot, 
-            "payoff_line_plot": payoff_plot, 
+            "node_plot_finder": node_plot_finder[:11],
+            "payoff_finder": payoff_finder[:11], 
+            "node_line_plot": node_plot[:11], 
+            "payoff_line_plot": payoff_plot[:11], 
             "which_round": player.round_number, 
             "caught": player.to_be_removed, 
             "num_node_removed": player.num_node_removed,
