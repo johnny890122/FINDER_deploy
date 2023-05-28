@@ -74,3 +74,38 @@ def generate_ba_graph_with_density(n, density):
     # m = max(avg_edges_per_node, 1)  # Ensure m is at least 1
     ba_graph = nx.barabasi_albert_graph(n=400, m=4)
     return ba_graph
+
+def converter(dct):
+    tmp_dct = dict()
+    cnt = 0
+    for node in dct["nodes"]:
+        node["label"] = node["id"]
+        tmp_dct["node_"+str(cnt)]= node
+        cnt += 1
+
+    for edge in dct["links"]:
+        tmp_dct["edge_"+str(cnt)] = edge
+        cnt += 1
+
+    str_ = str(json.dumps(tmp_dct, indent=2, ensure_ascii=False))
+
+    for idx in range(cnt, -1, -1):
+        str_ = str_.replace("_"+str(idx), "")
+    str_ = "graph [" + str_[1:]
+    str_ = str_.replace('\"', '').replace(',', '').replace(':', '').replace('{', '[').replace('}', ']')
+
+    return str_
+
+def convert_to_FINDER_format(file_name, input_dir, output_dir):
+    G = nx.read_edgelist(f"{input_dir}/{file_name}.txt")
+    data = json_graph.node_link_data(G)
+
+    with io.open(f"{output_dir}/{file_name}.txt", 'w', encoding='utf8') as outfile:
+        str_ = converter(data)
+        outfile.write(str_)
+
+
+if __name__ == '__main__':
+    
+
+
