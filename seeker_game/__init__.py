@@ -141,9 +141,8 @@ class Seeker_dismantle(Page):
         # if not os.path.exists('../results/FINDER_ND/synthetic'):
             # os.mkdir('../results/FINDER_ND/synthetic')
         
-        for file in [file for file in os.listdir("input/ba_graph/") if file.endswith('.txt')]:
-            val, sol = dqn.Evaluate(f"./input/ba_graph/{file}", model_file)
-            break
+        # for file in [file for file in os.listdir("input/ba_graph/") if file.endswith('.txt')]:
+        val, sol = dqn.Evaluate("./input/ba_graph", model_file)
             # with open(f"results/{file}", 'w') as fout:
             
                 # for i, s in enumerate(sol):
