@@ -694,8 +694,6 @@ class FINDER:
         result_list_time = []
         sys.stdout.flush()
 
-        # g_path = '%s/'%data_test + 'g_0'
-        print(g_path, "sksk")
         g = nx.read_gml(g_path)
         self.InsertGraph(g, is_test=True)
         t1 = time.time()
