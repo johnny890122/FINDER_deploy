@@ -142,7 +142,7 @@ class Seeker_dismantle(Page):
             # os.mkdir('../results/FINDER_ND/synthetic')
         
         # for file in [file for file in os.listdir("input/ba_graph/") if file.endswith('.txt')]:
-        val, sol = dqn.Evaluate("input/ba_graph/", model_file)
+        val, sol = dqn.Evaluate("input/ba_graph", model_file)
             # with open(f"results/{file}", 'w') as fout:
             
                 # for i, s in enumerate(sol):
