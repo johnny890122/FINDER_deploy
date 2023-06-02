@@ -142,13 +142,12 @@ class Seeker_dismantle(Page):
             # os.mkdir('../results/FINDER_ND/synthetic')
         
         # for file in [file for file in os.listdir("input/ba_graph/") if file.endswith('.txt')]:
-        val, sol = dqn.Evaluate(f"input/ba_graph/density_low_0.txt", model_file)
+        val, sol = dqn.Evaluate("input/ba_graph/density_low_0.txt", model_file)
             # with open(f"results/{file}", 'w') as fout:
             
                 # for i, s in enumerate(sol):
                 #     fout.write(f'{i}, {s}\n')
                 # fout.flush()
-        print(val, sol)
         print("done")
 
 # Seeker 確認該回合的破壞成果
