@@ -40,10 +40,10 @@ def node_centrality_criteria(G):
     highest_betweenness_id, _ = sorted(betweenness, key=lambda x: x[1], reverse=True)[0]
     highest_page_rank_id, _ = sorted(pagerank, key=lambda x: x[1], reverse=True)[0]
     return {
-        "degree": highest_degree_id, 
+        "degree": highest_degree_id,
         "closeness": highest_closeness_id,
-        "betweenness": highest_betweenness_id, 
-        "page_rank": highest_page_rank_id, 
+        "betweenness": highest_betweenness_id,
+        "page_rank": highest_page_rank_id,
     }
 
 # Utility
@@ -105,7 +105,6 @@ def convert_to_FINDER_format(file_name, input_dir, output_dir):
         outfile.write(str_)
 
 
-if __name__ == '__main__':
-    
+
 
 
