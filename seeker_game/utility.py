@@ -52,8 +52,8 @@ def to_list(string):
         return []
     return [int(n) for n in string.split(",")]
 
-def remove_node_and_neighbor(player, G):
-    removed = [n for n in G.neighbors(player.to_be_removed)] + [player.to_be_removed]
+def remove_node_and_neighbor(to_be_removed, G):
+    removed = [n for n in G.neighbors(to_be_removed)] + [to_be_removed]
     for n in removed:
         G.remove_node(n)
     return G
@@ -103,8 +103,4 @@ def convert_to_FINDER_format(file_name, input_dir, output_dir):
     with io.open(f"{output_dir}/{file_name}.txt", 'w', encoding='utf8') as outfile:
         str_ = converter(data)
         outfile.write(str_)
-
-
-
-
 
