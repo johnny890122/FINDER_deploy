@@ -687,17 +687,13 @@ class FINDER:
         if model_file == None:  #if user do not specify the model_file
             model_file = self.findModel()
         print ('The best model is :%s'%(model_file))
-        # sys.stdout.flush()
         self.LoadModel(model_file)
 
         result_list_score = []
         result_list_time = []
-        # sys.stdout.flush()
 
-        # g_path = '%s/'%data_test + 'g_0'
         # FIXIT 
-        # g_path = 
-        g = nx.read_gml("input/ba_graph/density_low_0.txt")
+        g = nx.read_gml(g_path)
         self.InsertGraph(g, is_test=True)
         t1 = time.time()
         val, sol = self.GetSol(0)
