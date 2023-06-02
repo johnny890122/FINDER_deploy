@@ -687,12 +687,12 @@ class FINDER:
         if model_file == None:  #if user do not specify the model_file
             model_file = self.findModel()
         print ('The best model is :%s'%(model_file))
-        sys.stdout.flush()
+        # sys.stdout.flush()
         self.LoadModel(model_file)
 
         result_list_score = []
         result_list_time = []
-        sys.stdout.flush()
+        # sys.stdout.flush()
 
         # g_path = '%s/'%data_test + 'g_0'
         # FIXIT 

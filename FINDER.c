@@ -18855,7 +18855,7 @@ static PyObject *__pyx_pf_6FINDER_6FINDER_42Evaluate(CYTHON_UNUSED PyObject *__p
  *         if model_file == None:  #if user do not specify the model_file
  *             model_file = self.findModel()             # <<<<<<<<<<<<<<
  *         print ('The best model is :%s'%(model_file))
- *         sys.stdout.flush()
+ *         # sys.stdout.flush()
  */
     __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_findModel); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 688, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
@@ -18890,7 +18890,7 @@ static PyObject *__pyx_pf_6FINDER_6FINDER_42Evaluate(CYTHON_UNUSED PyObject *__p
  *         if model_file == None:  #if user do not specify the model_file
  *             model_file = self.findModel()
  *         print ('The best model is :%s'%(model_file))             # <<<<<<<<<<<<<<
- *         sys.stdout.flush()
+ *         # sys.stdout.flush()
  *         self.LoadModel(model_file)
  */
   __pyx_t_1 = __Pyx_PyString_FormatSafe(__pyx_kp_s_The_best_model_is_s, __pyx_v_model_file); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 689, __pyx_L1_error)
@@ -18900,41 +18900,9 @@ static PyObject *__pyx_pf_6FINDER_6FINDER_42Evaluate(CYTHON_UNUSED PyObject *__p
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "FINDER.pyx":690
- *             model_file = self.findModel()
- *         print ('The best model is :%s'%(model_file))
- *         sys.stdout.flush()             # <<<<<<<<<<<<<<
- *         self.LoadModel(model_file)
- * 
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_sys); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 690, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_stdout); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 690, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_flush); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 690, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_1);
-    if (likely(__pyx_t_4)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
-      __Pyx_INCREF(__pyx_t_4);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_1, function);
-    }
-  }
-  __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 690, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-
   /* "FINDER.pyx":691
  *         print ('The best model is :%s'%(model_file))
- *         sys.stdout.flush()
+ *         # sys.stdout.flush()
  *         self.LoadModel(model_file)             # <<<<<<<<<<<<<<
  * 
  *         result_list_score = []
@@ -18963,7 +18931,7 @@ static PyObject *__pyx_pf_6FINDER_6FINDER_42Evaluate(CYTHON_UNUSED PyObject *__p
  * 
  *         result_list_score = []             # <<<<<<<<<<<<<<
  *         result_list_time = []
- *         sys.stdout.flush()
+ *         # sys.stdout.flush()
  */
   __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 693, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -18974,45 +18942,13 @@ static PyObject *__pyx_pf_6FINDER_6FINDER_42Evaluate(CYTHON_UNUSED PyObject *__p
  * 
  *         result_list_score = []
  *         result_list_time = []             # <<<<<<<<<<<<<<
- *         sys.stdout.flush()
+ *         # sys.stdout.flush()
  * 
  */
   __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 694, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_v_result_list_time = ((PyObject*)__pyx_t_3);
   __pyx_t_3 = 0;
-
-  /* "FINDER.pyx":695
- *         result_list_score = []
- *         result_list_time = []
- *         sys.stdout.flush()             # <<<<<<<<<<<<<<
- * 
- *         # g_path = '%s/'%data_test + 'g_0'
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_sys); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 695, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_stdout); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 695, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_flush); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 695, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_1);
-    if (likely(__pyx_t_4)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
-      __Pyx_INCREF(__pyx_t_4);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_1, function);
-    }
-  }
-  __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 695, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /* "FINDER.pyx":700
  *         # FIXIT
