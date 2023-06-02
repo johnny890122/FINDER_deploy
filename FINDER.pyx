@@ -694,9 +694,10 @@ class FINDER:
         result_list_time = []
         sys.stdout.flush()
 
+        # g_path = '%s/'%data_test + 'g_0'
         # FIXIT 
-        g_path = "input/ba_graph/density_low_0.txt"
-        g = nx.read_gml(g_path)
+        # g_path = 
+        g = nx.read_gml("input/ba_graph/density_low_0.txt")
         self.InsertGraph(g, is_test=True)
         t1 = time.time()
         val, sol = self.GetSol(0)
