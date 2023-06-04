@@ -68,11 +68,12 @@ def getRobustness(G, sol):
 
 
 def generate_ba_graph_with_density(n, density):
-    # total_possible_edges = (n * (n - 1)) / 2
-    # desired_num_edges = density * total_possible_edges
-    # avg_edges_per_node = int(desired_num_edges / n)
-    # m = max(avg_edges_per_node, 1)  # Ensure m is at least 1
-    ba_graph = nx.barabasi_albert_graph(n=400, m=4)
+    total_possible_edges = (n * (n - 1)) / 2
+    desired_num_edges = density * total_possible_edges
+    avg_edges_per_node = int(desired_num_edges / n)
+    m = max(avg_edges_per_node, 1)  # Ensure m is at least 1
+    ba_graph = nx.barabasi_albert_graph(n, m)
+    
     return ba_graph
 
 def converter(dct):

@@ -28,10 +28,11 @@
             // 预留给轴线的距离
             let padding = { top: 50, right: 50, bottom: 50, left: 50 };
 
-            let xScale = d3.scaleLinear().domain([0, 10]).range([0, width - padding.left - padding.right]);
+            let xMax = seeker_data.length <= 3 ? 3 : seeker_data.length-1;
+            let xScale = d3.scaleLinear().domain([0, xMax]).range([0, width - padding.left - padding.right]);
             let yScale = d3.scaleLinear().domain([0, max]).range([height - padding.top - padding.bottom, 0]);
 
-            let xAxis = d3.axisBottom().ticks(10).scale(xScale);
+            let xAxis = d3.axisBottom().ticks(xMax).scale(xScale);
             let yAxis = d3.axisLeft().ticks(original_size / 10).scale(yScale);
 
             let svg = d3.select('#'+ block_id)
@@ -96,8 +97,8 @@
             <div id="payoff_chart" style="display:inline-block; width: 700px;"></div>      
         </div>
         <script>
-          plot("chart", {{node_line_plot}}, {{node_plot_finder}});
-          plot("payoff_chart", {{payoff_line_plot}}, {{payoff_finder}});
+            plot("chart", {{node_line_plot}}, {{node_plot_finder}});
+            plot("payoff_chart", {{payoff_line_plot}}, {{payoff_finder}});
         </script>
 
     </body>

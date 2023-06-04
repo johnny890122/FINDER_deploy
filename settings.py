@@ -38,6 +38,24 @@ SESSION_CONFIGS = [
         randint=1, 
     ),
 
+    dict(
+        name='seeker_game_size_density', 
+        # app_sequence=['seeker_instruction', 'seeker_game'], 
+        app_sequence=['seeker_game'], 
+        num_demo_participants=1, 
+        seeker='human', 
+        practice=True,
+
+        size=50,
+        density=0.1, 
+        
+        degree_distribution=None,
+        generating_process='ba_graph', 
+        visualization=None,
+        # graph_config = "density_low", 
+        randint=1, 
+    ),
+
     # dict(
     #     name='only_human_seeker',
     #     # app_sequence=['seeker_instruction', 'hider_instruction', 'actual_rounds', 'payoff'],
