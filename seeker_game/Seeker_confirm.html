@@ -28,7 +28,7 @@
             // 预留给轴线的距离
             let padding = { top: 50, right: 50, bottom: 50, left: 50 };
 
-            let xMax = seeker_data.length <= 3 ? 3 : seeker_data.length-1;
+            let xMax = seeker_data.length <= 5 ? 5 : seeker_data.length-1;
             let xScale = d3.scaleLinear().domain([0, xMax]).range([0, width - padding.left - padding.right]);
             let yScale = d3.scaleLinear().domain([0, max]).range([height - padding.top - padding.bottom, 0]);
 
