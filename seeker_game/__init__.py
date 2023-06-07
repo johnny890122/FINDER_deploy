@@ -50,6 +50,9 @@ def creating_session(subsession: Subsession):
     generating_process = subsession.session.config["generating_process"]
     assert generating_process in ["ba_graph", "covert", "dark"]
     
+
+
+
     if not is_pre_computed:
         size = subsession.session.config["size"]
         density = subsession.session.config["density"]
@@ -67,18 +70,17 @@ def creating_session(subsession: Subsession):
         hist = np.loadtxt(f"input/{generating_process}/finder_hist/{graph_config}_{randint}.txt", delimiter=",").tolist()
         hist_G = nx.read_adjlist(file_name)
 
+    # FIXIT:之後取消註解
+    dqn = FINDER()
+    model_file = './models/Model_barabasi_albert/nrange_150_250_iter_103800.ckpt'
+
+    _, tmp = dqn.Evaluate("input/ba_graph/size_low_0.txt", model_file)
+    # player.finder_hist = ",".join([str(i) for i in tmp])
+
     for player in subsession.get_players():
         player.num_node = initial_G.number_of_nodes()
 
         if player.round_number == 1:
-            
-            # FIXIT:之後取消註解
-            dqn = FINDER()
-            model_file = './models/Model_barabasi_albert/nrange_150_250_iter_103800.ckpt'
-
-            _, tmp = dqn.Evaluate(initial_G, model_file)
-            player.finder_hist = ",".join([str(i) for i in tmp])
-
 
             G = subsession.get_groups()[0].G
             for n in initial_G.nodes():
@@ -179,11 +181,6 @@ class Seeker_confirm(Page):
         payoff = [0] + [p.seeker_payoff for p in player.in_previous_rounds()] + [player.seeker_payoff]
         accum_payoff = np.add.accumulate(payoff)
         payoff_plot = [[i, p] for (i, p) in enumerate(accum_payoff)]
-
-        # Finder dismantle history
-        # FIXIT 
-        # node_plot_finder = np.loadtxt("input/covert/covert_test_finder.txt", delimiter=",").tolist()
-        # payoff_finder = np.loadtxt("input/covert/covert_test_finder_payoff.txt", delimiter=",").tolist()
 
         if player.session.config['pre_computed']:
             generating_process = player.session.config["generating_process"]

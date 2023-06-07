@@ -134,17 +134,17 @@ class FINDER:
 
         self.UpdateTargetQNetwork = tf.group(*self.copyTargetQNetworkOperation)
         # saving and loading networks
-        self.saver = tf.compat.v1.train.Saver(max_to_keep=None)
+        self.saver = tf.train.Saver(max_to_keep=None)
         #self.session = tf.InteractiveSession()
-        config = tf.compat.v1.ConfigProto(device_count={"CPU": 8},  # limit to num_cpu_core CPU usage
+        config = tf.ConfigProto(device_count={"CPU": 8},  # limit to num_cpu_core CPU usage
                                 inter_op_parallelism_threads=100,
                                 intra_op_parallelism_threads=100,
                                 log_device_placement=False)
         config.gpu_options.allow_growth = True
-        self.session = tf.compat.v1.Session(config = config)
+        self.session = tf.Session(config = config)
 
         # self.session = tf_debug.LocalCLIDebugWrapperSession(self.session)
-        self.session.run(tf.compat.v1.global_variables_initializer())
+        self.session.run(tf.global_variables_initializer())
 
 #################################################New code for FINDER#####################################
     def BuildNet(self):
@@ -301,11 +301,11 @@ class FINDER:
             if self.IsHuberloss:
                 loss_rl = tf.losses.huber_loss(self.target, q_pred)
             else:
-                loss_rl = tf.compat.v1.losses.mean_squared_error(self.target, q_pred)
+                loss_rl = tf.losses.mean_squared_error(self.target, q_pred)
 
         loss = loss_rl + Alpha * loss_recons
 
-        trainStep = tf.compat.v1.train.AdamOptimizer(self.learning_rate).minimize(loss)
+        trainStep = tf.train.AdamOptimizer(self.learning_rate).minimize(loss)
         #[node_cnt, batch_size] * [batch_size, embed_dim] = [node_cnt, embed_dim]
         rep_y = tf.sparse.sparse_dense_matmul(tf.cast(self.rep_global, tf.float32), y_potential)
 
@@ -338,7 +338,7 @@ class FINDER:
         #f reg_hidden > 0: , [node_cnt, reg_hidden + aux_dim] * [reg_hidden + aux_dim, 1] = [node_cnt，1]
         q_on_all = tf.matmul(last_output, last_w)
 
-        return loss, trainStep, q_pred, q_on_all, tf.compat.v1.trainable_variables()
+        return loss, trainStep, q_pred, q_on_all, tf.trainable_variables()
 
 
     def gen_graph(self, num_min, num_max):
@@ -683,7 +683,7 @@ class FINDER:
         return best_model
 
 
-    def Evaluate(self, G, model_file=None):
+    def Evaluate(self, g_path, model_file=None):
         if model_file == None:  #if user do not specify the model_file
             model_file = self.findModel()
         print ('The best model is :%s'%(model_file))
@@ -692,23 +692,21 @@ class FINDER:
         result_list_score = []
         result_list_time = []
 
-        # g = nx.read_gml(g_path)
-        self.InsertGraph(G, is_test=True)
+        # FIXIT 
+        g = nx.read_gml(g_path)
+        self.InsertGraph(g, is_test=True)
         t1 = time.time()
         val, sol = self.GetSol(0)
-        print("A")
 
         t2 = time.time()
         result_list_score.append(val)
         result_list_time.append(t2-t1)
-        print("B")
 
         self.ClearTestGraphs()
         score_mean = np.mean(result_list_score)
         score_std = np.std(result_list_score)
         time_mean = np.mean(result_list_time)
         time_std = np.std(result_list_time)
-        print("C")
         return  val, sol
 
     def EvaluateRealData(self, model_file, data_test, save_dir, stepRatio=0.0025):  #测试真实数据
