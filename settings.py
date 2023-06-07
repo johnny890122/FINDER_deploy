@@ -34,8 +34,8 @@ SESSION_CONFIGS = [
         degree_distribution=None,
         generating_process='ba_graph', 
         visualization=None,
-        graph_config = "density_low", 
-        randint=0, 
+        graph_config = "size_low", 
+        randint=1, 
     ),
 
     dict(
