@@ -60,25 +60,24 @@ def creating_session(subsession: Subsession):
         assert graph_config in ["size_low", "size_high", "density_low", "density_high"]
 
         randint = subsession.session.config["randint"]
-
     
         # 初始化 graph
         file_name = f"input/{generating_process}/{graph_config}_{randint}.txt"
         initial_G = nx.read_gml(file_name)
         initial_G = nx.relabel_nodes(initial_G, lambda x: int(x) + 2)
 
-        hist = np.loadtxt(f"input/{generating_process}/finder_hist/{graph_config}_{randint}.txt", delimiter=",").tolist()
-        hist_G = nx.read_adjlist(file_name)
+        # hist = np.loadtxt(f"input/{generating_process}/finder_hist/{graph_config}_{randint}.txt", delimiter=",").tolist()
+        # hist_G = nx.read_adjlist(file_name)
 
-        lst = list()
-        cnt = 0
-        for (i, n) in hist:
-            try: 
-                lst.append([cnt, hist_G.size()])
-                hist_G = remove_node_and_neighbor(str(int(n)), hist_G)
-                cnt += 1
-            except:
-                pass
+        # lst = list()
+        # cnt = 0
+        # for (i, n) in hist:
+        #     try: 
+        #         lst.append([cnt, hist_G.size()])
+        #         hist_G = remove_node_and_neighbor(str(int(n)), hist_G)
+        #         cnt += 1
+        #     except:
+        #         pass
 
     for player in subsession.get_players():
         player.num_node = initial_G.number_of_nodes()
@@ -193,22 +192,22 @@ class Seeker_confirm(Page):
             randint = player.session.config["randint"]
 
             file_name = f"input/{generating_process}/{graph_config}_{randint}.txt"
-
             hist = np.loadtxt(f"input/{generating_process}/finder_hist/{graph_config}_{randint}.txt", delimiter=",").tolist()
-            hist_G = nx.read_adjlist(file_name)
+
+
+            hist_G = nx.read_gml(file_name)
             node_plot_finder = list()
             payoff_finder = [0]
             cnt = 0
             for (i, n) in hist:
-                try: 
-                    payoff_finder.append(getRobustness(hist_G, str(int(n))))
+                try:
+                    payoff_finder.append(getRobustness(hist_G, int(n)))
                     # payoff = [0] + [p.seeker_payoff for p in player.in_previous_rounds()] + [player.seeker_payoff]
 
                     node_plot_finder.append([cnt, len(hist_G.nodes())])
-                    hist_G = remove_node_and_neighbor(str(int(n)), hist_G)
+                    hist_G = remove_node_and_neighbor(int(n), hist_G)
                     cnt += 1
 
-                    print("remove", n+2)
                 except:
                     print("not found", n+2)
             
