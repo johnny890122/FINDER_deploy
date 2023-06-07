@@ -58,19 +58,6 @@ def creating_session(subsession: Subsession):
     initial_G = nx.read_adjlist(file_name)
     initial_G = nx.relabel_nodes(initial_G, lambda x: int(x) + 2)
 
-    # hist = np.loadtxt(f"input/{generating_process}/finder_hist/{graph_config}_{randint}.txt", delimiter=",").tolist()
-    # hist_G = nx.read_adjlist(file_name)
-
-    # lst = list()
-    # cnt = 0
-    # for (i, n) in hist:
-    #     try: 
-    #         lst.append([cnt, hist_G.size()])
-    #         hist_G = remove_node_and_neighbor(str(int(n)), hist_G)
-    #         cnt += 1
-    #     except:
-    #         pass
-
     for player in subsession.get_players():
         player.num_node = initial_G.number_of_nodes()
 
@@ -180,9 +167,10 @@ class Seeker_confirm(Page):
                 hist_G = remove_node_and_neighbor(str(int(n)), hist_G)
                 cnt += 1
 
-                print("remove", n+2)
+                # print("remove", n+2)
             except:
-                print("not found", n+2)
+                # print("not found", n+2)
+                pass
         
         payoff_finder = [[i, p] for (i, p) in enumerate(np.add.accumulate(payoff_finder))]
         print(payoff_finder)

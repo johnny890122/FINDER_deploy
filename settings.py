@@ -35,7 +35,7 @@ SESSION_CONFIGS = [
         generating_process='ba_graph', 
         visualization=None,
         graph_config = "density_low", 
-        randint=1, 
+        randint=0, 
     ),
 
     # dict(
