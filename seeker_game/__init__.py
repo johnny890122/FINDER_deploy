@@ -41,7 +41,9 @@ class Player(BasePlayer):
     num_edge_removed = models.IntegerField(initial=-1)
     node_remain = models.IntegerField(initial=-1)
     edge_remain = models.IntegerField(initial=-1)
-    finder_hist = models.StringField(initial="")
+    finder_hist = models.StringField(initial="2,3,4,5,6,7,8,9,10")
+    node_plot_finder = models.StringField(initial="")
+    payoff_finder = models.StringField(initial="")
 
 def creating_session(subsession: Subsession):
     is_pre_computed = subsession.session.config['pre_computed']
@@ -65,16 +67,6 @@ def creating_session(subsession: Subsession):
         hist = np.loadtxt(f"input/{generating_process}/finder_hist/{graph_config}_{randint}.txt", delimiter=",").tolist()
         hist_G = nx.read_adjlist(file_name)
 
-        lst = list()
-        cnt = 0
-        for (i, n) in hist:
-            try: 
-                lst.append([cnt, hist_G.size()])
-                hist_G = remove_node_and_neighbor(str(int(n)), hist_G)
-                cnt += 1
-            except:
-                pass
-
     for player in subsession.get_players():
         player.num_node = initial_G.number_of_nodes()
 
@@ -83,13 +75,37 @@ def creating_session(subsession: Subsession):
             # FIXIT:之後取消註解
             dqn = FINDER()
             model_file = './models/Model_barabasi_albert/nrange_150_250_iter_103800.ckpt'
+
             _, tmp = dqn.Evaluate(initial_G, model_file)
             player.finder_hist = ",".join([str(i) for i in tmp])
+
+
             G = subsession.get_groups()[0].G
             for n in initial_G.nodes():
-                G.add_node(n)
+                G.add_node(int(n))
             for e in initial_G.edges():
-                G.add_edge(e[0], e[1])
+                G.add_edge(int(e[0]), int(e[1]))
+
+            hist_G = G.copy()
+            if not is_pre_computed:
+                node_plot_finder = list()
+                payoff_finder = [0]
+                cnt = 0
+                for (i, n) in enumerate(to_list(player.in_round(1).finder_hist)):
+                    try: 
+                        payoff_finder.append(getRobustness(hist_G, int(n)))
+                        node_plot_finder.append(len(hist_G.nodes()))
+                        hist_G = remove_node_and_neighbor(int(n), hist_G)
+                        cnt += 1
+
+                        print("remove", n+2)
+                    except:
+                        print("not found", n+2)
+                
+                payoff_finder = [p for p in np.add.accumulate(payoff_finder)]
+            
+                player.node_plot_finder = ",".join([str(n) for n in node_plot_finder])
+                player.payoff_finder = ",".join([str(p) for p in payoff_finder])
 
 # Seeker 破壞的頁面
 class Seeker_dismantle(Page):
@@ -178,27 +194,26 @@ class Seeker_confirm(Page):
 
             hist = np.loadtxt(f"input/{generating_process}/finder_hist/{graph_config}_{randint}.txt", delimiter=",").tolist()
             hist_G = nx.read_adjlist(file_name)
+            node_plot_finder = list()
+            payoff_finder = [0]
+            cnt = 0
+            for (i, n) in hist:
+                try: 
+                    payoff_finder.append(getRobustness(hist_G, int(n)))
+                    node_plot_finder.append([cnt, len(hist_G.nodes())])
+                    hist_G = remove_node_and_neighbor(int(n), hist_G)
+                    cnt += 1
+
+                    print("remove", n+2)
+                except:
+                    print("not found", n+2)
             
+            payoff_finder = [[i, p] for (i, p) in enumerate(np.add.accumulate(payoff_finder))]
         else:
             hist = [[i, n] for (i, n) in enumerate(to_list(player.in_round(1).finder_hist))]
-            # hist_G = player.group.G.copy()
+            payoff_finder = [[i, p] for (i, p) in enumerate(to_list(player.in_round(1).payoff_finder, "float"))]
+            node_plot_finder = [[i, p] for (i, p) in enumerate(to_list(player.in_round(1).node_plot_finder))]
 
-
-        node_plot_finder = list()
-        payoff_finder = [0]
-        # cnt = 0
-        # for (i, n) in hist:
-        #     try: 
-        #         payoff_finder.append(getRobustness(hist_G, str(int(n))))
-        #         node_plot_finder.append([cnt, len(hist_G.nodes())])
-        #         hist_G = remove_node_and_neighbor(str(int(n)), hist_G)
-        #         cnt += 1
-
-        #         print("remove", n+2)
-        #     except:
-        #         print("not found", n+2)
-        
-        # payoff_finder = [[i, p] for (i, p) in enumerate(np.add.accumulate(payoff_finder))]
         
         return {
             "current_size": len(player.group.G), 
