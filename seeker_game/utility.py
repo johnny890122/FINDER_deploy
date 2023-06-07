@@ -2,7 +2,7 @@ import networkx as nx
 import numpy as np
 
 def get_current_graph(player):
-    return player.group.G_seeker_practice if player.session.config['practice'] else player.group.G
+    return player.group.G
 
 # Utility: 用來將 G 的 link 轉換成前端接受的格式
 def G_links(G):
