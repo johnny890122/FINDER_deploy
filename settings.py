@@ -26,7 +26,7 @@ SESSION_CONFIGS = [
         app_sequence=['seeker_game'], 
         num_demo_participants=1, 
         seeker='human', 
-        practice=False,
+        pre_computed=False,
 
         # size=50,
         # density=0.1, 
@@ -44,7 +44,7 @@ SESSION_CONFIGS = [
         app_sequence=['seeker_game'], 
         num_demo_participants=1, 
         seeker='human', 
-        practice=True,
+        pre_computed=True,
 
         size=50,
         density=0.1, 

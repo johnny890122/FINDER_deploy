@@ -3,11 +3,10 @@ import sys, os, random, json, io
 import networkx as nx
 import numpy as np
 
-from seeker_game.utility import get_current_graph, G_links, G_nodes, to_list, remove_node_and_neighbor, getRobustness, generate_ba_graph_with_density, node_centrality_criteria
+from seeker_game.utility import get_current_graph, G_links, G_nodes, to_list, remove_node_and_neighbor, getRobustness, generate_ba_graph_with_density, node_centrality_criteria 
 
-# sys.path.append(os.path.dirname(__file__) + os.sep + '../')
-# from FINDER import FINDER
-# from tqdm import tqdm
+sys.path.append(os.path.dirname(__file__) + os.sep + './')
+from FINDER import FINDER
 
 doc = """
 human seeker 單機版 
@@ -23,7 +22,6 @@ class Subsession(BaseSubsession):
 
 class Group(BaseGroup):
     G = nx.Graph()
-    G_seeker_practice = nx.Graph()
 
 class Player(BasePlayer):
     # 實驗的參數
@@ -45,12 +43,11 @@ class Player(BasePlayer):
     edge_remain = models.IntegerField(initial=-1)
 
 def creating_session(subsession: Subsession):
-    is_practice = subsession.session.config['practice']
-
+    is_pre_computed = subsession.session.config['pre_computed']
     generating_process = subsession.session.config["generating_process"]
     assert generating_process in ["ba_graph", "covert", "dark"]
     
-    if is_practice:
+    if is_pre_computed:
         size = subsession.session.config["size"]
         density = subsession.session.config["density"]
         initial_G = generate_ba_graph_with_density(size, density)
@@ -58,11 +55,6 @@ def creating_session(subsession: Subsession):
 
         graph_config = subsession.session.config["graph_config"]
         assert graph_config in ["size_low", "size_high", "density_low", "density_high"]
-
-<<<<<<< HEAD
-=======
-        randint = subsession.session.config["randint"]
-
     
         # 初始化 graph
         file_name = f"input/{generating_process}/{graph_config}_{randint}.txt"
@@ -82,12 +74,11 @@ def creating_session(subsession: Subsession):
             except:
                 pass
 
->>>>>>> a394486751d4395392ee80fe255e179aceea2b06
     for player in subsession.get_players():
         player.num_node = initial_G.number_of_nodes()
 
         if player.round_number == 1:
-            G = subsession.get_groups()[0].G_seeker_practice if is_practice else subsession.get_groups()[0].G
+            G = subsession.get_groups()[0].G
             for n in initial_G.nodes():
                 G.add_node(n)
             for e in initial_G.edges():
@@ -111,7 +102,7 @@ class Seeker_dismantle(Page):
         centrality = node_centrality_criteria(G)
 
         return {
-            "practice": int(player.session.config['practice']), 
+            "practice": int(player.session.config['pre_computed']), 
             "nodes": G_nodes(G), 
             "highest_degree_id": centrality["degree"],
             "highest_closeness_id": centrality["closeness"],
@@ -170,7 +161,7 @@ class Seeker_confirm(Page):
     @staticmethod
     def vars_for_template(player: Player):
         num_past_practice_round = 0
-        if player.session.config['practice']:
+        if player.session.config['pre_computed']:
             for p in player.in_previous_rounds(): 
                 if p.sub_practice_end:
                     num_past_practice_round = p.round_number
@@ -190,7 +181,7 @@ class Seeker_confirm(Page):
         # node_plot_finder = np.loadtxt("input/covert/covert_test_finder.txt", delimiter=",").tolist()
         # payoff_finder = np.loadtxt("input/covert/covert_test_finder_payoff.txt", delimiter=",").tolist()
 
-        if not player.session.config['practice']:
+        if not player.session.config['pre_computed']:
             generating_process = player.session.config["generating_process"]
             graph_config = player.session.config["graph_config"]
             randint = player.session.config["randint"]
@@ -221,9 +212,9 @@ class Seeker_confirm(Page):
             node_plot_finder = []
         
         return {
-            "current_size": len(player.group.G_seeker_practice) if player.session.config['practice'] else len(player.group.G), 
+            "current_size": len(player.group.G), 
             "original_size": player.in_round(1).num_node, 
-            "practice": int(player.session.config['practice']),
+            "practice": int(player.session.config['pre_computed']),
             "node_plot_finder": node_plot_finder,
             "payoff_finder": payoff_finder, 
             "node_line_plot": node_plot, 
