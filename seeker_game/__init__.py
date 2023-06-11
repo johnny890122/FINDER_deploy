@@ -5,7 +5,7 @@ import numpy as np
 
 from seeker_game.utility import get_current_graph, G_links, G_nodes, to_list, remove_node_and_neighbor, getRobustness, generate_ba_graph_with_density, node_centrality_criteria 
 
-sys.path.append(os.path.dirname(__file__) + os.sep + './')
+# sys.path.append(os.path.dirname(__file__) + os.sep + './')
 from FINDER import FINDER
 
 doc = """
