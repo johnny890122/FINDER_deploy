@@ -47,11 +47,14 @@ def node_centrality_criteria(G):
     }
 
 # Utility
-def to_list(string):
+def to_list(string, dytpe="int"):
     if string == "":
         return []
-    return [int(n) for n in string.split(",")]
-
+    if dytpe == "int":
+        return [int(n) for n in string.split(",")]
+    else:
+        return [float(n) for n in string.split(",")]
+        
 def remove_node_and_neighbor(to_be_removed, G):
     removed = [n for n in G.neighbors(to_be_removed)] + [to_be_removed]
     for n in removed:
