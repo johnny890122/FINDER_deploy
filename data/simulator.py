@@ -2,34 +2,31 @@ import networkx as nx
 import numpy as np
 import copy
 import itertools
-from tqdm import trange
+# from tqdm import trange
 from scipy.stats import lognorm
 from pathlib import Path
 from argparse import ArgumentParser, Namespace
 from datetime import datetime
 from scipy import sparse      
 
-class Simulator1():
-	def __init__(self):
-		self.min_n = 20
-		self.max_n = 30
+class CovertGenerator():
+	def __init__(self, min_n, max_n, density, exposed_type="uniform", info_type="avg"):
+		self.min_n = min_n
+		self.max_n = max_n
 
 		self.size = np.random.randint(self.max_n - self.min_n + 1) + self.min_n
 
 		# parameter for G_mu
-		self.exposed_type = "uniform" # uniform, ...
-		self.info_type = "avg" # avg, worst
+		self.exposed_type = exposed_type # uniform, ...
+		self.info_type = info_type # avg, worst
+		self.density = density
 
 		# parameter for (1) brutal search
 		self.total_iter = 50000
 		self.search_patience = self.total_iter*0.2
-		self.density = 0.24
-
-		# parameter for (2) brutal search
-		self.start_type = None
 
 		# for debuging
-		self.G = nx.star_graph(self.size)
+		self.G = None
 
 	def G_total_dist(self, G):
 		path = dict( nx.all_pairs_shortest_path_length(G) )
@@ -63,8 +60,8 @@ class Simulator1():
 		return self.G_secrecy(G) * self.G_information(G)
 
 	def simulate(self):
-		best_score, tmp_score = self.G_mu(self.G), 0
-		patience = 0
+		best_score, tmp_score, patience = 0, 0, 0
+
 		plot_lst = list()
 		for i in range(self.total_iter):
 			adjacency = np.random.rand(self.size, self.size) <= (self.density / 2)
@@ -81,18 +78,18 @@ class Simulator1():
 				break
 		self.G.remove_edges_from(nx.selfloop_edges(self.G))
 
-class Simulator2():
-	def __init__(self):
+class DarkGenerator():
+	def __init__(self, min_n, max_n, density):
         # parameter
-		self.min_n = 20
-		self.max_n = 30
+		self.min_n = min_n
+		self.max_n = max_n
 		self.size = np.random.randint(self.max_n - self.min_n + 1) + self.min_n
+		self.density = density
 
 		self.beta = 1
 		self.gamma = 1
 		self.n0 = 5
 		self.e0 = 5
-		self.density = 0.30
 		self.M = int((self.size * (self.size - 1) - self.n0) * self.density / (self.size-self.n0)) + 1
 
 		self.adjacency_mat = np.zeros(self.size**2).reshape(self.size, self.size)
@@ -152,13 +149,3 @@ class Simulator2():
 		
 		self.G = nx.from_numpy_matrix(self.adjacency_mat)
 		self.G.remove_edges_from(nx.selfloop_edges(self.G))
-
-
-if __name__ == '__main__':
-	density = list()
-	for i in range(10):
-		S = Simulator1()
-		S.simulate()
-		density.append(nx.density(S.G))
-
-		print(np.mean(density))
