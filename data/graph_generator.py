@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from typing import Type
 from simulator import CovertGenerator, DarkGenerator
 import numpy as np
-
+from tqdm import trange
 
 # In[3]:
 
@@ -30,7 +30,7 @@ def dark_generator(min_n: int=20, max_n: int=30, density: int=0.1):
 
 def write_gml(G: Type[nx.classes.graph.Graph], data_dir: str, file_name: str) -> None:
     nx.write_gml(G, data_dir+file_name)
-    
+
 def read_gml(data_dir: str, file_name: str) -> Type[nx.classes.graph.Graph]:
     G = nx.read_gml(data_dir + file_name)
     return nx.relabel_nodes(G, lambda x: int(x))
@@ -74,10 +74,9 @@ def get_real_graph(data_dir: str, file_name: str) -> Type[nx.classes.graph.Graph
 
 
 iters = 100
-for i in range(iters):
+for i in trange(iters):
     G = covert_generator(min_n=200, max_n=200, density=0.01)
     write_gml(G, data_dir="./covert/", file_name=f"g_{i}")
-    break
 
 
 # In[ ]:
