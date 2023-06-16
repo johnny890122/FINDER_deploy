@@ -9,9 +9,6 @@ Created on Tue Dec 19 00:33:33 2017
 from __future__ import print_function, division
 import tensorflow as tf
 tf.compat.v1.disable_eager_execution()
-#tf.compat.v1.placeholder()
-#import tensorflow.compat.v1 as tf
-#tf.disable_v2_behavior()
 import numpy as np
 import networkx as nx
 import random
@@ -26,7 +23,7 @@ import mvc_env
 import utils
 import os
 import warnings
-from simulator import Simulator1, Simulator2
+from data.simulator import CovertGenerator, DarkGenerator
 warnings.filterwarnings("ignore", category=FutureWarning)
 
 # Hyper Parameters:
@@ -45,8 +42,8 @@ cdef double beta_increment_per_sampling = 0.001
 cdef double TD_err_upper = 1.  # clipped abs error
 ########################## hyperparameters for priority(end)#########################################
 cdef int N_STEP = 5
-cdef int NUM_MIN = 150
-cdef int NUM_MAX = 250
+cdef int NUM_MIN = 200
+cdef int NUM_MAX = 200
 cdef int REG_HIDDEN = 32
 cdef int BATCH_SIZE = 64
 cdef double initialization_stddev = 0.01  # 权重初始化的方差
@@ -67,8 +64,8 @@ class FINDER:
         # init some parameters
         self.embedding_size = EMBEDDING_SIZE
         self.learning_rate = LEARNING_RATE
-        self.g_type = 'barabasi_albert' #erdos_renyi, powerlaw, small-world
-        # self.g_type = 'simulator2'
+        # self.g_type = 'barabasi_albert' #erdos_renyi, powerlaw, small-world
+        self.g_type = 'dark'
 
         self.TrainSet = graph.py_GSet()
         self.TestSet = graph.py_GSet()
@@ -353,28 +350,17 @@ class FINDER:
             g = nx.connected_watts_strogatz_graph(n=cur_n, k=8, p=0.1)
         elif self.g_type == 'barabasi_albert':
             g = nx.barabasi_albert_graph(n=cur_n, m=4)
-        elif self.g_type == "simulator1":
-            # S = Simulator1()
-            # while not nx.is_connected(S.G):
-            # S.simulate()
-            # g = S.G
-            pass
-        elif self.g_type == "simulator2":
-            S = Simulator2()
-            S.simulate()
-            # while not nx.is_connected(S.G):
-            #     S.simulate()
-            g = S.G
-            print("connected", nx.is_connected(S.G))
+        elif self.g_type == "dark":
+            generator = DarkGenerator(min_n=num_min, max_n=num_max, density=0.01)
+            generator.simulate()
+            g = generator.G
         return g
-
     def gen_new_graphs(self, num_min, num_max):
         print('\ngenerating new training graphs...')
         sys.stdout.flush()
         self.ClearTrainGraphs()
         cdef int i
-        for i in tqdm(range(200)):
-        # for i in tqdm(range(1000)):
+        for i in tqdm(range(1000)):
             g = self.gen_graph(num_min, num_max)
             self.InsertGraph(g, is_test=False)
 
@@ -692,7 +678,7 @@ class FINDER:
         result_list_score = []
         result_list_time = []
 
-        # FIXIT 
+        # FIXIT
         g = nx.read_gml(g_path)
         self.InsertGraph(g, is_test=True)
         t1 = time.time()
