@@ -49,9 +49,6 @@ def creating_session(subsession: Subsession):
     is_pre_computed = subsession.session.config['pre_computed']
     generating_process = subsession.session.config["generating_process"]
     assert generating_process in ["ba_graph", "covert", "dark"]
-    
-
-
 
     if not is_pre_computed:
         size = subsession.session.config["size"]
