@@ -1,0 +1,11 @@
+﻿"",Fatah,Hamas,JeM,LTTE,LeT,PIJ,SPIR,Unknown_Phillippines,Unknown_in_China,al-Qaeda
+Fatah,0,1,0,0,0,1,0,0,0,0
+Hamas,1,0,0,0,0,1,0,0,0,0
+JeM,0,0,0,0,1,0,0,0,0,1
+LTTE,0,0,0,1,0,0,0,0,0,0
+LeT,0,0,1,0,0,0,0,0,0,1
+PIJ,1,1,0,0,0,0,0,0,0,0
+SPIR,0,0,0,0,0,0,1,0,0,0
+Unknown_Phillippines,0,0,0,0,0,0,0,1,0,0
+Unknown_in_China,0,0,0,0,0,0,0,0,1,0
+al-Qaeda,0,0,1,0,1,0,0,0,0,0

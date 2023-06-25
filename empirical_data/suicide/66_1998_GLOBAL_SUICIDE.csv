@@ -1,0 +1,11 @@
+﻿"",GIA,Hamas,Hezbollah,LTTE,PIJ,PKK,Unknown_in_China,Unknown_in_India,Unknown_in_Pakistan,al-Qaeda
+GIA,0,0,0,0,0,0,0,0,0,1
+Hamas,0,0,1,0,1,0,0,0,0,0
+Hezbollah,0,1,0,0,1,0,0,0,0,1
+LTTE,0,0,0,0,0,1,0,0,0,0
+PIJ,0,1,1,0,0,0,0,0,0,0
+PKK,0,0,0,1,0,0,0,0,0,0
+Unknown_in_China,0,0,0,0,0,0,1,0,0,0
+Unknown_in_India,0,0,0,0,0,0,0,1,0,0
+Unknown_in_Pakistan,0,0,0,0,0,0,0,0,1,0
+al-Qaeda,1,0,1,0,0,0,0,0,0,0

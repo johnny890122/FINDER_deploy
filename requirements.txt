@@ -33,7 +33,6 @@ kiwisolver==1.4.4
 Markdown==3.4.1
 matplotlib==3.5.3
 networkx==2.3
-numpy==1.17.3
 oauthlib==3.2.2
 otree==5.10.2
 packaging==22.0

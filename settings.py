@@ -1,39 +1,17 @@
 from os import environ
 
 SESSION_CONFIGS = [
-    # dict(
-    #     name='human_hider_human_seeker',
-    #     app_sequence=['seeker_instruction', 'hider_instruction', 'actual_rounds', 'link_page'],
-    #     num_demo_participants=6,
-    #     hider='human',
-    #     seeker='human',
-    #     practice=True,
-    # ),
-    # '''
-    # dict(
-    #     name='human_hider_human_seeker_no_practice',
-    #     app_sequence=['actual_rounds', 'payoff'],
-    #     num_demo_participants=3,
-    #     hider='human',
-    #     seeker='human',
-    #     practice=False,
-    # ),
-    # '''
-
     dict(
         name='seeker_game', 
         # app_sequence=['seeker_instruction', 'seeker_game'], 
         app_sequence=['seeker_game'], 
         num_demo_participants=1, 
         seeker='human', 
-        pre_computed=True,
 
         # size=50,
         # density=0.1, 
         
-        degree_distribution=None,
         generating_process='ba_graph', 
-        visualization=None,
         graph_config = "size_low", 
         randint=1, 
     ),

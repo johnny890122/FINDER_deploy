@@ -9,9 +9,6 @@ Created on Tue Dec 19 00:33:33 2017
 from __future__ import print_function, division
 import tensorflow as tf
 tf.compat.v1.disable_eager_execution()
-#tf.compat.v1.placeholder()
-#import tensorflow.compat.v1 as tf
-#tf.disable_v2_behavior()
 import numpy as np
 import networkx as nx
 import random

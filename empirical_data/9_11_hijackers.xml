@@ -1,0 +1,718 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<DynamicNetwork>
+<MetaNetwork>
+<propertyIdentities>
+<propertyIdentity id="autoCalc-componentStatistics-dyadCount" type="number" singleValued="false"/>
+<propertyIdentity id="autoCalc-componentStatistics-isolateCount" type="number" singleValued="false"/>
+<propertyIdentity id="autoCalc-componentStatistics-triadCount" type="number" singleValued="false"/>
+<propertyIdentity id="autoCalc-density" type="number" singleValued="false"/>
+<propertyIdentity id="autoCalc-densityAutoDetect" type="number" singleValued="false"/>
+<propertyIdentity id="autoCalc-diagonalEdgeStatistics-binary" type="number" singleValued="false"/>
+<propertyIdentity id="autoCalc-diagonalEdgeStatistics-len" type="number" singleValued="false"/>
+<propertyIdentity id="autoCalc-diagonalEdgeStatistics-max" type="number" singleValued="false"/>
+<propertyIdentity id="autoCalc-diagonalEdgeStatistics-min" type="number" singleValued="false"/>
+<propertyIdentity id="autoCalc-diagonalEdgeStatistics-sum" type="number" singleValued="false"/>
+<propertyIdentity id="autoCalc-diagonalEdgeStatistics-sumOfSquares" type="number" singleValued="false"/>
+<propertyIdentity id="autoCalc-largeComponentStats-binary" type="number" singleValued="false"/>
+<propertyIdentity id="autoCalc-largeComponentStats-len" type="number" singleValued="false"/>
+<propertyIdentity id="autoCalc-largeComponentStats-max" type="number" singleValued="false"/>
+<propertyIdentity id="autoCalc-largeComponentStats-min" type="number" singleValued="false"/>
+<propertyIdentity id="autoCalc-largeComponentStats-sum" type="number" singleValued="false"/>
+<propertyIdentity id="autoCalc-largeComponentStats-sumOfSquares" type="number" singleValued="false"/>
+<propertyIdentity id="autoCalc-nonDiagonalEdgeStatistics-binary" type="number" singleValued="false"/>
+<propertyIdentity id="autoCalc-nonDiagonalEdgeStatistics-len" type="number" singleValued="false"/>
+<propertyIdentity id="autoCalc-nonDiagonalEdgeStatistics-max" type="number" singleValued="false"/>
+<propertyIdentity id="autoCalc-nonDiagonalEdgeStatistics-min" type="number" singleValued="false"/>
+<propertyIdentity id="autoCalc-nonDiagonalEdgeStatistics-sum" type="number" singleValued="false"/>
+<propertyIdentity id="autoCalc-nonDiagonalEdgeStatistics-sumOfSquares" type="number" singleValued="false"/>
+<propertyIdentity id="autoCalc-symmetric" type="number" singleValued="false"/>
+<propertyIdentity id="unionCount" type="number" singleValued="true"/>
+</propertyIdentities>
+<sources/>
+<property id="autoCalc-componentStatistics-dyadCount" value="0"/>
+<property id="autoCalc-componentStatistics-isolateCount" value="0"/>
+<property id="autoCalc-componentStatistics-triadCount" value="0"/>
+<property id="autoCalc-density" value="1.45085154827"/>
+<property id="autoCalc-densityAutoDetect" value="1.45085154827"/>
+<property id="autoCalc-diagonalEdgeStatistics-binary" value="3"/>
+<property id="autoCalc-diagonalEdgeStatistics-len" value="0"/>
+<property id="autoCalc-diagonalEdgeStatistics-max" value="0"/>
+<property id="autoCalc-diagonalEdgeStatistics-min" value="0"/>
+<property id="autoCalc-diagonalEdgeStatistics-sum" value="0"/>
+<property id="autoCalc-diagonalEdgeStatistics-sumOfSquares" value="0"/>
+<property id="autoCalc-largeComponentStats-binary" value="0"/>
+<property id="autoCalc-largeComponentStats-len" value="3"/>
+<property id="autoCalc-largeComponentStats-max" value="242"/>
+<property id="autoCalc-largeComponentStats-min" value="242"/>
+<property id="autoCalc-largeComponentStats-sum" value="242"/>
+<property id="autoCalc-largeComponentStats-sumOfSquares" value="21188"/>
+<property id="autoCalc-nonDiagonalEdgeStatistics-binary" value="1"/>
+<property id="autoCalc-nonDiagonalEdgeStatistics-len" value="443"/>
+<property id="autoCalc-nonDiagonalEdgeStatistics-max" value="11"/>
+<property id="autoCalc-nonDiagonalEdgeStatistics-min" value="3"/>
+<property id="autoCalc-nonDiagonalEdgeStatistics-sum" value="919"/>
+<property id="autoCalc-nonDiagonalEdgeStatistics-sumOfSquares" value="2955"/>
+<property id="autoCalc-symmetric" value="0"/>
+<property id="unionCount" value="3"/>
+<nodes>
+<nodeclass type="Agent" id="Agent">
+<node id="Majed Moqed" title="Majed Moqed"/>
+<node id="Khalid Al-Mihdhar" title="Khalid Al-Mihdhar"/>
+<node id="Hani Hanjour" title="Hani Hanjour"/>
+<node id="Nawaf Alhazmi" title="Nawaf Alhazmi"/>
+<node id="Salem Alhazmi*" title="Salem Alhazmi*"/>
+<node id="Ahmed Alnami" title="Ahmed Alnami"/>
+<node id="Ahmed Alghamdi" title="Ahmed Alghamdi"/>
+<node id="Saeed Alghamdi*" title="Saeed Alghamdi*"/>
+<node id="Hamza Alghamdi" title="Hamza Alghamdi"/>
+<node id="Ahmed Al Haznawi" title="Ahmed Al Haznawi"/>
+<node id="Mohand Alshehri*" title="Mohand Alshehri*"/>
+<node id="Fayez Ahmed" title="Fayez Ahmed"/>
+<node id="Ziad Jarrah" title="Ziad Jarrah"/>
+<node id="Marwan Al-Shehhi" title="Marwan Al-Shehhi"/>
+<node id="Mohamed Atta" title="Mohamed Atta"/>
+<node id="Abdul Aziz Al-Omari*" title="Abdul Aziz Al-Omari*"/>
+<node id="Waleed Alshehri" title="Waleed Alshehri"/>
+<node id="Wail Alshehri" title="Wail Alshehri"/>
+<node id="Satam Suqami" title="Satam Suqami"/>
+<node id="Raed Hijazi" title="Raed Hijazi"/>
+<node id="Nabil al-Marabh" title="Nabil al-Marabh"/>
+<node id="Mustafa Ahamend al-Hisawi" title="Mustafa Ahamend al-Hisawi"/>
+<node id="Mamoun Darkazanli" title="Mamoun Darkazanli"/>
+<node id="Zakariya Essabar" title="Zakariya Essabar"/>
+<node id="Said Bahaji" title="Said Bahaji"/>
+<node id="Mounir El Motassadeq" title="Mounir El Motassadeq"/>
+<node id="Zacarias Moussaoui" title="Zacarias Moussaoui"/>
+<node id="Ramzi Bin al-Shibh" title="Ramzi Bin al-Shibh"/>
+<node id="Agus Budiman" title="Agus Budiman"/>
+<node id="Ahed Khalil Ibrahim Samir Al-Ani" title="Ahed Khalil Ibrahim Samir Al-Ani"/>
+<node id="Lofti Raissi" title="Lofti Raissi"/>
+<node id="Rayed Mohammed Abdullah" title="Rayed Mohammed Abdullah"/>
+<node id="Bandar Alhazmi" title="Bandar Alhazmi"/>
+<node id="Faisal Al Salmi" title="Faisal Al Salmi"/>
+<node id="Osama Awadallah" title="Osama Awadallah"/>
+<node id="Abdussattar Shaikh" title="Abdussattar Shaikh"/>
+<node id="Mohamed Abdi" title="Mohamed Abdi"/>
+<node id="Mohamed Belfas" title="Mohamed Belfas"/>
+<node id="Imad Eddin Baraat Yarkas" title="Imad Eddin Baraat Yarkas"/>
+<node id="Tarek Maaroufi" title="Tarek Maaroufi"/>
+<node id="Abu Qatada" title="Abu Qatada"/>
+<node id="Djamal Benghal" title="Djamal Benghal"/>
+<node id="Jerome Courtaillier" title="Jerome Courtaillier"/>
+<node id="David Courtaillier" title="David Courtaillier"/>
+<node id="Ahmen Ressam" title="Ahmen Ressam"/>
+<node id="Abu Walid" title="Abu Walid"/>
+<node id="Jean-Marc Grandvisir" title="Jean-Marc Grandvisir"/>
+<node id="Abu Zubeida" title="Abu Zubeida"/>
+<node id="Nizar Trabelsi" title="Nizar Trabelsi"/>
+<node id="Haydar Abu Doha" title="Haydar Abu Doha"/>
+<node id="Mehdi Khammoun" title="Mehdi Khammoun"/>
+<node id="Mohammed Bensakhria" title="Mohammed Bensakhria"/>
+<node id="Lased Ben Heni" title="Lased Ben Heni"/>
+<node id="Essid Sami Ben Khemail" title="Essid Sami Ben Khemail"/>
+<node id="Seifallah ben Hassine" title="Seifallah ben Hassine"/>
+<node id="Essoussi Laaroussi" title="Essoussi Laaroussi"/>
+<node id="Fahid al Shakri" title="Fahid al Shakri"/>
+<node id="Madjid Sahoune" title="Madjid Sahoune"/>
+<node id="Samir Kishk" title="Samir Kishk"/>
+<node id="Kamel Daoudi" title="Kamel Daoudi"/>
+<node id="Takek Maaroufi" title="Takek Maaroufi"/>
+</nodeclass>
+<nodeclass type="Role" id="Role">
+<node id="Majed Moqed" title="Majed Moqed"/>
+<node id="Khalid Al-Mihdhar" title="Khalid Al-Mihdhar"/>
+<node id="Hani Hanjour" title="Hani Hanjour"/>
+<node id="Nawaf Alhazmi" title="Nawaf Alhazmi"/>
+<node id="Salem Alhazmi*" title="Salem Alhazmi*"/>
+<node id="Ahmed Alnami" title="Ahmed Alnami"/>
+<node id="Ahmed Alghamdi" title="Ahmed Alghamdi"/>
+<node id="Saeed Alghamdi*" title="Saeed Alghamdi*"/>
+<node id="Hamza Alghamdi" title="Hamza Alghamdi"/>
+<node id="Ahmed Al Haznawi" title="Ahmed Al Haznawi"/>
+<node id="Mohand Alshehri*" title="Mohand Alshehri*"/>
+<node id="Fayez Ahmed" title="Fayez Ahmed"/>
+<node id="Ziad Jarrah" title="Ziad Jarrah"/>
+<node id="Marwan Al-Shehhi" title="Marwan Al-Shehhi"/>
+<node id="Mohamed Atta" title="Mohamed Atta"/>
+<node id="Abdul Aziz Al-Omari*" title="Abdul Aziz Al-Omari*"/>
+<node id="Waleed Alshehri" title="Waleed Alshehri"/>
+<node id="Wail Alshehri" title="Wail Alshehri"/>
+<node id="Satam Suqami" title="Satam Suqami"/>
+<node id="Raed Hijazi" title="Raed Hijazi"/>
+<node id="Nabil al-Marabh" title="Nabil al-Marabh"/>
+<node id="Mustafa Ahamend al-Hisawi" title="Mustafa Ahamend al-Hisawi"/>
+<node id="Mamoun Darkazanli" title="Mamoun Darkazanli"/>
+<node id="Zakariya Essabar" title="Zakariya Essabar"/>
+<node id="Said Bahaji" title="Said Bahaji"/>
+<node id="Mounir El Motassadeq" title="Mounir El Motassadeq"/>
+<node id="Zacarias Moussaoui" title="Zacarias Moussaoui"/>
+<node id="Ramzi Bin al-Shibh" title="Ramzi Bin al-Shibh"/>
+<node id="Agus Budiman" title="Agus Budiman"/>
+<node id="Ahed Khalil Ibrahim Samir Al-Ani" title="Ahed Khalil Ibrahim Samir Al-Ani"/>
+<node id="Lofti Raissi" title="Lofti Raissi"/>
+<node id="Rayed Mohammed Abdullah" title="Rayed Mohammed Abdullah"/>
+<node id="Bandar Alhazmi" title="Bandar Alhazmi"/>
+<node id="Faisal Al Salmi" title="Faisal Al Salmi"/>
+<node id="Osama Awadallah" title="Osama Awadallah"/>
+<node id="Abdussattar Shaikh" title="Abdussattar Shaikh"/>
+<node id="Mohamed Abdi" title="Mohamed Abdi"/>
+<node id="Mohamed Belfas" title="Mohamed Belfas"/>
+<node id="Imad Eddin Baraat Yarkas" title="Imad Eddin Baraat Yarkas"/>
+<node id="Tarek Maaroufi" title="Tarek Maaroufi"/>
+<node id="Abu Qatada" title="Abu Qatada"/>
+<node id="Djamal Benghal" title="Djamal Benghal"/>
+<node id="Jerome Courtaillier" title="Jerome Courtaillier"/>
+<node id="David Courtaillier" title="David Courtaillier"/>
+<node id="Ahmen Ressam" title="Ahmen Ressam"/>
+<node id="Abu Walid" title="Abu Walid"/>
+<node id="Jean-Marc Grandvisir" title="Jean-Marc Grandvisir"/>
+<node id="Abu Zubeida" title="Abu Zubeida"/>
+<node id="Nizar Trabelsi" title="Nizar Trabelsi"/>
+<node id="Haydar Abu Doha" title="Haydar Abu Doha"/>
+<node id="Mehdi Khammoun" title="Mehdi Khammoun"/>
+<node id="Mohammed Bensakhria" title="Mohammed Bensakhria"/>
+<node id="Lased Ben Heni" title="Lased Ben Heni"/>
+<node id="Essid Sami Ben Khemail" title="Essid Sami Ben Khemail"/>
+<node id="Seifallah ben Hassine" title="Seifallah ben Hassine"/>
+<node id="Essoussi Laaroussi" title="Essoussi Laaroussi"/>
+<node id="Fahid al Shakri" title="Fahid al Shakri"/>
+<node id="Madjid Sahoune" title="Madjid Sahoune"/>
+<node id="Samir Kishk" title="Samir Kishk"/>
+<node id="Kamel Daoudi" title="Kamel Daoudi"/>
+</nodeclass>
+<nodeclass type="Event" id="Event">
+<node id="Network Strength" title="Network Strength"/>
+<node id="Ties" title="Ties"/>
+<node id="Las Vegas Meeting" title="Las Vegas Meeting"/>
+</nodeclass>
+<nodeclass type="Action" id="Action">
+<node id="Network Strength" title="Network Strength"/>
+<node id="Ties" title="Ties"/>
+<node id="Las Vegas Meeting" title="Las Vegas Meeting"/>
+</nodeclass>
+</nodes>
+<networks>
+<network sourceType="Agent" source="Agent" targetType="Role" target="Role" id="Agent x Role" isDirected="true" isBinary="false" allowSelfLoops="true">
+<property id="autoCalc-componentStatistics-dyadCount" value="0"/>
+<property id="autoCalc-componentStatistics-isolateCount" value="6"/>
+<property id="autoCalc-componentStatistics-triadCount" value="0"/>
+<property id="autoCalc-density" value="0.0519444444444"/>
+<property id="autoCalc-densityAutoDetect" value="0.0519444444444"/>
+<property id="autoCalc-diagonalEdgeStatistics-binary" value="1"/>
+<property id="autoCalc-diagonalEdgeStatistics-len" value="0"/>
+<property id="autoCalc-diagonalEdgeStatistics-max" value="0"/>
+<property id="autoCalc-diagonalEdgeStatistics-min" value="0"/>
+<property id="autoCalc-diagonalEdgeStatistics-sum" value="0"/>
+<property id="autoCalc-diagonalEdgeStatistics-sumOfSquares" value="0"/>
+<property id="autoCalc-largeComponentStats-binary" value="0"/>
+<property id="autoCalc-largeComponentStats-len" value="1"/>
+<property id="autoCalc-largeComponentStats-max" value="114"/>
+<property id="autoCalc-largeComponentStats-min" value="114"/>
+<property id="autoCalc-largeComponentStats-sum" value="114"/>
+<property id="autoCalc-largeComponentStats-sumOfSquares" value="12996"/>
+<property id="autoCalc-nonDiagonalEdgeStatistics-binary" value="1"/>
+<property id="autoCalc-nonDiagonalEdgeStatistics-len" value="187"/>
+<property id="autoCalc-nonDiagonalEdgeStatistics-max" value="1"/>
+<property id="autoCalc-nonDiagonalEdgeStatistics-min" value="1"/>
+<property id="autoCalc-nonDiagonalEdgeStatistics-sum" value="187"/>
+<property id="autoCalc-nonDiagonalEdgeStatistics-sumOfSquares" value="187"/>
+<property id="autoCalc-symmetric" value="0"/>
+<link source="Majed Moqed" target="Hani Hanjour"/>
+<link source="Khalid Al-Mihdhar" target="Hani Hanjour"/>
+<link source="Khalid Al-Mihdhar" target="Nawaf Alhazmi"/>
+<link source="Hani Hanjour" target="Majed Moqed"/>
+<link source="Hani Hanjour" target="Khalid Al-Mihdhar"/>
+<link source="Hani Hanjour" target="Nawaf Alhazmi"/>
+<link source="Nawaf Alhazmi" target="Khalid Al-Mihdhar"/>
+<link source="Nawaf Alhazmi" target="Hani Hanjour"/>
+<link source="Nawaf Alhazmi" target="Salem Alhazmi*"/>
+<link source="Nawaf Alhazmi" target="Ahmed Alnami"/>
+<link source="Nawaf Alhazmi" target="Saeed Alghamdi*"/>
+<link source="Nawaf Alhazmi" target="Hamza Alghamdi"/>
+<link source="Salem Alhazmi*" target="Nawaf Alhazmi"/>
+<link source="Ahmed Alnami" target="Saeed Alghamdi*"/>
+<link source="Ahmed Alnami" target="Hamza Alghamdi"/>
+<link source="Ahmed Alghamdi" target="Hamza Alghamdi"/>
+<link source="Hamza Alghamdi" target="Ahmed Alnami"/>
+<link source="Hamza Alghamdi" target="Ahmed Alghamdi"/>
+<link source="Hamza Alghamdi" target="Saeed Alghamdi*"/>
+<link source="Hamza Alghamdi" target="Ahmed Al Haznawi"/>
+<link source="Hamza Alghamdi" target="Mohand Alshehri*"/>
+<link source="Ahmed Al Haznawi" target="Saeed Alghamdi*"/>
+<link source="Ahmed Al Haznawi" target="Hamza Alghamdi"/>
+<link source="Ahmed Al Haznawi" target="Ziad Jarrah"/>
+<link source="Mohand Alshehri*" target="Hamza Alghamdi"/>
+<link source="Mohand Alshehri*" target="Fayez Ahmed"/>
+<link source="Fayez Ahmed" target="Mohand Alshehri*"/>
+<link source="Fayez Ahmed" target="Marwan Al-Shehhi"/>
+<link source="Ziad Jarrah" target="Ahmed Al Haznawi"/>
+<link source="Ziad Jarrah" target="Marwan Al-Shehhi"/>
+<link source="Ziad Jarrah" target="Mohamed Atta"/>
+<link source="Marwan Al-Shehhi" target="Fayez Ahmed"/>
+<link source="Marwan Al-Shehhi" target="Ziad Jarrah"/>
+<link source="Marwan Al-Shehhi" target="Mohamed Atta"/>
+<link source="Marwan Al-Shehhi" target="Abdul Aziz Al-Omari*"/>
+<link source="Mohamed Atta" target="Ziad Jarrah"/>
+<link source="Mohamed Atta" target="Marwan Al-Shehhi"/>
+<link source="Mohamed Atta" target="Abdul Aziz Al-Omari*"/>
+<link source="Abdul Aziz Al-Omari*" target="Marwan Al-Shehhi"/>
+<link source="Abdul Aziz Al-Omari*" target="Mohamed Atta"/>
+<link source="Abdul Aziz Al-Omari*" target="Waleed Alshehri"/>
+<link source="Waleed Alshehri" target="Abdul Aziz Al-Omari*"/>
+<link source="Waleed Alshehri" target="Wail Alshehri"/>
+<link source="Waleed Alshehri" target="Satam Suqami"/>
+<link source="Wail Alshehri" target="Waleed Alshehri"/>
+<link source="Wail Alshehri" target="Satam Suqami"/>
+<link source="Satam Suqami" target="Waleed Alshehri"/>
+<link source="Satam Suqami" target="Wail Alshehri"/>
+<link source="Raed Hijazi" target="Saeed Alghamdi*"/>
+<link source="Raed Hijazi" target="Satam Suqami"/>
+<link source="Raed Hijazi" target="Nabil al-Marabh"/>
+<link source="Nabil al-Marabh" target="Ahmed Alghamdi"/>
+<link source="Nabil al-Marabh" target="Saeed Alghamdi*"/>
+<link source="Nabil al-Marabh" target="Satam Suqami"/>
+<link source="Nabil al-Marabh" target="Raed Hijazi"/>
+<link source="Mustafa Ahamend al-Hisawi" target="Fayez Ahmed"/>
+<link source="Mustafa Ahamend al-Hisawi" target="Marwan Al-Shehhi"/>
+<link source="Mustafa Ahamend al-Hisawi" target="Mohamed Atta"/>
+<link source="Mustafa Ahamend al-Hisawi" target="Waleed Alshehri"/>
+<link source="Mamoun Darkazanli" target="Marwan Al-Shehhi"/>
+<link source="Mamoun Darkazanli" target="Mohamed Atta"/>
+<link source="Mamoun Darkazanli" target="Said Bahaji"/>
+<link source="Zakariya Essabar" target="Ziad Jarrah"/>
+<link source="Zakariya Essabar" target="Marwan Al-Shehhi"/>
+<link source="Zakariya Essabar" target="Mohamed Atta"/>
+<link source="Zakariya Essabar" target="Said Bahaji"/>
+<link source="Zakariya Essabar" target="Ramzi Bin al-Shibh"/>
+<link source="Said Bahaji" target="Ziad Jarrah"/>
+<link source="Said Bahaji" target="Marwan Al-Shehhi"/>
+<link source="Said Bahaji" target="Mohamed Atta"/>
+<link source="Said Bahaji" target="Mamoun Darkazanli"/>
+<link source="Said Bahaji" target="Zakariya Essabar"/>
+<link source="Said Bahaji" target="Mounir El Motassadeq"/>
+<link source="Said Bahaji" target="Ramzi Bin al-Shibh"/>
+<link source="Mounir El Motassadeq" target="Marwan Al-Shehhi"/>
+<link source="Mounir El Motassadeq" target="Mohamed Atta"/>
+<link source="Mounir El Motassadeq" target="Said Bahaji"/>
+<link source="Mounir El Motassadeq" target="Ramzi Bin al-Shibh"/>
+<link source="Zacarias Moussaoui" target="Mohamed Atta"/>
+<link source="Zacarias Moussaoui" target="Ramzi Bin al-Shibh"/>
+<link source="Zacarias Moussaoui" target="Abu Qatada"/>
+<link source="Zacarias Moussaoui" target="Djamal Benghal"/>
+<link source="Zacarias Moussaoui" target="Jerome Courtaillier"/>
+<link source="Zacarias Moussaoui" target="David Courtaillier"/>
+<link source="Zacarias Moussaoui" target="Ahmen Ressam"/>
+<link source="Ramzi Bin al-Shibh" target="Ziad Jarrah"/>
+<link source="Ramzi Bin al-Shibh" target="Marwan Al-Shehhi"/>
+<link source="Ramzi Bin al-Shibh" target="Mohamed Atta"/>
+<link source="Ramzi Bin al-Shibh" target="Zakariya Essabar"/>
+<link source="Ramzi Bin al-Shibh" target="Said Bahaji"/>
+<link source="Ramzi Bin al-Shibh" target="Mounir El Motassadeq"/>
+<link source="Ramzi Bin al-Shibh" target="Zacarias Moussaoui"/>
+<link source="Ramzi Bin al-Shibh" target="Agus Budiman"/>
+<link source="Agus Budiman" target="Ziad Jarrah"/>
+<link source="Agus Budiman" target="Marwan Al-Shehhi"/>
+<link source="Agus Budiman" target="Mohamed Atta"/>
+<link source="Agus Budiman" target="Ramzi Bin al-Shibh"/>
+<link source="Ahed Khalil Ibrahim Samir Al-Ani" target="Mohamed Atta"/>
+<link source="Lofti Raissi" target="Hani Hanjour"/>
+<link source="Lofti Raissi" target="Ziad Jarrah"/>
+<link source="Lofti Raissi" target="Marwan Al-Shehhi"/>
+<link source="Lofti Raissi" target="Mohamed Atta"/>
+<link source="Lofti Raissi" target="Rayed Mohammed Abdullah"/>
+<link source="Rayed Mohammed Abdullah" target="Hani Hanjour"/>
+<link source="Rayed Mohammed Abdullah" target="Rayed Mohammed Abdullah"/>
+<link source="Rayed Mohammed Abdullah" target="Bandar Alhazmi"/>
+<link source="Rayed Mohammed Abdullah" target="Faisal Al Salmi"/>
+<link source="Bandar Alhazmi" target="Hani Hanjour"/>
+<link source="Bandar Alhazmi" target="Rayed Mohammed Abdullah"/>
+<link source="Faisal Al Salmi" target="Hani Hanjour"/>
+<link source="Faisal Al Salmi" target="Rayed Mohammed Abdullah"/>
+<link source="Osama Awadallah" target="Khalid Al-Mihdhar"/>
+<link source="Osama Awadallah" target="Nawaf Alhazmi"/>
+<link source="Osama Awadallah" target="Abdussattar Shaikh"/>
+<link source="Abdussattar Shaikh" target="Khalid Al-Mihdhar"/>
+<link source="Abdussattar Shaikh" target="Nawaf Alhazmi"/>
+<link source="Abdussattar Shaikh" target="Osama Awadallah"/>
+<link source="Mohamed Abdi" target="Nawaf Alhazmi"/>
+<link source="Mohamed Belfas" target="Agus Budiman"/>
+<link source="Mohamed Belfas" target="Ahed Khalil Ibrahim Samir Al-Ani"/>
+<link source="Imad Eddin Baraat Yarkas" target="Mohamed Atta"/>
+<link source="Imad Eddin Baraat Yarkas" target="Ramzi Bin al-Shibh"/>
+<link source="Imad Eddin Baraat Yarkas" target="Abu Qatada"/>
+<link source="Tarek Maaroufi" target="Imad Eddin Baraat Yarkas"/>
+<link source="Tarek Maaroufi" target="Abu Qatada"/>
+<link source="Tarek Maaroufi" target="Mohammed Bensakhria"/>
+<link source="Tarek Maaroufi" target="Essid Sami Ben Khemail"/>
+<link source="Tarek Maaroufi" target="Seifallah ben Hassine"/>
+<link source="Tarek Maaroufi" target="Essoussi Laaroussi"/>
+<link source="Abu Qatada" target="Zacarias Moussaoui"/>
+<link source="Abu Qatada" target="Imad Eddin Baraat Yarkas"/>
+<link source="Abu Qatada" target="Djamal Benghal"/>
+<link source="Abu Qatada" target="Abu Walid"/>
+<link source="Djamal Benghal" target="Zacarias Moussaoui"/>
+<link source="Djamal Benghal" target="Abu Qatada"/>
+<link source="Djamal Benghal" target="Jerome Courtaillier"/>
+<link source="Djamal Benghal" target="David Courtaillier"/>
+<link source="Djamal Benghal" target="Abu Walid"/>
+<link source="Djamal Benghal" target="Jean-Marc Grandvisir"/>
+<link source="Djamal Benghal" target="Abu Zubeida"/>
+<link source="Djamal Benghal" target="Nizar Trabelsi"/>
+<link source="Jerome Courtaillier" target="Zacarias Moussaoui"/>
+<link source="Jerome Courtaillier" target="Djamal Benghal"/>
+<link source="Jerome Courtaillier" target="David Courtaillier"/>
+<link source="Jerome Courtaillier" target="Kamel Daoudi"/>
+<link source="David Courtaillier" target="Zacarias Moussaoui"/>
+<link source="David Courtaillier" target="Jerome Courtaillier"/>
+<link source="Ahmen Ressam" target="Zacarias Moussaoui"/>
+<link source="Ahmen Ressam" target="Haydar Abu Doha"/>
+<link source="Abu Walid" target="Abu Qatada"/>
+<link source="Abu Walid" target="Djamal Benghal"/>
+<link source="Abu Walid" target="Kamel Daoudi"/>
+<link source="Jean-Marc Grandvisir" target="Djamal Benghal"/>
+<link source="Abu Zubeida" target="Djamal Benghal"/>
+<link source="Nizar Trabelsi" target="Djamal Benghal"/>
+<link source="Haydar Abu Doha" target="Ahmen Ressam"/>
+<link source="Haydar Abu Doha" target="Essid Sami Ben Khemail"/>
+<link source="Haydar Abu Doha" target="Madjid Sahoune"/>
+<link source="Mehdi Khammoun" target="Haydar Abu Doha"/>
+<link source="Mehdi Khammoun" target="Mohammed Bensakhria"/>
+<link source="Mehdi Khammoun" target="Essid Sami Ben Khemail"/>
+<link source="Mohammed Bensakhria" target="Mehdi Khammoun"/>
+<link source="Mohammed Bensakhria" target="Lased Ben Heni"/>
+<link source="Mohammed Bensakhria" target="Essid Sami Ben Khemail"/>
+<link source="Lased Ben Heni" target="Mohammed Bensakhria"/>
+<link source="Lased Ben Heni" target="Essid Sami Ben Khemail"/>
+<link source="Essid Sami Ben Khemail" target="Mohamed Atta"/>
+<link source="Essid Sami Ben Khemail" target="Haydar Abu Doha"/>
+<link source="Essid Sami Ben Khemail" target="Mehdi Khammoun"/>
+<link source="Essid Sami Ben Khemail" target="Mohammed Bensakhria"/>
+<link source="Essid Sami Ben Khemail" target="Lased Ben Heni"/>
+<link source="Essid Sami Ben Khemail" target="Seifallah ben Hassine"/>
+<link source="Essid Sami Ben Khemail" target="Essoussi Laaroussi"/>
+<link source="Essid Sami Ben Khemail" target="Fahid al Shakri"/>
+<link source="Essid Sami Ben Khemail" target="Madjid Sahoune"/>
+<link source="Essid Sami Ben Khemail" target="Samir Kishk"/>
+<link source="Seifallah ben Hassine" target="Essid Sami Ben Khemail"/>
+<link source="Essoussi Laaroussi" target="Essid Sami Ben Khemail"/>
+<link source="Fahid al Shakri" target="Essid Sami Ben Khemail"/>
+<link source="Madjid Sahoune" target="Essid Sami Ben Khemail"/>
+<link source="Samir Kishk" target="Essid Sami Ben Khemail"/>
+<link source="Kamel Daoudi" target="Zacarias Moussaoui"/>
+<link source="Kamel Daoudi" target="Abu Qatada"/>
+<link source="Kamel Daoudi" target="Djamal Benghal"/>
+<link source="Kamel Daoudi" target="Jerome Courtaillier"/>
+<link source="Kamel Daoudi" target="David Courtaillier"/>
+<link source="Kamel Daoudi" target="Abu Walid"/>
+</network>
+<network sourceType="Agent" source="Agent" targetType="Event" target="Event" id="Agent x Event" isDirected="true" isBinary="false" allowSelfLoops="true">
+<property id="autoCalc-componentStatistics-dyadCount" value="0"/>
+<property id="autoCalc-componentStatistics-isolateCount" value="0"/>
+<property id="autoCalc-componentStatistics-triadCount" value="0"/>
+<property id="autoCalc-density" value="0.699453551913"/>
+<property id="autoCalc-densityAutoDetect" value="0.699453551913"/>
+<property id="autoCalc-diagonalEdgeStatistics-binary" value="1"/>
+<property id="autoCalc-diagonalEdgeStatistics-len" value="0"/>
+<property id="autoCalc-diagonalEdgeStatistics-max" value="0"/>
+<property id="autoCalc-diagonalEdgeStatistics-min" value="0"/>
+<property id="autoCalc-diagonalEdgeStatistics-sum" value="0"/>
+<property id="autoCalc-diagonalEdgeStatistics-sumOfSquares" value="0"/>
+<property id="autoCalc-largeComponentStats-binary" value="0"/>
+<property id="autoCalc-largeComponentStats-len" value="1"/>
+<property id="autoCalc-largeComponentStats-max" value="64"/>
+<property id="autoCalc-largeComponentStats-min" value="64"/>
+<property id="autoCalc-largeComponentStats-sum" value="64"/>
+<property id="autoCalc-largeComponentStats-sumOfSquares" value="4096"/>
+<property id="autoCalc-nonDiagonalEdgeStatistics-binary" value="0"/>
+<property id="autoCalc-nonDiagonalEdgeStatistics-len" value="128"/>
+<property id="autoCalc-nonDiagonalEdgeStatistics-max" value="5"/>
+<property id="autoCalc-nonDiagonalEdgeStatistics-min" value="1"/>
+<property id="autoCalc-nonDiagonalEdgeStatistics-sum" value="366"/>
+<property id="autoCalc-nonDiagonalEdgeStatistics-sumOfSquares" value="1384"/>
+<property id="autoCalc-symmetric" value="0"/>
+<link source="Majed Moqed" target="Network Strength"/>
+<link source="Majed Moqed" target="Ties" value="2"/>
+<link source="Khalid Al-Mihdhar" target="Network Strength"/>
+<link source="Khalid Al-Mihdhar" target="Ties" value="2"/>
+<link source="Hani Hanjour" target="Network Strength"/>
+<link source="Hani Hanjour" target="Ties" value="2"/>
+<link source="Hani Hanjour" target="Las Vegas Meeting"/>
+<link source="Nawaf Alhazmi" target="Network Strength"/>
+<link source="Nawaf Alhazmi" target="Ties" value="2"/>
+<link source="Nawaf Alhazmi" target="Las Vegas Meeting"/>
+<link source="Salem Alhazmi*" target="Network Strength"/>
+<link source="Salem Alhazmi*" target="Ties" value="2"/>
+<link source="Salem Alhazmi*" target="Las Vegas Meeting"/>
+<link source="Ahmed Alnami" target="Network Strength"/>
+<link source="Ahmed Alnami" target="Ties" value="3"/>
+<link source="Ahmed Alghamdi" target="Network Strength"/>
+<link source="Ahmed Alghamdi" target="Ties" value="4"/>
+<link source="Saeed Alghamdi*" target="Network Strength"/>
+<link source="Saeed Alghamdi*" target="Ties" value="3"/>
+<link source="Hamza Alghamdi" target="Network Strength"/>
+<link source="Hamza Alghamdi" target="Ties" value="4"/>
+<link source="Ahmed Al Haznawi" target="Network Strength"/>
+<link source="Ahmed Al Haznawi" target="Ties" value="3"/>
+<link source="Mohand Alshehri*" target="Network Strength"/>
+<link source="Mohand Alshehri*" target="Ties" value="4"/>
+<link source="Fayez Ahmed" target="Network Strength"/>
+<link source="Fayez Ahmed" target="Ties" value="4"/>
+<link source="Ziad Jarrah" target="Network Strength"/>
+<link source="Ziad Jarrah" target="Ties" value="3"/>
+<link source="Ziad Jarrah" target="Las Vegas Meeting"/>
+<link source="Marwan Al-Shehhi" target="Network Strength"/>
+<link source="Marwan Al-Shehhi" target="Ties" value="4"/>
+<link source="Marwan Al-Shehhi" target="Las Vegas Meeting"/>
+<link source="Mohamed Atta" target="Network Strength"/>
+<link source="Mohamed Atta" target="Ties"/>
+<link source="Mohamed Atta" target="Las Vegas Meeting"/>
+<link source="Abdul Aziz Al-Omari*" target="Network Strength"/>
+<link source="Abdul Aziz Al-Omari*" target="Ties"/>
+<link source="Waleed Alshehri" target="Network Strength"/>
+<link source="Waleed Alshehri" target="Ties"/>
+<link source="Wail Alshehri" target="Network Strength"/>
+<link source="Wail Alshehri" target="Ties"/>
+<link source="Satam Suqami" target="Network Strength"/>
+<link source="Satam Suqami" target="Ties"/>
+<link source="Raed Hijazi" target="Network Strength" value="2"/>
+<link source="Raed Hijazi" target="Ties" value="5"/>
+<link source="Nabil al-Marabh" target="Network Strength" value="2"/>
+<link source="Nabil al-Marabh" target="Ties" value="5"/>
+<link source="Mustafa Ahamend al-Hisawi" target="Network Strength" value="2"/>
+<link source="Mustafa Ahamend al-Hisawi" target="Ties" value="5"/>
+<link source="Mamoun Darkazanli" target="Network Strength" value="2"/>
+<link source="Mamoun Darkazanli" target="Ties" value="5"/>
+<link source="Zakariya Essabar" target="Network Strength" value="2"/>
+<link source="Zakariya Essabar" target="Ties" value="5"/>
+<link source="Said Bahaji" target="Network Strength" value="2"/>
+<link source="Said Bahaji" target="Ties" value="5"/>
+<link source="Mounir El Motassadeq" target="Network Strength" value="2"/>
+<link source="Mounir El Motassadeq" target="Ties" value="5"/>
+<link source="Zacarias Moussaoui" target="Network Strength" value="2"/>
+<link source="Zacarias Moussaoui" target="Ties" value="5"/>
+<link source="Ramzi Bin al-Shibh" target="Network Strength" value="2"/>
+<link source="Ramzi Bin al-Shibh" target="Ties" value="5"/>
+<link source="Agus Budiman" target="Network Strength" value="2"/>
+<link source="Agus Budiman" target="Ties" value="5"/>
+<link source="Ahed Khalil Ibrahim Samir Al-Ani" target="Network Strength" value="2"/>
+<link source="Ahed Khalil Ibrahim Samir Al-Ani" target="Ties" value="5"/>
+<link source="Lofti Raissi" target="Network Strength" value="2"/>
+<link source="Lofti Raissi" target="Ties" value="5"/>
+<link source="Rayed Mohammed Abdullah" target="Network Strength" value="2"/>
+<link source="Rayed Mohammed Abdullah" target="Ties" value="5"/>
+<link source="Bandar Alhazmi" target="Network Strength" value="2"/>
+<link source="Bandar Alhazmi" target="Ties" value="5"/>
+<link source="Faisal Al Salmi" target="Network Strength" value="2"/>
+<link source="Faisal Al Salmi" target="Ties" value="5"/>
+<link source="Osama Awadallah" target="Network Strength" value="2"/>
+<link source="Osama Awadallah" target="Ties" value="5"/>
+<link source="Abdussattar Shaikh" target="Network Strength" value="2"/>
+<link source="Abdussattar Shaikh" target="Ties" value="5"/>
+<link source="Mohamed Abdi" target="Network Strength" value="2"/>
+<link source="Mohamed Abdi" target="Ties" value="5"/>
+<link source="Mohamed Belfas" target="Network Strength" value="2"/>
+<link source="Mohamed Belfas" target="Ties" value="5"/>
+<link source="Imad Eddin Baraat Yarkas" target="Network Strength" value="2"/>
+<link source="Imad Eddin Baraat Yarkas" target="Ties" value="5"/>
+<link source="Tarek Maaroufi" target="Network Strength" value="2"/>
+<link source="Tarek Maaroufi" target="Ties" value="5"/>
+<link source="Abu Qatada" target="Network Strength" value="2"/>
+<link source="Abu Qatada" target="Ties" value="5"/>
+<link source="Djamal Benghal" target="Network Strength" value="2"/>
+<link source="Djamal Benghal" target="Ties" value="5"/>
+<link source="Jerome Courtaillier" target="Network Strength" value="2"/>
+<link source="Jerome Courtaillier" target="Ties" value="5"/>
+<link source="David Courtaillier" target="Network Strength" value="2"/>
+<link source="David Courtaillier" target="Ties" value="5"/>
+<link source="Ahmen Ressam" target="Network Strength" value="2"/>
+<link source="Ahmen Ressam" target="Ties" value="5"/>
+<link source="Abu Walid" target="Network Strength" value="2"/>
+<link source="Abu Walid" target="Ties" value="5"/>
+<link source="Jean-Marc Grandvisir" target="Network Strength" value="2"/>
+<link source="Jean-Marc Grandvisir" target="Ties" value="5"/>
+<link source="Abu Zubeida" target="Network Strength" value="2"/>
+<link source="Abu Zubeida" target="Ties" value="5"/>
+<link source="Nizar Trabelsi" target="Network Strength" value="2"/>
+<link source="Nizar Trabelsi" target="Ties" value="5"/>
+<link source="Haydar Abu Doha" target="Network Strength" value="2"/>
+<link source="Haydar Abu Doha" target="Ties" value="5"/>
+<link source="Mehdi Khammoun" target="Network Strength" value="2"/>
+<link source="Mehdi Khammoun" target="Ties" value="5"/>
+<link source="Mohammed Bensakhria" target="Network Strength" value="2"/>
+<link source="Mohammed Bensakhria" target="Ties" value="5"/>
+<link source="Lased Ben Heni" target="Network Strength" value="2"/>
+<link source="Lased Ben Heni" target="Ties" value="5"/>
+<link source="Essid Sami Ben Khemail" target="Network Strength" value="2"/>
+<link source="Essid Sami Ben Khemail" target="Ties" value="5"/>
+<link source="Seifallah ben Hassine" target="Network Strength" value="2"/>
+<link source="Seifallah ben Hassine" target="Ties" value="5"/>
+<link source="Essoussi Laaroussi" target="Network Strength" value="2"/>
+<link source="Essoussi Laaroussi" target="Ties" value="5"/>
+<link source="Fahid al Shakri" target="Network Strength" value="2"/>
+<link source="Fahid al Shakri" target="Ties" value="5"/>
+<link source="Madjid Sahoune" target="Network Strength" value="2"/>
+<link source="Madjid Sahoune" target="Ties" value="5"/>
+<link source="Samir Kishk" target="Network Strength" value="2"/>
+<link source="Samir Kishk" target="Ties" value="5"/>
+<link source="Kamel Daoudi" target="Network Strength" value="2"/>
+<link source="Kamel Daoudi" target="Ties" value="5"/>
+<link source="Takek Maaroufi" target="Network Strength" value="2"/>
+<link source="Takek Maaroufi" target="Ties" value="5"/>
+</network>
+<network sourceType="Agent" source="Agent" targetType="Action" target="Action" id="Agent x Action" isDirected="true" isBinary="false" allowSelfLoops="true">
+<property id="autoCalc-componentStatistics-dyadCount" value="0"/>
+<property id="autoCalc-componentStatistics-isolateCount" value="0"/>
+<property id="autoCalc-componentStatistics-triadCount" value="0"/>
+<property id="autoCalc-density" value="0.699453551913"/>
+<property id="autoCalc-densityAutoDetect" value="0.699453551913"/>
+<property id="autoCalc-diagonalEdgeStatistics-binary" value="1"/>
+<property id="autoCalc-diagonalEdgeStatistics-len" value="0"/>
+<property id="autoCalc-diagonalEdgeStatistics-max" value="0"/>
+<property id="autoCalc-diagonalEdgeStatistics-min" value="0"/>
+<property id="autoCalc-diagonalEdgeStatistics-sum" value="0"/>
+<property id="autoCalc-diagonalEdgeStatistics-sumOfSquares" value="0"/>
+<property id="autoCalc-largeComponentStats-binary" value="0"/>
+<property id="autoCalc-largeComponentStats-len" value="1"/>
+<property id="autoCalc-largeComponentStats-max" value="64"/>
+<property id="autoCalc-largeComponentStats-min" value="64"/>
+<property id="autoCalc-largeComponentStats-sum" value="64"/>
+<property id="autoCalc-largeComponentStats-sumOfSquares" value="4096"/>
+<property id="autoCalc-nonDiagonalEdgeStatistics-binary" value="0"/>
+<property id="autoCalc-nonDiagonalEdgeStatistics-len" value="128"/>
+<property id="autoCalc-nonDiagonalEdgeStatistics-max" value="5"/>
+<property id="autoCalc-nonDiagonalEdgeStatistics-min" value="1"/>
+<property id="autoCalc-nonDiagonalEdgeStatistics-sum" value="366"/>
+<property id="autoCalc-nonDiagonalEdgeStatistics-sumOfSquares" value="1384"/>
+<property id="autoCalc-symmetric" value="0"/>
+<link source="Majed Moqed" target="Network Strength"/>
+<link source="Majed Moqed" target="Ties" value="2"/>
+<link source="Khalid Al-Mihdhar" target="Network Strength"/>
+<link source="Khalid Al-Mihdhar" target="Ties" value="2"/>
+<link source="Hani Hanjour" target="Network Strength"/>
+<link source="Hani Hanjour" target="Ties" value="2"/>
+<link source="Hani Hanjour" target="Las Vegas Meeting"/>
+<link source="Nawaf Alhazmi" target="Network Strength"/>
+<link source="Nawaf Alhazmi" target="Ties" value="2"/>
+<link source="Nawaf Alhazmi" target="Las Vegas Meeting"/>
+<link source="Salem Alhazmi*" target="Network Strength"/>
+<link source="Salem Alhazmi*" target="Ties" value="2"/>
+<link source="Salem Alhazmi*" target="Las Vegas Meeting"/>
+<link source="Ahmed Alnami" target="Network Strength"/>
+<link source="Ahmed Alnami" target="Ties" value="3"/>
+<link source="Ahmed Alghamdi" target="Network Strength"/>
+<link source="Ahmed Alghamdi" target="Ties" value="4"/>
+<link source="Saeed Alghamdi*" target="Network Strength"/>
+<link source="Saeed Alghamdi*" target="Ties" value="3"/>
+<link source="Hamza Alghamdi" target="Network Strength"/>
+<link source="Hamza Alghamdi" target="Ties" value="4"/>
+<link source="Ahmed Al Haznawi" target="Network Strength"/>
+<link source="Ahmed Al Haznawi" target="Ties" value="3"/>
+<link source="Mohand Alshehri*" target="Network Strength"/>
+<link source="Mohand Alshehri*" target="Ties" value="4"/>
+<link source="Fayez Ahmed" target="Network Strength"/>
+<link source="Fayez Ahmed" target="Ties" value="4"/>
+<link source="Ziad Jarrah" target="Network Strength"/>
+<link source="Ziad Jarrah" target="Ties" value="3"/>
+<link source="Ziad Jarrah" target="Las Vegas Meeting"/>
+<link source="Marwan Al-Shehhi" target="Network Strength"/>
+<link source="Marwan Al-Shehhi" target="Ties" value="4"/>
+<link source="Marwan Al-Shehhi" target="Las Vegas Meeting"/>
+<link source="Mohamed Atta" target="Network Strength"/>
+<link source="Mohamed Atta" target="Ties"/>
+<link source="Mohamed Atta" target="Las Vegas Meeting"/>
+<link source="Abdul Aziz Al-Omari*" target="Network Strength"/>
+<link source="Abdul Aziz Al-Omari*" target="Ties"/>
+<link source="Waleed Alshehri" target="Network Strength"/>
+<link source="Waleed Alshehri" target="Ties"/>
+<link source="Wail Alshehri" target="Network Strength"/>
+<link source="Wail Alshehri" target="Ties"/>
+<link source="Satam Suqami" target="Network Strength"/>
+<link source="Satam Suqami" target="Ties"/>
+<link source="Raed Hijazi" target="Network Strength" value="2"/>
+<link source="Raed Hijazi" target="Ties" value="5"/>
+<link source="Nabil al-Marabh" target="Network Strength" value="2"/>
+<link source="Nabil al-Marabh" target="Ties" value="5"/>
+<link source="Mustafa Ahamend al-Hisawi" target="Network Strength" value="2"/>
+<link source="Mustafa Ahamend al-Hisawi" target="Ties" value="5"/>
+<link source="Mamoun Darkazanli" target="Network Strength" value="2"/>
+<link source="Mamoun Darkazanli" target="Ties" value="5"/>
+<link source="Zakariya Essabar" target="Network Strength" value="2"/>
+<link source="Zakariya Essabar" target="Ties" value="5"/>
+<link source="Said Bahaji" target="Network Strength" value="2"/>
+<link source="Said Bahaji" target="Ties" value="5"/>
+<link source="Mounir El Motassadeq" target="Network Strength" value="2"/>
+<link source="Mounir El Motassadeq" target="Ties" value="5"/>
+<link source="Zacarias Moussaoui" target="Network Strength" value="2"/>
+<link source="Zacarias Moussaoui" target="Ties" value="5"/>
+<link source="Ramzi Bin al-Shibh" target="Network Strength" value="2"/>
+<link source="Ramzi Bin al-Shibh" target="Ties" value="5"/>
+<link source="Agus Budiman" target="Network Strength" value="2"/>
+<link source="Agus Budiman" target="Ties" value="5"/>
+<link source="Ahed Khalil Ibrahim Samir Al-Ani" target="Network Strength" value="2"/>
+<link source="Ahed Khalil Ibrahim Samir Al-Ani" target="Ties" value="5"/>
+<link source="Lofti Raissi" target="Network Strength" value="2"/>
+<link source="Lofti Raissi" target="Ties" value="5"/>
+<link source="Rayed Mohammed Abdullah" target="Network Strength" value="2"/>
+<link source="Rayed Mohammed Abdullah" target="Ties" value="5"/>
+<link source="Bandar Alhazmi" target="Network Strength" value="2"/>
+<link source="Bandar Alhazmi" target="Ties" value="5"/>
+<link source="Faisal Al Salmi" target="Network Strength" value="2"/>
+<link source="Faisal Al Salmi" target="Ties" value="5"/>
+<link source="Osama Awadallah" target="Network Strength" value="2"/>
+<link source="Osama Awadallah" target="Ties" value="5"/>
+<link source="Abdussattar Shaikh" target="Network Strength" value="2"/>
+<link source="Abdussattar Shaikh" target="Ties" value="5"/>
+<link source="Mohamed Abdi" target="Network Strength" value="2"/>
+<link source="Mohamed Abdi" target="Ties" value="5"/>
+<link source="Mohamed Belfas" target="Network Strength" value="2"/>
+<link source="Mohamed Belfas" target="Ties" value="5"/>
+<link source="Imad Eddin Baraat Yarkas" target="Network Strength" value="2"/>
+<link source="Imad Eddin Baraat Yarkas" target="Ties" value="5"/>
+<link source="Tarek Maaroufi" target="Network Strength" value="2"/>
+<link source="Tarek Maaroufi" target="Ties" value="5"/>
+<link source="Abu Qatada" target="Network Strength" value="2"/>
+<link source="Abu Qatada" target="Ties" value="5"/>
+<link source="Djamal Benghal" target="Network Strength" value="2"/>
+<link source="Djamal Benghal" target="Ties" value="5"/>
+<link source="Jerome Courtaillier" target="Network Strength" value="2"/>
+<link source="Jerome Courtaillier" target="Ties" value="5"/>
+<link source="David Courtaillier" target="Network Strength" value="2"/>
+<link source="David Courtaillier" target="Ties" value="5"/>
+<link source="Ahmen Ressam" target="Network Strength" value="2"/>
+<link source="Ahmen Ressam" target="Ties" value="5"/>
+<link source="Abu Walid" target="Network Strength" value="2"/>
+<link source="Abu Walid" target="Ties" value="5"/>
+<link source="Jean-Marc Grandvisir" target="Network Strength" value="2"/>
+<link source="Jean-Marc Grandvisir" target="Ties" value="5"/>
+<link source="Abu Zubeida" target="Network Strength" value="2"/>
+<link source="Abu Zubeida" target="Ties" value="5"/>
+<link source="Nizar Trabelsi" target="Network Strength" value="2"/>
+<link source="Nizar Trabelsi" target="Ties" value="5"/>
+<link source="Haydar Abu Doha" target="Network Strength" value="2"/>
+<link source="Haydar Abu Doha" target="Ties" value="5"/>
+<link source="Mehdi Khammoun" target="Network Strength" value="2"/>
+<link source="Mehdi Khammoun" target="Ties" value="5"/>
+<link source="Mohammed Bensakhria" target="Network Strength" value="2"/>
+<link source="Mohammed Bensakhria" target="Ties" value="5"/>
+<link source="Lased Ben Heni" target="Network Strength" value="2"/>
+<link source="Lased Ben Heni" target="Ties" value="5"/>
+<link source="Essid Sami Ben Khemail" target="Network Strength" value="2"/>
+<link source="Essid Sami Ben Khemail" target="Ties" value="5"/>
+<link source="Seifallah ben Hassine" target="Network Strength" value="2"/>
+<link source="Seifallah ben Hassine" target="Ties" value="5"/>
+<link source="Essoussi Laaroussi" target="Network Strength" value="2"/>
+<link source="Essoussi Laaroussi" target="Ties" value="5"/>
+<link source="Fahid al Shakri" target="Network Strength" value="2"/>
+<link source="Fahid al Shakri" target="Ties" value="5"/>
+<link source="Madjid Sahoune" target="Network Strength" value="2"/>
+<link source="Madjid Sahoune" target="Ties" value="5"/>
+<link source="Samir Kishk" target="Network Strength" value="2"/>
+<link source="Samir Kishk" target="Ties" value="5"/>
+<link source="Kamel Daoudi" target="Network Strength" value="2"/>
+<link source="Kamel Daoudi" target="Ties" value="5"/>
+<link source="Takek Maaroufi" target="Network Strength" value="2"/>
+<link source="Takek Maaroufi" target="Ties" value="5"/>
+</network>
+</networks>
+</MetaNetwork>
+</DynamicNetwork>
