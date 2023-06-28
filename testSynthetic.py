@@ -23,7 +23,6 @@ def main():
                 fout.write(f'{i}, {s}\n')
             fout.flush()
         print("done")
-        break
 
 if __name__=="__main__":
     main()
