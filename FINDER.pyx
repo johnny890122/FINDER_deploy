@@ -65,7 +65,7 @@ class FINDER:
         self.embedding_size = EMBEDDING_SIZE
         self.learning_rate = LEARNING_RATE
         # self.g_type = 'barabasi_albert' #erdos_renyi, powerlaw, small-world
-        self.g_type = 'dark'
+        self.g_type = 'barabasi_albert'
 
         self.TrainSet = graph.py_GSet()
         self.TestSet = graph.py_GSet()
@@ -349,7 +349,7 @@ class FINDER:
         elif self.g_type == 'small-world':
             g = nx.connected_watts_strogatz_graph(n=cur_n, k=8, p=0.1)
         elif self.g_type == 'barabasi_albert':
-            g = nx.barabasi_albert_graph(n=cur_n, m=4)
+            g = nx.barabasi_albert_graph(n=cur_n, m=1)
         elif self.g_type == "dark":
             generator = DarkGenerator(min_n=num_min, max_n=num_max, density=0.01)
             generator.simulate()
