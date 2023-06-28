@@ -9,7 +9,7 @@ def main():
     dqn = FINDER()
     data_test_path = './data/synthetic/'
     data_test_name = ['test']
-    model_file = './models/Model_dark/nrange_200_200_iter_154500.ckpt'
+    model_file = './models/Model_barabasi_albert/nrange_200_200_iter_154500.ckpt'
 
     file_path = './results'
 
