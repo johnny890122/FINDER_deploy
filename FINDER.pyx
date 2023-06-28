@@ -682,7 +682,9 @@ class FINDER:
         g = nx.read_gml(g_path)
         self.InsertGraph(g, is_test=True)
         t1 = time.time()
-        val, sol = self.GetSol(0)
+        gid = int(g_path.split("_")[-1])
+        print(gid)
+        val, sol = self.GetSol(gid)
 
         t2 = time.time()
         result_list_score.append(val)
