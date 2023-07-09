@@ -16,9 +16,41 @@
 				highlight_node.clear()
 			}
 		</script>
+		<style>
+/* 			.otree-body {
+			    display: flex;
+				justify-content: center;
+				align-items: center;
+			} */
+
+		.outer {
+		  display: flex;
+		  justify-content: center;
+		  align-items: center;
+		  /* Add any additional styling for the outer div */
+		}
+
+		.middle {
+		  display: flex;
+		  flex-direction: column;
+		  /* Add any additional styling for the middle div */
+		}
+
+		.inner {
+		  /* Add any additional styling for the inner div */
+		}
+
+
+		</style>
 	</head>
 
 		<body>
+			<div class="outer">
+			  <div class="middle">
+<!-- 			    <div class="inner">Div 1</div>
+			    <div class="inner">Div 2</div> -->
+			  
+			
 				<div class="mb-3 _formfield">
 					<label class="col-form-label" for="id_to_be_removed">
 						您選擇的節點為：
@@ -50,7 +82,8 @@
 				</div>
 
 				<!-- TODO: RWD -->
-				<div id="graph" style="border-color: black; border-width: 1px; border-style: solid; padding:5px; width:fit-content;"></div>
+				<div id="graph" 
+					 style="border-color: black; border-width: 1px; border-style: solid; padding:5px; width:fit-content;"></div>
 
 				<script>
 					const gData = { nodes: {{nodes}}, links: {{links}} };
@@ -60,8 +93,8 @@
 					const Graph = ForceGraph()
 						(document.getElementById('graph'))
 						.graphData(gData)
-						.width(1200)
-						.height(700)
+						.width(1400)
+						.height(550)
 						.minZoom(1)
 						.maxZoom(2.75)
 						.onNodeClick(node => {
@@ -123,8 +156,10 @@
 						ctx.stroke()
 					})
 				Graph.d3Force('center', null);
-				Graph.onEngineStop(() => Graph.zoomToFit(400));
+				Graph.onEngineTick(() => Graph.zoomToFit(0, 10, node => true));
 				</script>
+				</div>
+			</div>
 		</body>
 
 {{ endblock }}
