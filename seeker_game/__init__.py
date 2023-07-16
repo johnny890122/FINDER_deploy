@@ -3,7 +3,7 @@ import sys, os, random, json, io
 import networkx as nx
 import numpy as np
 
-from seeker_game.utility import get_current_graph, G_links, G_nodes, to_list, remove_node_and_neighbor, getRobustness, generate_ba_graph_with_density, node_centrality_criteria 
+from seeker_game.utility import get_current_graph, G_links, G_nodes, to_list, remove_node_and_neighbor, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria 
 
 sys.path.append(os.path.dirname(__file__) + os.sep + './')
 from FINDER import FINDER
@@ -61,7 +61,7 @@ def creating_session(subsession: Subsession):
 
         randint = subsession.session.config["randint"]
     
-        # 初始化 graph
+        # 初始化 graph 
         file_name = f"input/{generating_process}/{graph_config}_{randint}.txt"
         initial_G = nx.read_gml(file_name)
         initial_G = nx.relabel_nodes(initial_G, lambda x: int(x) + 2)
@@ -103,15 +103,10 @@ def creating_session(subsession: Subsession):
                 payoff_finder = [0]
                 cnt = 0
                 for (i, n) in enumerate(to_list(player.in_round(1).finder_hist)):
-                    try: 
-                        payoff_finder.append(getRobustness(hist_G, int(n)))
-                        node_plot_finder.append(len(hist_G.nodes()))
-                        hist_G = remove_node_and_neighbor(int(n), hist_G)
-                        cnt += 1
-
-                        print("remove", n+2)
-                    except:
-                        print("not found", n+2)
+                    payoff_finder.append(getRobustness(hist_G, int(n)))
+                    node_plot_finder.append(len(hist_G.nodes()))
+                    hist_G = remove_node(int(n), hist_G, auto_clean=False)
+                    cnt += 1
                 
                 payoff_finder = [p for p in np.add.accumulate(payoff_finder)]
             
@@ -126,7 +121,7 @@ class Seeker_dismantle(Page):
     @staticmethod
     def is_displayed(player: Player):
         G = get_current_graph(player)
-        if G.number_of_nodes() != 0:
+        if G.number_of_edges() != 0:
             return True
         return False
 
@@ -154,13 +149,12 @@ class Seeker_dismantle(Page):
         # 計算 reward
         player.seeker_payoff = getRobustness(G, player.to_be_removed)
         player.num_node = G.number_of_nodes()
-        player.num_edge = len(G.edges())
+        player.num_edge = G.number_of_edges()
         
-        G = remove_node_and_neighbor(player.to_be_removed, G)
+        G = remove_node(player.to_be_removed, G, auto_clean=False)
         
         player.node_remain = G.number_of_nodes()
-        player.edge_remain = len(G.edges())
-        edge_remain = len(G.edges())
+        player.edge_remain = G.number_of_edges()
 
         player.num_node_removed = player.num_node - player.node_remain
 

@@ -61,6 +61,16 @@ def remove_node_and_neighbor(to_be_removed, G):
         G.remove_node(n)
     return G
 
+def remove_node(to_be_removed, G, auto_clean=True):
+    G.remove_node(to_be_removed)
+
+    if auto_clean:
+        for n in dict(G.nodes()).copy():
+            if G.degree(n) == 0:
+                G.remove_node(n)
+
+    return G
+
 def getRobustness(G, sol):
     G = G.copy()
     GCCsize = len(max(nx.connected_components(G), key=len))
