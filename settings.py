@@ -8,9 +8,9 @@ SESSION_CONFIGS = [
         num_demo_participants=1, 
         seeker='human', 
 
-        # size=50,
-        # density=0.1, 
-        
+        size=100,
+        density=0.01, 
+        pre_computed=False, 
         generating_process='ba_graph', 
         graph_config = "size_low", 
         randint=1, 

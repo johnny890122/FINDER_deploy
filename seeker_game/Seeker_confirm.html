@@ -86,7 +86,7 @@
 
             <p>您這回合一共移除 {{num_node_removed}} 個節點。</p>
 
-            <p>剩餘 {{node_remain}} 個節點。</p>
+            <p>目前 GCC size: {{current_GCC_size}} </p>
 
             {{ if current_size == 0}} 
                 <p>您已移除全部的節點。</p>
@@ -97,8 +97,10 @@
             <div id="payoff_chart" style="display:inline-block; width: 700px;"></div>      
         </div>
         <script>
-            plot("chart", {{node_line_plot}}, {{node_plot_finder}});
-            plot("payoff_chart", {{payoff_line_plot}}, {{payoff_finder}});
+            // plot("chart", {{node_line_plot}}, {{node_plot_finder}});
+            // plot("payoff_chart", {{payoff_line_plot}}, {{payoff_finder}});
+            plot("chart", {{node_line_plot}}, {});
+            plot("payoff_chart", {{payoff_line_plot}}, {});
         </script>
 
     </body>
