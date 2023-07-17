@@ -3,7 +3,7 @@ import sys, os, random, json, io
 import networkx as nx
 import numpy as np
 
-from seeker_game.utility import get_current_graph, G_links, G_nodes, to_list, remove_node_and_neighbor, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria 
+from seeker_game.utility import get_current_graph, G_links, G_nodes, to_list, remove_node_and_neighbor, remove_node, to_dash_G, getRobustness, generate_ba_graph_with_density, node_centrality_criteria 
 
 sys.path.append(os.path.dirname(__file__) + os.sep + './')
 from FINDER import FINDER
@@ -22,6 +22,7 @@ class Subsession(BaseSubsession):
 
 class Group(BaseGroup):
     G = nx.Graph()
+    Full_G = nx.Graph()
 
 class Player(BasePlayer):
     # 實驗的參數
@@ -41,6 +42,7 @@ class Player(BasePlayer):
     num_edge_removed = models.IntegerField(initial=-1)
     node_remain = models.IntegerField(initial=-1)
     edge_remain = models.IntegerField(initial=-1)
+    current_GCC_size = models.IntegerField(initial=-1)
     finder_hist = models.StringField(initial="2,3,4,5,6,7,8,9,10")
     node_plot_finder = models.StringField(initial="")
     payoff_finder = models.StringField(initial="")
@@ -92,10 +94,15 @@ def creating_session(subsession: Subsession):
         if player.round_number == 1:
 
             G = subsession.get_groups()[0].G
+            Full_G = subsession.get_groups()[0].Full_G
+
             for n in initial_G.nodes():
                 G.add_node(int(n))
+                Full_G.add_node(int(n))
+
             for e in initial_G.edges():
                 G.add_edge(int(e[0]), int(e[1]))
+                Full_G.add_edge(int(e[0]), int(e[1]))
 
             hist_G = G.copy()
             if not is_pre_computed:
@@ -121,23 +128,25 @@ class Seeker_dismantle(Page):
     @staticmethod
     def is_displayed(player: Player):
         G = get_current_graph(player)
-        if G.number_of_edges() != 0:
+        if G.number_of_edges() > 0:
             return True
         return False
 
     @staticmethod
     def vars_for_template(player: Player):
-        G = get_current_graph(player)        
-        centrality = node_centrality_criteria(G)
+        G = get_current_graph(player)
+        Full_G = player.group.Full_G
+
+        centrality = node_centrality_criteria(G, Full_G)
 
         return {
             "practice": int(player.session.config['pre_computed']), 
-            "nodes": G_nodes(G), 
+            "nodes": G_nodes(G, Full_G), 
             "highest_degree_id": centrality["degree"],
             "highest_closeness_id": centrality["closeness"],
             "highest_betweenness_id": centrality["betweenness"],
             "highest_page_rank_id": centrality["page_rank"], 
-            "links": G_links(G), 
+            "links": G_links(G, Full_G), 
             "which_round": player.round_number,
             "density": nx.density(G), 
         }
@@ -152,10 +161,9 @@ class Seeker_dismantle(Page):
         player.num_edge = G.number_of_edges()
         
         G = remove_node(player.to_be_removed, G, auto_clean=False)
-        
         player.node_remain = G.number_of_nodes()
         player.edge_remain = G.number_of_edges()
-
+        player.current_GCC_size = len(max(nx.connected_components(G), key=len))
         player.num_node_removed = player.num_node - player.node_remain
 
 # Seeker 確認該回合的破壞成果
@@ -163,7 +171,7 @@ class Seeker_confirm(Page):
     @staticmethod
     def is_displayed(player: Player):
         G = get_current_graph(player)
-        if G.number_of_nodes() > 0:
+        if G.number_of_edges() > 0:
             return True
         return False
 
@@ -178,7 +186,7 @@ class Seeker_confirm(Page):
         # Remaining node
         node_plot = [[0, player.in_round(1).num_node]]
         for n in range(1, player.round_number+1):
-            node_plot.append([n, player.in_round(n).node_remain])
+            node_plot.append([n, player.in_round(n).current_GCC_size])
 
         # Accumulate payoff
         payoff = [0] + [p.seeker_payoff for p in player.in_previous_rounds()] + [player.seeker_payoff]
@@ -227,6 +235,7 @@ class Seeker_confirm(Page):
             "caught": player.to_be_removed, 
             "num_node_removed": player.num_node_removed,
             "node_remain": player.node_remain, 
+            "current_GCC_size": player.current_GCC_size, 
         }
 
 page_sequence = [Seeker_dismantle, Seeker_confirm]

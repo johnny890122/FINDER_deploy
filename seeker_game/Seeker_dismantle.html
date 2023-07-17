@@ -78,9 +78,11 @@
 						(document.getElementById('graph'))
 						.graphData(gData)
 						.width(1400)
-						.height(550)
+						.height(800)
 						.minZoom(1)
 						.maxZoom(1)
+						.linkWidth(3)
+						.linkLineDash(link => link["display"] == "False" && [1, 8])
 						.onNodeClick(node => {
 							let info = ''
 							if (node.id == {{highest_degree_id}}) {
@@ -126,14 +128,20 @@
 						else if (node.id == {{highest_page_rank_id}}){
 							ctx.fillStyle = "#9FE2BF";
 						}
+
 						else{
-							ctx.fillStyle = "#ffffff";
+							ctx.fillStyle = "#568EA6";
 						}
 
 						// 標註被選中的 node
 						if (highlight_node.has(node)) {
 							ctx.fillStyle = "#B22222";
 							ctx.strokeStyle = "#B22222";
+						}
+
+						if (node.display == "False") {
+							ctx.fillStyle = "#ffffff";
+							ctx.strokeStyle = "#568EA6";
 						}
 						ctx.beginPath(); ctx.arc(node.x, node.y, NODE_R, 0, 2 * Math.PI, false); ctx.closePath();
 						ctx.fill()
