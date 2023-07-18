@@ -129,3 +129,5 @@ def convert_to_FINDER_format(file_name, input_dir, output_dir):
         str_ = converter(data)
         outfile.write(str_)
 
+def complete_genertor(n=20):
+    return nx.complete_graph(n)

@@ -3,7 +3,7 @@ import sys, os, random, json, io
 import networkx as nx
 import numpy as np
 
-from seeker_game.utility import G_links, G_nodes, to_list, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria, GCC_size
+from seeker_game.utility import G_links, G_nodes, to_list, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria, GCC_size, complete_genertor
 
 sys.path.append(os.path.dirname(__file__) + os.sep + './')
 from FINDER import FINDER
@@ -35,6 +35,7 @@ class Player(BasePlayer):
 
     # Graph 需要的 field 
     num_edge = models.IntegerField(initial=-1)
+    num_node = models.IntegerField(initial=-1)
     to_be_removed = models.IntegerField(initial=-1)
     num_edge_removed = models.IntegerField(initial=-1)
     edge_remain = models.IntegerField(initial=-1)
@@ -48,7 +49,7 @@ class Player(BasePlayer):
 def creating_session(subsession: Subsession):
     is_pre_computed = subsession.session.config['pre_computed']
     generating_process = subsession.session.config["generating_process"]
-    assert generating_process in ["ba_graph", "covert", "dark"]
+    assert generating_process in ["ba", "covert", "dark"]
 
     if not is_pre_computed:
         size = subsession.session.config["size"]
@@ -56,18 +57,26 @@ def creating_session(subsession: Subsession):
         initial_G = generate_ba_graph_with_density(size, density)
         initial_G = nx.relabel_nodes(initial_G, lambda x: str(x+2))
     else:
-        graph_config = subsession.session.config["graph_config"]
-        assert graph_config in ["size_low", "size_high", "density_low", "density_high"]
-
         randint = subsession.session.config["randint"]
-    
-        # 初始化 graph 
-        file_name = f"input/{generating_process}/{graph_config}_{randint}.txt"
+        file_name = f"./data/{generating_process}/g_{randint}"
         initial_G = nx.read_gml(file_name)
         initial_G = nx.relabel_nodes(initial_G, lambda x: int(x) + 2)
 
-        # hist = np.loadtxt(f"input/{generating_process}/finder_hist/{graph_config}_{randint}.txt", delimiter=",").tolist()
-        # hist_G = nx.read_adjlist(file_name)
+        hist = np.loadtxt(f"./data/{generating_process}/finder_node_hist/g_{randint}.txt", delimiter=",").tolist()
+        hist = [h[1] for h in hist]
+        hist_G = initial_G.copy()
+
+        fullGCCsize = GCC_size(hist_G)
+        fullG_size = hist_G.number_of_nodes()
+        GCC_hist_lst, payoff_finder_lst = [fullGCCsize], [0]
+        for n in hist:
+            print(fullGCCsize, fullG_size)
+            payoff = getRobustness(hist_G, int(n)+2, fullGCCsize, fullG_size)
+            payoff_finder_lst.append(payoff)
+            GCC_hist_lst.append(GCC_size(hist_G))
+
+
+
 
         # FIXIT:之後取消註解
         # dqn = FINDER()
@@ -88,6 +97,8 @@ def creating_session(subsession: Subsession):
 
     for player in subsession.get_players():
         player.num_node = initial_G.number_of_nodes()
+        player.node_plot_finder = ",".join([str(n) for n in GCC_hist_lst])
+        player.payoff_finder = ",".join([str(p) for p in payoff_finder_lst])
 
         if player.round_number == 1:
 
@@ -151,9 +162,10 @@ class Seeker_dismantle(Page):
 
         # 計算 reward
         player.num_edge = G.number_of_edges()
+        player.num_node = G.number_of_nodes()
         player.GCC_size = GCC_size(G)
 
-        player.seeker_payoff = getRobustness(G, player.to_be_removed, player.session.config["size"], player.session.config["size"])
+        player.seeker_payoff = getRobustness(G, player.to_be_removed, player.in_round(1).GCC_size, player.in_round(1).num_node)
         
         player.edge_remain = G.number_of_edges()
         player.remainGCC_size = GCC_size(G)
@@ -185,29 +197,23 @@ class Seeker_confirm(Page):
         payoff_plot = [[i, p] for (i, p) in enumerate(accum_payoff)]
 
         if player.session.config['pre_computed']:
-            generating_process = player.session.config["generating_process"]
-            graph_config = player.session.config["graph_config"]
-            randint = player.session.config["randint"]
 
-            file_name = f"input/{generating_process}/{graph_config}_{randint}.txt"
-            hist = np.loadtxt(f"input/{generating_process}/finder_hist/{graph_config}_{randint}.txt", delimiter=",").tolist()
+            # generating_process = player.session.config["generating_process"]
+            # graph_config = player.session.config["graph_config"]
+            # randint = player.session.config["randint"]
+
+            # file_name = f"input/{generating_process}/{graph_config}_{randint}.txt"
+            # hist = np.loadtxt(f"input/{generating_process}/finder_hist/{graph_config}_{randint}.txt", delimiter=",").tolist()
 
 
-            hist_G = nx.read_gml(file_name)
-            node_plot_finder = list()
-            payoff_finder = [0]
-            cnt = 0
-            for (i, n) in hist:
-                try: 
-                    payoff_finder.append(getRobustness(hist_G, int(n)))
-                    node_plot_finder.append([cnt, len(hist_G.nodes())])
-                    hist_G = remove_node_and_neighbor(int(n), hist_G)
-                    cnt += 1
+            # hist_G = nx.read_gml(file_name)
+            # node_plot_finder = list()
+            payoff_finder = to_list(player.payoff_finder, dytpe="float")
+            node_plot_finder = to_list(player.node_plot_finder, dytpe="int")
+            payoff_finder = [[i, p] for (i, p) in enumerate(np.cumsum(payoff_finder))]
+            node_plot_finder = [[i, p] for (i, p) in enumerate(node_plot_finder)]
 
-                except:
-                    print("not found", n+2)
-            
-            payoff_finder = [[i, p] for (i, p) in enumerate(np.add.accumulate(payoff_finder))]
+
         else:
             hist = [[i, n] for (i, n) in enumerate(to_list(player.in_round(1).finder_hist))]
             payoff_finder = [[i, p] for (i, p) in enumerate(to_list(player.in_round(1).payoff_finder, "float"))]
@@ -223,8 +229,6 @@ class Seeker_confirm(Page):
             "payoff_line_plot": payoff_plot, 
             "which_round": player.round_number, 
             "caught": player.to_be_removed, 
-            # "num_node_removed": player.num_node_removed,
-            # "node_remain": player.node_remain, 
             "current_GCC_size": player.remainGCC_size, 
         }
 

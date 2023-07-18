@@ -3,17 +3,15 @@ from os import environ
 SESSION_CONFIGS = [
     dict(
         name='seeker_game', 
-        # app_sequence=['seeker_instruction', 'seeker_game'], 
         app_sequence=['seeker_game'], 
         num_demo_participants=1, 
         seeker='human', 
 
         size=100,
         density=0.01, 
-        pre_computed=False, 
-        generating_process='ba_graph', 
-        graph_config = "size_low", 
-        randint=1, 
+        pre_computed=True, 
+        generating_process='ba', 
+        randint=0, 
     ),
 
     # dict(

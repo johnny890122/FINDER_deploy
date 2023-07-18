@@ -29,8 +29,12 @@
             let padding = { top: 50, right: 50, bottom: 50, left: 50 };
 
             let xMax = seeker_data.length <= 5 ? 5 : seeker_data.length-1;
+            let yMax = d3.max(seeker_data.concat(finder_data.slice(0, seeker_data.length)), function(d) {
+              return d[1];
+            })
+            console.log(yMax)
             let xScale = d3.scaleLinear().domain([0, xMax]).range([0, width - padding.left - padding.right]);
-            let yScale = d3.scaleLinear().domain([0, max]).range([height - padding.top - padding.bottom, 0]);
+            let yScale = d3.scaleLinear().domain([0, yMax]).range([height - padding.top - padding.bottom, 0]);
 
             let xAxis = d3.axisBottom().ticks(xMax).scale(xScale);
             let yAxis = d3.axisLeft().ticks(original_size / 10).scale(yScale);
@@ -95,10 +99,8 @@
             <div id="payoff_chart" style="display:inline-block; width: 700px;"></div>      
         </div>
         <script>
-            // plot("chart", {{node_line_plot}}, {{node_plot_finder}});
-            // plot("payoff_chart", {{payoff_line_plot}}, {{payoff_finder}});
-            plot("chart", {{node_line_plot}}, {});
-            plot("payoff_chart", {{payoff_line_plot}}, {});
+            plot("chart", {{node_line_plot}}, {{node_plot_finder}});
+            plot("payoff_chart", {{payoff_line_plot}}, {{payoff_finder}});
         </script>
 
     </body>
