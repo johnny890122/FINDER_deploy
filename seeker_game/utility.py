@@ -15,7 +15,7 @@ def G_links(G):
     for (i, j) in G.edges():
         links.append({"source": i, "target": j, 'dashed': "False", "display": "True"})
     
-    if len(list(nx.connected_components(G))) > 1:
+    if GCC_size(G) > 1:
         for CC in nx.connected_components(G):
             subgraph = G.copy().subgraph(CC)
             # find highest degree node 
