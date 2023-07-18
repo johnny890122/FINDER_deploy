@@ -81,8 +81,8 @@
 						.height(800)
 						.minZoom(1)
 						.maxZoom(1)
-						.linkWidth(3)
-						.linkLineDash(link => link["display"] == "False" && [1, 8])
+						.linkWidth(2)
+						.linkColor(link => link["display"] == "False" ? "#ffffff" : "#000000")
 						.onNodeClick(node => {
 							let info = ''
 							if (node.id == {{highest_degree_id}}) {
@@ -130,7 +130,7 @@
 						}
 
 						else{
-							ctx.fillStyle = "#568EA6";
+							ctx.fillStyle = "#ffffff";
 						}
 
 						// 標註被選中的 node
@@ -141,7 +141,7 @@
 
 						if (node.display == "False") {
 							ctx.fillStyle = "#ffffff";
-							ctx.strokeStyle = "#568EA6";
+							ctx.strokeStyle = "#ffffff";
 						}
 						ctx.beginPath(); ctx.arc(node.x, node.y, NODE_R, 0, 2 * Math.PI, false); ctx.closePath();
 						ctx.fill()
