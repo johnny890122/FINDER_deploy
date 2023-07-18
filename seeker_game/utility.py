@@ -4,20 +4,29 @@ import numpy as np
 def get_current_graph(player):
     return player.group.G
 
+def GCC_size(G):
+    if len(list(nx.connected_components(G))) != 0:
+        return len(max(nx.connected_components(G), key=len))
+    return 1
+
 # Utility: 用來將 G 的 link 轉換成前端接受的格式
-def G_links(G, Full_G):
+def G_links(G):
     links = []
-    for (i, j) in Full_G.edges():
-        if i in list(G.nodes()) and j in list(G.nodes):
-            links.append({"source": i, "target": j, 'dashed': "False", "display": "True"})
-            # links.append({"source": j, "target": i, 'dashed': "False", "display": "True"})
-        else:
-            links.append({"source": i, "target": j, 'dashed': "False", "display": "False"})
-            # links.append({"source": j, "target": i, 'dashed': "False", "display": "False"})
+    for (i, j) in G.edges():
+        links.append({"source": i, "target": j, 'dashed': "False", "display": "True"})
+    
+    if len(list(nx.connected_components(G))) > 1:
+        for CC in nx.connected_components(G):
+            subgraph = G.copy().subgraph(CC)
+            # find highest degree node 
+            keys = list(nx.degree_centrality(subgraph).keys())
+            values = list(nx.degree_centrality(subgraph).values())
+            node = keys[ np.argmax(values)]
+            links.append({"source": -1, "target": node, 'dashed': "False", "display": "False"})
     return links
 
 # Utility: 用來將 G 的 node attributes 轉換成前端接受的格式
-def G_nodes(G, Full_G):
+def G_nodes(G):
 
     degree = {node: degree for (node, degree) in G.degree()}
     closeness = {node: closeness for (node, closeness) in nx.closeness_centrality(G).items()}
@@ -25,22 +34,22 @@ def G_nodes(G, Full_G):
     pagerank = {node: pagerank for (node, pagerank) in nx.pagerank(G).items()}
 
     nodes = []
-    for n in Full_G.nodes():
-        if n in list(G.nodes()):
-            nodes.append({
-                "id": n, "degree": round(degree[n], 2), "closeness": round(closeness[n], 2), "betweenness": round(betweenness[n], 2), "pagerank": round(pagerank[n], 2), "display": "True", 
-                })
-        else:
-            nodes.append({
-                "id": n, "degree": -1, "closeness": -1, "betweenness": -1, "pagerank": -1, "display": "False"
-                })
+    for n in list(G.nodes()):
+        nodes.append({
+            "id": n, "degree": round(degree[n], 2), "closeness": round(closeness[n], 2), "betweenness": round(betweenness[n], 2), "pagerank": round(pagerank[n], 2), "display": "True",
+        })
+
+    # add a pesudo node as center node
+    if len(list(nx.connected_components(G))) > 1:
+        nodes.append({
+            "id": -1, "degree": -1, "closeness": -1, "betweenness": -1, "pagerank": -1, "display": "False"
+        })
 
     return nodes
 
-
-def node_centrality_criteria(G, Full_G):
+def node_centrality_criteria(G):
     degree, closeness, betweenness, pagerank = [], [], [], []
-    for node in G_nodes(G, Full_G):
+    for node in G_nodes(G):
         degree.append((node["id"], node["degree"]))
         closeness.append((node["id"], node["closeness"]))
         betweenness.append((node["id"], node["betweenness"]))
@@ -72,29 +81,15 @@ def remove_node_and_neighbor(to_be_removed, G):
         G.remove_node(n)
     return G
 
-def remove_node(to_be_removed, G, auto_clean=True):
+def remove_node(to_be_removed, G):
     G.remove_node(to_be_removed)
-
-    if auto_clean:
-        for n in dict(G.nodes()).copy():
-            if G.degree(n) == 0:
-                G.remove_node(n)
-
     return G
 
-def to_dash_G(to_be_removed, G):
-    G.nodes[to_be_removed]['display'] = False
+def getRobustness(G, sol, fullGCCsize, N):
+    G.remove_node(int(sol))
+    remainGCCsize = GCC_size(G)
 
-    return G
-
-def getRobustness(G, sol):
-    G = G.copy()
-    GCCsize = len(max(nx.connected_components(G), key=len))
-    G.remove_node(sol)
-    newGCCsize = len(max(nx.connected_components(G), key=len))
-
-    return (GCCsize - newGCCsize) / ((G.number_of_nodes() * G.number_of_nodes()))
-
+    return ((fullGCCsize - remainGCCsize) / fullGCCsize) / N
 
 def generate_ba_graph_with_density(n, density):
     total_possible_edges = (n * (n - 1)) / 2

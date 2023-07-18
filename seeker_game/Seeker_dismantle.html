@@ -82,7 +82,9 @@
 						.minZoom(1)
 						.maxZoom(1)
 						.linkWidth(2)
-						.linkColor(link => link["display"] == "False" ? "#ffffff" : "#000000")
+						.linkColor(link => "#000000")
+						.linkVisibility(link => link["display"] == "False" ? false : true)
+						.nodeVisibility(node => node["display"] == "False" ? false : true)
 						.onNodeClick(node => {
 							let info = ''
 							if (node.id == {{highest_degree_id}}) {
@@ -139,10 +141,6 @@
 							ctx.strokeStyle = "#B22222";
 						}
 
-						if (node.display == "False") {
-							ctx.fillStyle = "#ffffff";
-							ctx.strokeStyle = "#ffffff";
-						}
 						ctx.beginPath(); ctx.arc(node.x, node.y, NODE_R, 0, 2 * Math.PI, false); ctx.closePath();
 						ctx.fill()
 						ctx.stroke()
