@@ -171,6 +171,7 @@ class Seeker_dismantle(Page):
         
         player.edge_remain = G.number_of_edges()
         player.remainGCC_size = GCC_size(G)
+        
 
 
 # Seeker 確認該回合的破壞成果
