@@ -3,7 +3,7 @@ import sys, os, random, json, io
 import networkx as nx
 import numpy as np
 
-from seeker_game.utility import G_links, G_nodes, to_list, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria, GCC_size, complete_genertor
+from seeker_game.utility import G_links, G_nodes, to_list, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria, GCC_size, complete_genertor, read_911, current_dismantle_G
 
 sys.path.append(os.path.dirname(__file__) + os.sep + './')
 from FINDER import FINDER
@@ -23,6 +23,8 @@ class Subsession(BaseSubsession):
     pass
 
 class Group(BaseGroup):
+    basic_911 = read_911()
+    HXA_911 = basic_911.copy()
     G = nx.Graph()
 
 class Player(BasePlayer):
@@ -90,6 +92,41 @@ def creating_session(subsession: Subsession):
             for e in initial_G.edges():
                 G.add_edge(int(e[0]), int(e[1]))
 
+class WelcomePage(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        if player.round_number == 1:
+            return True
+        return False
+
+class ExamplePage(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        if player.round_number == 1:
+            return True
+        return False
+
+class HXA_IntroPage(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        if player.round_number == 1:
+            return True
+        return False
+
+class FINDER_IntroPage(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        if player.round_number == 1:
+            return True
+        return False
+
+class ReceptionPage(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        if player.round_number == 1:
+            return True
+        return False
+
 # Seeker 破壞的頁面
 class Seeker_dismantle(Page):
     form_model = 'player'
@@ -97,13 +134,14 @@ class Seeker_dismantle(Page):
     
     @staticmethod
     def is_displayed(player: Player):
-        if player.group.G.number_of_nodes() > 0:
+        G = current_dismantle_G(player)
+        if G.number_of_nodes() > 0:
             return True
         return False
 
     @staticmethod
     def vars_for_template(player: Player):
-        G = player.group.G
+        G = current_dismantle_G(player)
         centrality = node_centrality_criteria(G)
 
         return {
@@ -123,8 +161,7 @@ class Seeker_dismantle(Page):
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
-        G = player.group.G
-
+        G = current_dismantle_G(player)
         # 計算 reward
         player.num_edge = G.number_of_edges()
         player.num_node = G.number_of_nodes()
@@ -134,6 +171,7 @@ class Seeker_dismantle(Page):
         
         player.edge_remain = G.number_of_edges()
         player.remainGCC_size = GCC_size(G)
+
 
 # Seeker 確認該回合的破壞成果
 class Seeker_confirm(Page):
@@ -185,5 +223,5 @@ class Seeker_confirm(Page):
             "current_GCC_size": player.remainGCC_size, 
         }
 
-page_sequence = [Seeker_dismantle, Seeker_confirm]
-
+page_sequence = [WelcomePage, Seeker_dismantle, HXA_IntroPage, FINDER_IntroPage, ReceptionPage]
+# page_sequence = [WelcomePage, ExamplePage, HXA_IntroPage, FINDER_IntroPage, ReceptionPage]

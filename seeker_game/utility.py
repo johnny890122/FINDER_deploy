@@ -1,6 +1,33 @@
 import networkx as nx
 import numpy as np
 
+def read_911():
+    G = nx.read_gml("./sample_data/911.gml")
+    map_dct = {
+        node: idx + 2 for idx, node in enumerate(G.nodes())
+    }
+
+    return nx.relabel_nodes(G, map_dct, copy=True)
+
+def current_dismantle_stage(player):
+    if player.group.basic_911.number_of_edges() > 0:
+        stage = 1
+    elif player.group.HXA_911.number_of_edges() > 0:
+        stage = 2
+    else:
+        stage = 3
+
+    return stage
+
+def current_dismantle_G(player):
+    stage = current_dismantle_stage(player)
+    if stage == 1:
+        return player.group.basic_911
+    elif stage == 2:
+        return player.group.HXA_911
+    else:
+        return player.group.G
+
 def get_current_graph(player):
     return player.group.G
 
