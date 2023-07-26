@@ -31,10 +31,10 @@ def hxa(g, method):
     values = list(dc.values())
     maxTag = np.argmax(values)
     node = keys[maxTag]
-    
+
     return node
 
-def getRobustness(full_g: Type[nx.classes.graph.Graph], G: Type[nx.classes.graph.Graph], sol: int):    
+def getRobustness(full_g: Type[nx.classes.graph.Graph], G: Type[nx.classes.graph.Graph], sol: int):
     fullGCCsize = len(max(nx.connected_components(full_g), key=len))
 
     G.remove_node(int(sol))
@@ -51,22 +51,22 @@ def hxa_finder_mixed(g, G, h_method, cnt):
     assert h_method in ["HDA", "HBA", "HCA", "HPRA", "ALL"]
     if h_method == "ALL":
         h_method = np.random.choice(["HDA", "HBA", "HCA", "HPRA"])
-    
-    method = np.random.choice(["FINDER", h_method])            
-    
+
+    method = np.random.choice(["FINDER", h_method])
+
     if method == "FINDER":
         dqn = FINDER()
         model_file = './models/Model_barabasi_albert/nrange_200_200_iter_154500.ckpt'
-        _, sol = dqn.Evaluate(f"./tmpG/g_{cnt-1}", model_file)
+        val, sol = dqn.Evaluate(f"tmpG/g_{cnt-1}", model_file)
         node = sol[0]
     else: # use HXA
         node = hxa(G, h_method)
-    
+
     time.sleep(1)
 
     reward = getRobustness(g, G, int(node))
     write_gml(G, "./tmpG/", f"g_{cnt}")
-    
+
     return method, int(node), reward
 
 def main():
@@ -84,7 +84,7 @@ def main():
             print(nx.number_of_nodes(G))
             print(method, node, reward)
         break
-    
+
 
 if __name__=="__main__":
     main()
