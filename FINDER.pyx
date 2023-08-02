@@ -672,7 +672,7 @@ class FINDER:
     def Evaluate(self, g_path, model_file=None):
         if model_file == None:  #if user do not specify the model_file
             model_file = self.findModel()
-        print ('The best model is :%s'%(model_file))
+        # print ('The best model is :%s'%(model_file))
         self.LoadModel(model_file)
 
         result_list_score = []
@@ -680,11 +680,14 @@ class FINDER:
 
         # FIXIT
         g = nx.read_gml(g_path)
+        # print(g.nodes(), g.edges())
         self.InsertGraph(g, is_test=True)
         t1 = time.time()
+        # print("t1", t1)
         val, sol = self.GetSol(0)
 
         t2 = time.time()
+        # print("t2", t2)
         result_list_score.append(val)
         result_list_time.append(t2-t1)
 
@@ -802,7 +805,9 @@ class FINDER:
 
     def GetSol(self, int gid, int step=1):
         g_list = []
+        # print("gid before")
         self.test_env.s0(self.TestSet.Get(gid))
+        # print("gid after")
         g_list.append(self.test_env.graph)
         cdef double cost = 0.0
         sol = []
@@ -839,7 +844,7 @@ class FINDER:
 
     def LoadModel(self,model_path):
         self.saver.restore(self.session, model_path)
-        print('restore model from file successfully')
+        # print('restore model from file successfully')
 
     def GenNetwork(self, g):    #networkx2four
         edges = g.edges()

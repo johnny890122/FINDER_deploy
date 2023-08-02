@@ -98,7 +98,7 @@ class DarkGenerator():
 
 		self.heavy_tail_dis = "log_normal"
 
-		self.G = nx.from_numpy_matrix(self.adjacency_mat)
+		self.G = nx.from_numpy_array(self.adjacency_mat)
 
 	def A_sample(self):
 		lst = [self.size for _ in range(self.n0)]
