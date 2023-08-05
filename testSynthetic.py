@@ -7,16 +7,12 @@ from tqdm import tqdm
 
 def main():
     dqn = FINDER()
-    model_file = './models/Model_barabasi_albert/nrange_200_200_iter_154500.ckpt'
-
-    file_path = './results'
-
-    if not os.path.exists('./results/'):
-        os.mkdir('./results/')
+    # model_file = './models/Model_barabasi_albert/nrange_200_200_iter_154500.ckpt'
+    model_file = './models/Model_dark/nrange_200_200_iter_464100.ckpt'
 
     for i in range(100):
-        with open(f"data/ba/finder_node_hist/g_{i}.txt", 'w') as fout:
-            val, sol = dqn.Evaluate(f"data/ba/g_{i}", model_file)
+        with open(f"data/dark/finder_node_hist/g_{i}.txt", 'w') as fout:
+            val, sol = dqn.Evaluate(f"data/dark/g_{i}", model_file)
             for i, s in enumerate(sol):
                 fout.write(f'{i}, {s}\n')
             fout.flush()

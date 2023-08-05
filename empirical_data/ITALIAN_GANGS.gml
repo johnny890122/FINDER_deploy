@@ -1,263 +1,263 @@
 graph [
   node [
     id 0
-    label "N1"
+    label "0"
   ]
   node [
     id 1
-    label "N3"
+    label "1"
   ]
   node [
     id 2
-    label "N4"
+    label "2"
   ]
   node [
     id 3
-    label "N5"
+    label "3"
   ]
   node [
     id 4
-    label "N6"
+    label "4"
   ]
   node [
     id 5
-    label "N7"
+    label "5"
   ]
   node [
     id 6
-    label "N8"
+    label "6"
   ]
   node [
     id 7
-    label "N9"
+    label "7"
   ]
   node [
     id 8
-    label "N10"
+    label "8"
   ]
   node [
     id 9
-    label "N11"
+    label "9"
   ]
   node [
     id 10
-    label "N12"
+    label "10"
   ]
   node [
     id 11
-    label "N13"
+    label "11"
   ]
   node [
     id 12
-    label "N14"
+    label "12"
   ]
   node [
     id 13
-    label "N15"
+    label "13"
   ]
   node [
     id 14
-    label "N16"
+    label "14"
   ]
   node [
     id 15
-    label "N17"
+    label "15"
   ]
   node [
     id 16
-    label "N18"
+    label "16"
   ]
   node [
     id 17
-    label "N19"
+    label "17"
   ]
   node [
     id 18
-    label "N20"
+    label "18"
   ]
   node [
     id 19
-    label "N21"
+    label "19"
   ]
   node [
     id 20
-    label "N22"
+    label "20"
   ]
   node [
     id 21
-    label "N23"
+    label "21"
   ]
   node [
     id 22
-    label "N24"
+    label "22"
   ]
   node [
     id 23
-    label "N25"
+    label "23"
   ]
   node [
     id 24
-    label "N26"
+    label "24"
   ]
   node [
     id 25
-    label "N27"
+    label "25"
   ]
   node [
     id 26
-    label "N28"
+    label "26"
   ]
   node [
     id 27
-    label "N29"
+    label "27"
   ]
   node [
     id 28
-    label "N30"
+    label "28"
   ]
   node [
     id 29
-    label "N31"
+    label "29"
   ]
   node [
     id 30
-    label "N32"
+    label "30"
   ]
   node [
     id 31
-    label "N33"
+    label "31"
   ]
   node [
     id 32
-    label "N34"
+    label "32"
   ]
   node [
     id 33
-    label "N35"
+    label "33"
   ]
   node [
     id 34
-    label "N36"
+    label "34"
   ]
   node [
     id 35
-    label "N37"
+    label "35"
   ]
   node [
     id 36
-    label "N38"
+    label "36"
   ]
   node [
     id 37
-    label "N39"
+    label "37"
   ]
   node [
     id 38
-    label "N40"
+    label "38"
   ]
   node [
     id 39
-    label "N41"
+    label "39"
   ]
   node [
     id 40
-    label "N42"
+    label "40"
   ]
   node [
     id 41
-    label "N43"
+    label "41"
   ]
   node [
     id 42
-    label "N44"
+    label "42"
   ]
   node [
     id 43
-    label "N45"
+    label "43"
   ]
   node [
     id 44
-    label "N47"
+    label "44"
   ]
   node [
     id 45
-    label "N48"
+    label "45"
   ]
   node [
     id 46
-    label "N49"
+    label "46"
   ]
   node [
     id 47
-    label "N50"
+    label "47"
   ]
   node [
     id 48
-    label "N51"
+    label "48"
   ]
   node [
     id 49
-    label "N52"
+    label "49"
   ]
   node [
     id 50
-    label "N53"
+    label "50"
   ]
   node [
     id 51
-    label "N54"
+    label "51"
   ]
   node [
     id 52
-    label "N55"
+    label "52"
   ]
   node [
     id 53
-    label "N56"
+    label "53"
   ]
   node [
     id 54
-    label "N57"
+    label "54"
   ]
   node [
     id 55
-    label "N58"
+    label "55"
   ]
   node [
     id 56
-    label "N59"
+    label "56"
   ]
   node [
     id 57
-    label "N60"
+    label "57"
   ]
   node [
     id 58
-    label "N61"
+    label "58"
   ]
   node [
     id 59
-    label "N62"
+    label "59"
   ]
   node [
     id 60
-    label "N63"
+    label "60"
   ]
   node [
     id 61
-    label "N64"
+    label "61"
   ]
   node [
     id 62
-    label "N65"
+    label "62"
   ]
   node [
     id 63
-    label "N66"
+    label "63"
   ]
   node [
     id 64
-    label "N67"
+    label "64"
   ]
   edge [
     source 0

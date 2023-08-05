@@ -1,131 +1,131 @@
 graph [
   node [
     id 0
-    label "57"
+    label "0"
   ]
   node [
     id 1
-    label "58"
+    label "1"
   ]
   node [
     id 2
-    label "59"
+    label "2"
   ]
   node [
     id 3
-    label "60"
+    label "3"
   ]
   node [
     id 4
-    label "61"
+    label "4"
   ]
   node [
     id 5
-    label "62"
+    label "5"
   ]
   node [
     id 6
-    label "63"
+    label "6"
   ]
   node [
     id 7
-    label "64"
+    label "7"
   ]
   node [
     id 8
-    label "65"
+    label "8"
   ]
   node [
     id 9
-    label "66"
+    label "9"
   ]
   node [
     id 10
-    label "650"
+    label "10"
   ]
   node [
     id 11
-    label "1005"
+    label "11"
   ]
   node [
     id 12
-    label "1011"
+    label "12"
   ]
   node [
     id 13
-    label "1012"
+    label "13"
   ]
   node [
     id 14
-    label "1014"
+    label "14"
   ]
   node [
     id 15
-    label "1015"
+    label "15"
   ]
   node [
     id 16
-    label "1016"
+    label "16"
   ]
   node [
     id 17
-    label "1017"
+    label "17"
   ]
   node [
     id 18
-    label "1025"
+    label "18"
   ]
   node [
     id 19
-    label "1026"
+    label "19"
   ]
   node [
     id 20
-    label "1030"
+    label "20"
   ]
   node [
     id 21
-    label "1031"
+    label "21"
   ]
   node [
     id 22
-    label "1032"
+    label "22"
   ]
   node [
     id 23
-    label "1033"
+    label "23"
   ]
   node [
     id 24
-    label "1034"
+    label "24"
   ]
   node [
     id 25
-    label "1035"
+    label "25"
   ]
   node [
     id 26
-    label "1037"
+    label "26"
   ]
   node [
     id 27
-    label "1038"
+    label "27"
   ]
   node [
     id 28
-    label "1039"
+    label "28"
   ]
   node [
     id 29
-    label "1040"
+    label "29"
   ]
   node [
     id 30
-    label "1041"
+    label "30"
   ]
   node [
     id 31
-    label "1042"
+    label "31"
   ]
   edge [
     source 0

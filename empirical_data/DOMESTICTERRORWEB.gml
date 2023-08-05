@@ -1,131 +1,131 @@
 graph [
   node [
     id 0
-    label "14words.com"
+    label "0"
   ]
   node [
     id 1
-    label "americanpatrol.org"
+    label "1"
   ]
   node [
     id 2
-    label "amprom.org"
+    label "2"
   ]
   node [
     id 3
-    label "anti-semitism.net"
+    label "3"
   ]
   node [
     id 4
-    label "arayannationsknights.com"
+    label "4"
   ]
   node [
     id 5
-    label "aryan-nations.org"
+    label "5"
   ]
   node [
     id 6
-    label "aryannationsknights.com"
+    label "6"
   ]
   node [
     id 7
-    label "christianseparatis.org"
+    label "7"
   ]
   node [
     id 8
-    label "circ.net"
+    label "8"
   ]
   node [
     id 9
-    label "cofcc.org"
+    label "9"
   ]
   node [
     id 10
-    label "creator.org"
+    label "10"
   ]
   node [
     id 11
-    label "crownrights.com"
+    label "11"
   ]
   node [
     id 12
-    label "crusader.net"
+    label "12"
   ]
   node [
     id 13
-    label "dixienet.org"
+    label "13"
   ]
   node [
     id 14
-    label "dixierising.com"
+    label "14"
   ]
   node [
     id 15
-    label "folkandfaith.com"
+    label "15"
   ]
   node [
     id 16
-    label "georgiacsa.org"
+    label "16"
   ]
   node [
     id 17
-    label "godhatesfgs.com"
+    label "17"
   ]
   node [
     id 18
-    label "kingidentity.com"
+    label "18"
   ]
   node [
     id 19
-    label "kinsmanredeemer.com"
+    label "19"
   ]
   node [
     id 20
-    label "kkkk.net"
+    label "20"
   ]
   node [
     id 21
-    label "natall.com"
+    label "21"
   ]
   node [
     id 22
-    label "natallar.com"
+    label "22"
   ]
   node [
     id 23
-    label "nationalist.org"
+    label "23"
   ]
   node [
     id 24
-    label "palmetto.org"
+    label "24"
   ]
   node [
     id 25
-    label "resist.com"
+    label "25"
   ]
   node [
     id 26
-    label "seek-info.com"
+    label "26"
   ]
   node [
     id 27
-    label "southerncaucus.org"
+    label "27"
   ]
   node [
     id 28
-    label "southernmessenger.org"
+    label "28"
   ]
   node [
     id 29
-    label "southernsentinel.tripod.com"
+    label "29"
   ]
   node [
     id 30
-    label "stormfront.org"
+    label "30"
   ]
   node [
     id 31
-    label "texasis.org"
+    label "31"
   ]
   edge [
     source 0
