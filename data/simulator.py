@@ -2,12 +2,13 @@ import networkx as nx
 import numpy as np
 import copy
 import itertools
-# from tqdm import trange
+from tqdm import trange
 from scipy.stats import lognorm
 from pathlib import Path
 from argparse import ArgumentParser, Namespace
 from datetime import datetime
-from scipy import sparse      
+from scipy import sparse 
+from utility import hxa    
 
 class CovertGenerator():
 	def __init__(self, min_n, max_n, density, exposed_type="uniform", info_type="avg"):
@@ -149,3 +150,31 @@ class DarkGenerator():
 		
 		self.G = nx.from_numpy_matrix(self.adjacency_mat)
 		self.G.remove_edges_from(nx.selfloop_edges(self.G))
+
+def fintuing_realG_generator(data_dir, file_name):
+    choice = np.random.choice([1, 2, 3], 1, [0.2, 0.4, 0.4]).item()
+    g = nx.read_gml(data_dir + file_name)
+    node_mapping = {node: i for i, node in enumerate(g.nodes())}
+    g = nx.relabel_nodes(g, node_mapping)
+    G = g.copy()
+    num_removal = np.random.randint(1, int(g.number_of_nodes()*0.75))
+    if choice == 1: # Use whole graph
+        return G
+    elif choice == 2: # Pure HXA-based removal 
+        method = np.random.choice(['HDA', 'HBA', 'HCA', 'HPRA'])
+        # print(f"method: {method}, num_removal: {num_removal}")
+        while G.number_of_nodes() > g.number_of_nodes() - num_removal:
+            node = hxa(G, method)
+            G.remove_node(int(node))
+        return G
+    elif choice == 3:
+        # print(f"num_removal: {num_removal}")
+        while G.number_of_nodes() > g.number_of_nodes() - num_removal:
+            method = np.random.choice(['HDA', 'HBA', 'HCA', 'HPRA', "RANDOM"])
+            print(method)
+            if method == "RANDOM":
+                node = np.random.choice(list(G.nodes()))
+            else:
+                node = hxa(G, method)
+            G.remove_node(int(node))
+        return G
