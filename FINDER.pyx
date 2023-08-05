@@ -42,8 +42,6 @@ cdef double beta_increment_per_sampling = 0.001
 cdef double TD_err_upper = 1.  # clipped abs error
 ########################## hyperparameters for priority(end)#########################################
 cdef int N_STEP = 5
-cdef int NUM_MIN = 200
-cdef int NUM_MAX = 200
 cdef int REG_HIDDEN = 32
 cdef int BATCH_SIZE = 64
 cdef double initialization_stddev = 0.01  # 权重初始化的方差
@@ -56,6 +54,13 @@ cdef int max_bp_iter = 3
 cdef int aggregatorID = 0 #0:sum; 1:mean; 2:GCN
 cdef int embeddingMethod = 1   #0:structure2vec; 1:graphsage
 
+<<<<<<< HEAD
+=======
+cdef int NUM_MIN = 30
+cdef int NUM_MAX = 50
+cdef double DENSITY = 0.12376
+cdef int IDX = 5
+>>>>>>> 95f3c4c999856533b65be90bb56109c36cfbf886
 class FINDER:
 
     def __init__(self):
@@ -348,9 +353,13 @@ class FINDER:
         elif self.g_type == 'small-world':
             g = nx.connected_watts_strogatz_graph(n=cur_n, k=8, p=0.1)
         elif self.g_type == 'barabasi_albert':
-            g = nx.barabasi_albert_graph(n=cur_n, m=1)
+            g = nx.barabasi_albert_graph(n=cur_n, m= max(int(DENSITY*cur_n*(cur_n-1)/(2*cur_n)), 1))
         elif self.g_type == "dark":
-            generator = DarkGenerator(min_n=num_min, max_n=num_max, density=0.01)
+            generator = DarkGenerator(min_n=num_min, max_n=num_max, density=DENSITY)
+            generator.simulate()
+            g = generator.G
+        elif self.g_type == "covert":
+            generator = CovertGenerator(min_n=num_min, max_n=num_max, density=DENSITY)
             generator.simulate()
             g = generator.G
         elif self.g_type == "EMPIRICAL":
@@ -362,7 +371,8 @@ class FINDER:
         sys.stdout.flush()
         self.ClearTrainGraphs()
         cdef int i
-        for i in tqdm(range(1000)):
+
+        for i in tqdm(range(500)):
             g = self.gen_graph(num_min, num_max)
             self.InsertGraph(g, is_test=False)
 
@@ -429,7 +439,6 @@ class FINDER:
             for i in range(num_env):
                 if (Random):
                     a_t = self.env_list[i].randomAction()
-                    print(a_t, n, num_seq)
                 else:
                     a_t = self.argMax(pred[i])
                 self.env_list[i].step(a_t)
@@ -618,7 +627,7 @@ class FINDER:
         cdef int loss = 0
         cdef double frac, start, end
 
-        save_dir = './models/Model_%s'%(self.g_type)
+        save_dir = './models/Model_%s_%s'%(self.g_type, IDX)
         if not os.path.exists(save_dir):
             os.mkdir(save_dir)
         VCFile = '%s/ModelVC_%d_%d.csv'%(save_dir, NUM_MIN, NUM_MAX)

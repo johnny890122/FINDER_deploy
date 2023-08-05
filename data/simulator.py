@@ -8,7 +8,23 @@ from pathlib import Path
 from argparse import ArgumentParser, Namespace
 from datetime import datetime
 from scipy import sparse
-# from utility import hxa
+
+def hxa(g, method):
+    G = g.copy()
+    if method == 'HDA':
+        dc = nx.degree_centrality(G)
+    elif method == 'HBA':
+        dc = nx.betweenness_centrality(G)
+    elif method == 'HCA':
+        dc = nx.closeness_centrality(G)
+    elif method == 'HPRA':
+        dc = nx.pagerank(G)
+    keys = list(dc.keys())
+    values = list(dc.values())
+    maxTag = np.argmax(values)
+    node = keys[maxTag]
+
+    return node
 
 def hxa(g, method):
     G = g.copy()
@@ -40,8 +56,8 @@ class CovertGenerator():
 		self.density = density
 
 		# parameter for (1) brutal search
-		self.total_iter = 50000
-		self.search_patience = self.total_iter*0.2
+		self.total_iter = 10000
+		self.search_patience = self.total_iter*0.1
 
 		# for debuging
 		self.G = None
