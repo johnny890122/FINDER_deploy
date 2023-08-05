@@ -7,7 +7,7 @@ from scipy.stats import lognorm
 from pathlib import Path
 from argparse import ArgumentParser, Namespace
 from datetime import datetime
-from scipy import sparse      
+from scipy import sparse
 
 class CovertGenerator():
 	def __init__(self, min_n, max_n, density, exposed_type="uniform", info_type="avg"):
@@ -22,8 +22,8 @@ class CovertGenerator():
 		self.density = density
 
 		# parameter for (1) brutal search
-		self.total_iter = 50000
-		self.search_patience = self.total_iter*0.2
+		self.total_iter = 10000
+		self.search_patience = self.total_iter*0.1
 
 		# for debuging
 		self.G = None
@@ -146,6 +146,6 @@ class DarkGenerator():
 			self.timp_stamp += 1
 			self.dynamic_evolve(self.timp_stamp)
 			self.rewire_node()
-		
+
 		self.G = nx.from_numpy_matrix(self.adjacency_mat)
 		self.G.remove_edges_from(nx.selfloop_edges(self.G))
