@@ -1,195 +1,195 @@
 graph [
   node [
     id 0
-    label "17"
+    label "0"
   ]
   node [
     id 1
-    label "Hezbollah"
+    label "1"
   ]
   node [
     id 2
-    label "AASB"
+    label "2"
   ]
   node [
     id 3
-    label "AQI"
+    label "3"
   ]
   node [
     id 4
-    label "Islamic_Glory_Brigades_Land_of_the_Nile"
+    label "4"
   ]
   node [
     id 5
-    label "Jund_al-Sham"
+    label "5"
   ]
   node [
     id 6
-    label "al-Qaeda"
+    label "6"
   ]
   node [
     id 7
-    label "AQA"
+    label "7"
   ]
   node [
     id 8
-    label "IJY"
+    label "8"
   ]
   node [
     id 9
-    label "Ansar_al-Sunnah"
+    label "9"
   ]
   node [
     id 10
-    label "IAI"
+    label "10"
   ]
   node [
     id 11
-    label "Jaish_al_Mujahedin"
+    label "11"
   ]
   node [
     id 12
-    label "Jund_al-Sahaba"
+    label "12"
   ]
   node [
     id 13
-    label "Kitaeb_Thourat_al-'Ashrin"
+    label "13"
   ]
   node [
     id 14
-    label "al-Tawhid_wal-Jihad"
+    label "14"
   ]
   node [
     id 15
-    label "AQI/MSC/ISIraq"
+    label "15"
   ]
   node [
     id 16
-    label "Ansar_al-Islam"
+    label "16"
   ]
   node [
     id 17
-    label "Amal"
+    label "17"
   ]
   node [
     id 18
-    label "DFLP"
+    label "18"
   ]
   node [
     id 19
-    label "Fatah"
+    label "19"
   ]
   node [
     id 20
-    label "PFLP"
+    label "20"
   ]
   node [
     id 21
-    label "PIJ"
+    label "21"
   ]
   node [
     id 22
-    label "Hamas"
+    label "22"
   ]
   node [
     id 23
-    label "PRC"
+    label "23"
   ]
   node [
     id 24
-    label "GIA"
+    label "24"
   ]
   node [
     id 25
-    label "Harakat_ul_Mujahedin"
+    label "25"
   ]
   node [
     id 26
-    label "JeM"
+    label "26"
   ]
   node [
     id 27
-    label "LeJ"
+    label "27"
   ]
   node [
     id 28
-    label "LeT"
+    label "28"
   ]
   node [
     id 29
-    label "Taliban"
+    label "29"
   ]
   node [
     id 30
-    label "Jammoul"
+    label "30"
   ]
   node [
     id 31
-    label "SBO"
+    label "31"
   ]
   node [
     id 32
-    label "SSNP"
+    label "32"
   ]
   node [
     id 33
-    label "al-Nosra"
+    label "33"
   ]
   node [
     id 34
-    label "Hizb_ul-Mujahedin"
+    label "34"
   ]
   node [
     id 35
-    label "IJG"
+    label "35"
   ]
   node [
     id 36
-    label "IMU"
+    label "36"
   ]
   node [
     id 37
-    label "Ittihad_al-Mahakin_al-Islamiyya"
+    label "37"
   ]
   node [
     id 38
-    label "JI"
+    label "38"
   ]
   node [
     id 39
-    label "Jamaat_ul_Murjahedin_Bangladesh"
+    label "39"
   ]
   node [
     id 40
-    label "PFPL"
+    label "40"
   ]
   node [
     id 41
-    label "al-Hezb_ash-Shu'aye_al-Lubnani"
+    label "41"
   ]
   node [
     id 42
-    label "al-Mourabitoun"
+    label "42"
   ]
   node [
     id 43
-    label "Sipah-e_Sahaba"
+    label "43"
   ]
   node [
     id 44
-    label "al-Medinah_Regiment"
+    label "44"
   ]
   node [
     id 45
-    label "RSMB"
+    label "45"
   ]
   node [
     id 46
-    label "Tehrik-e_Taliban"
+    label "46"
   ]
   node [
     id 47
-    label "al-Asssirat_al-Moustaquim"
+    label "47"
   ]
   edge [
     source 0

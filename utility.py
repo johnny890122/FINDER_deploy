@@ -3,11 +3,8 @@ import networkx as nx
 from networkx.readwrite import json_graph
 import io
 
-import sys,os
-sys.path.append(os.path.dirname(__file__) + os.sep + '../')
-from FINDER import FINDER
 
-import requests 
+import requests
 import pygsheets
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -23,12 +20,12 @@ df = pd.DataFrame({"id": [ i+1 for i in range(len(href_lst))], "link": href_lst}
 auth_file = "finderlink-381806-aa232dd1eff5.json"
 gc = pygsheets.authorize(service_file = auth_file)
 
-try: 
+try:
 	# setting sheet
-	sheet_url = "https://docs.google.com/spreadsheets/d/15t8MjE9mLmHGQDWzGGqEPiri402DKU1Ux8EX9XyxwcA/" 
+	sheet_url = "https://docs.google.com/spreadsheets/d/15t8MjE9mLmHGQDWzGGqEPiri402DKU1Ux8EX9XyxwcA/"
 	sheet = gc.open_by_url(sheet_url)
 	sheet.worksheet_by_title("link").clear()
-	sheet.worksheet_by_title("link").set_dataframe(df, start = "A1") 
+	sheet.worksheet_by_title("link").set_dataframe(df, start = "A1")
 	print("成功上傳連結！")
 except:
 	print("失敗！")

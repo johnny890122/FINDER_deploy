@@ -7,8 +7,8 @@ from scipy.stats import lognorm
 from pathlib import Path
 from argparse import ArgumentParser, Namespace
 from datetime import datetime
-from scipy import sparse 
-from utility import hxa    
+from scipy import sparse
+# from utility import hxa
 
 class CovertGenerator():
 	def __init__(self, min_n, max_n, density, exposed_type="uniform", info_type="avg"):
@@ -147,7 +147,7 @@ class DarkGenerator():
 			self.timp_stamp += 1
 			self.dynamic_evolve(self.timp_stamp)
 			self.rewire_node()
-		
+
 		self.G = nx.from_numpy_matrix(self.adjacency_mat)
 		self.G.remove_edges_from(nx.selfloop_edges(self.G))
 
@@ -160,7 +160,7 @@ def fintuing_realG_generator(data_dir, file_name):
     num_removal = np.random.randint(1, int(g.number_of_nodes()*0.75))
     if choice == 1: # Use whole graph
         return G
-    elif choice == 2: # Pure HXA-based removal 
+    elif choice == 2: # Pure HXA-based removal
         method = np.random.choice(['HDA', 'HBA', 'HCA', 'HPRA'])
         # print(f"method: {method}, num_removal: {num_removal}")
         while G.number_of_nodes() > g.number_of_nodes() - num_removal:

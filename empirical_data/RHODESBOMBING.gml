@@ -1,91 +1,91 @@
 graph [
   node [
     id 0
-    label "Alexandros Giotopoulos"
+    label "0"
   ]
   node [
     id 1
-    label "Anna"
+    label "1"
   ]
   node [
     id 2
-    label "Christodoulos Xiros"
+    label "2"
   ]
   node [
     id 3
-    label "Constantinos Karatsolis"
+    label "3"
   ]
   node [
     id 4
-    label "Constantinos Telios"
+    label "4"
   ]
   node [
     id 5
-    label "Dimitris Koufontinas"
+    label "5"
   ]
   node [
     id 6
-    label "Dionysis Georgiadis"
+    label "6"
   ]
   node [
     id 7
-    label "Elias Gaglias"
+    label "7"
   ]
   node [
     id 8
-    label "Fotis"
+    label "8"
   ]
   node [
     id 9
-    label "Iraklis Kostaris"
+    label "9"
   ]
   node [
     id 10
-    label "Nikitas"
+    label "10"
   ]
   node [
     id 11
-    label "Ojurk Hanuz"
+    label "11"
   ]
   node [
     id 12
-    label "Patroclos Tselentis"
+    label "12"
   ]
   node [
     id 13
-    label "Pavlos Serifis"
+    label "13"
   ]
   node [
     id 14
-    label "Sardanopoulos"
+    label "14"
   ]
   node [
     id 15
-    label "Savas Xiros"
+    label "15"
   ]
   node [
     id 16
-    label "Sotirios Kondylis"
+    label "16"
   ]
   node [
     id 17
-    label "Thomas Serifis"
+    label "17"
   ]
   node [
     id 18
-    label "Vassilis Tzortzatos"
+    label "18"
   ]
   node [
     id 19
-    label "Vassilis Xiros"
+    label "19"
   ]
   node [
     id 20
-    label "Yiannis"
+    label "20"
   ]
   node [
     id 21
-    label "Yiannis Skandalis"
+    label "21"
   ]
   edge [
     source 0
