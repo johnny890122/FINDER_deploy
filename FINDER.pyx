@@ -23,7 +23,7 @@ import mvc_env
 import utils
 import os
 import warnings
-from data.simulator import CovertGenerator, DarkGenerator
+from data.simulator import CovertGenerator, DarkGenerator, fintuing_realG_generator
 warnings.filterwarnings("ignore", category=FutureWarning)
 
 # Hyper Parameters:
@@ -56,8 +56,6 @@ cdef int max_bp_iter = 3
 cdef int aggregatorID = 0 #0:sum; 1:mean; 2:GCN
 cdef int embeddingMethod = 1   #0:structure2vec; 1:graphsage
 
-
-
 class FINDER:
 
     def __init__(self):
@@ -65,7 +63,8 @@ class FINDER:
         self.embedding_size = EMBEDDING_SIZE
         self.learning_rate = LEARNING_RATE
         # self.g_type = 'barabasi_albert' #erdos_renyi, powerlaw, small-world
-        self.g_type = 'barabasi_albert'
+        self.g_type = 'EMPIRICAL'
+        self.empirical_data = "DOMESTICTERRORWEB.gml"
 
         self.TrainSet = graph.py_GSet()
         self.TestSet = graph.py_GSet()
@@ -354,6 +353,9 @@ class FINDER:
             generator = DarkGenerator(min_n=num_min, max_n=num_max, density=0.01)
             generator.simulate()
             g = generator.G
+        elif self.g_type == "EMPIRICAL":
+            # g = nx.barabasi_albert_graph(n=cur_n, m=1)
+            g = fintuing_realG_generator("./empirical_data/", self.empirical_data)
         return g
     def gen_new_graphs(self, num_min, num_max):
         print('\ngenerating new training graphs...')

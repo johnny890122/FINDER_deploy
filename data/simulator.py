@@ -10,6 +10,23 @@ from datetime import datetime
 from scipy import sparse
 # from utility import hxa
 
+def hxa(g, method):
+    G = g.copy()
+    if method == 'HDA':
+        dc = nx.degree_centrality(G)
+    elif method == 'HBA':
+        dc = nx.betweenness_centrality(G)
+    elif method == 'HCA':
+        dc = nx.closeness_centrality(G)
+    elif method == 'HPRA':
+        dc = nx.pagerank(G)
+    keys = list(dc.keys())
+    values = list(dc.values())
+    maxTag = np.argmax(values)
+    node = keys[maxTag]
+    
+    return node
+
 class CovertGenerator():
 	def __init__(self, min_n, max_n, density, exposed_type="uniform", info_type="avg"):
 		self.min_n = min_n
@@ -154,27 +171,28 @@ class DarkGenerator():
 def fintuing_realG_generator(data_dir, file_name):
     choice = np.random.choice([1, 2, 3], 1, [0.2, 0.4, 0.4]).item()
     g = nx.read_gml(data_dir + file_name)
-    node_mapping = {node: i for i, node in enumerate(g.nodes())}
+    
+    node_mapping = {node: int(i) for i, node in enumerate(g.nodes())}
     g = nx.relabel_nodes(g, node_mapping)
     G = g.copy()
-    num_removal = np.random.randint(1, int(g.number_of_nodes()*0.75))
-    if choice == 1: # Use whole graph
-        return G
-    elif choice == 2: # Pure HXA-based removal
-        method = np.random.choice(['HDA', 'HBA', 'HCA', 'HPRA'])
-        # print(f"method: {method}, num_removal: {num_removal}")
-        while G.number_of_nodes() > g.number_of_nodes() - num_removal:
-            node = hxa(G, method)
-            G.remove_node(int(node))
-        return G
-    elif choice == 3:
-        # print(f"num_removal: {num_removal}")
-        while G.number_of_nodes() > g.number_of_nodes() - num_removal:
-            method = np.random.choice(['HDA', 'HBA', 'HCA', 'HPRA', "RANDOM"])
-            print(method)
-            if method == "RANDOM":
-                node = np.random.choice(list(G.nodes()))
-            else:
-                node = hxa(G, method)
-            G.remove_node(int(node))
-        return G
+    # num_removal = np.random.randint(1, int(g.number_of_nodes()*0.75))
+
+    # if choice == 1: # Use whole graph
+    #     pass
+    # elif choice == 2: # Pure HXA-based removal
+    #     method = np.random.choice(['HDA', 'HBA', 'HCA', 'HPRA'])
+    #     while G.number_of_nodes() > g.number_of_nodes() - num_removal:
+    #         node = hxa(G, method)
+    #         G.remove_node(int(node))
+    # elif choice == 3:
+    #     while G.number_of_nodes() > g.number_of_nodes() - num_removal:
+    #         method = np.random.choice(['HDA', 'HBA', 'HCA', 'HPRA', "RANDOM"])
+    #         if method == "RANDOM":
+    #             node = np.random.choice(list(G.nodes()))
+    #         else:
+    #             node = hxa(G, method)
+    #         G.remove_node(int(node))
+
+    # node_mapping = {node: int(i) for i, node in enumerate(G.nodes())}
+    # G = nx.relabel_nodes(G, node_mapping)
+    return G
