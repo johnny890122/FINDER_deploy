@@ -54,13 +54,11 @@ cdef int max_bp_iter = 3
 cdef int aggregatorID = 0 #0:sum; 1:mean; 2:GCN
 cdef int embeddingMethod = 1   #0:structure2vec; 1:graphsage
 
-<<<<<<< HEAD
-=======
 cdef int NUM_MIN = 30
 cdef int NUM_MAX = 50
 cdef double DENSITY = 0.12376
 cdef int IDX = 5
->>>>>>> 95f3c4c999856533b65be90bb56109c36cfbf886
+
 class FINDER:
 
     def __init__(self):
