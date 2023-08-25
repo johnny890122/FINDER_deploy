@@ -12,6 +12,7 @@ model_mapping = {
 }
 
 mapping = {
+    1: "911.gml",
     2: 'DOMESTICTERRORWEB.gml', 
     3: 'suicide.gml', 4: 'HAMBURG_TIE_YEAR.gml',
     5: 'HEROIN_DEALING.gml', 
@@ -25,10 +26,10 @@ if not os.path.exists(f"./empirical_data/finder_reward_hist"):
     os.mkdir(f"./empirical_data/finder_reward_hist")
 
 def main(dqn, model, file_idx):
-    assert model in ["ba", "dark", "covert"]
+    assert model in ["ba", "dark", "covert", "empirical"]
     model_alias = model if model != "ba" else "barabasi_albert"
     data_file = f"./empirical_data/{mapping[file_idx]}"
-    model_file = f'./models/Model_{model_alias}/{model}{model_mapping[mapping[file_idx]]}.ckpt'
+    model_file = f'./models/Model_{model_alias}/{model}{model_mapping[mapping[file_idx]]}.ckpt' if model != "empirical" else f'./models/Model_{model_alias}/{model}{file_idx}.ckpt'
 
     with open(f"./empirical_data/finder_node_hist/{model}_{file_idx}.txt", 'w') as fout:
         val, sol = dqn.Evaluate(data_file, model_file)
@@ -39,7 +40,8 @@ def main(dqn, model, file_idx):
 
 if __name__=="__main__":
     dqn = FINDER()
-    for method in ["ba", "dark", "covert"]:
+    # for method in ["ba", "dark", "covert"]:
+    for method in ["empirical"]:
         for file_idx, file_name in mapping.items():
             print(method, file_name)
             main(dqn, method, file_idx)
