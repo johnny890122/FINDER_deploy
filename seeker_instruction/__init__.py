@@ -1,13 +1,10 @@
 from otree.api import *
 import sys,os
-import random, json
-import networkx as nx
 import io
 
 doc = """
-seeker only（P1 為 seeker）。
+Introduction
 """
-
 
 class C(BaseConstants):
     NAME_IN_URL = 'seeker_instruction'
@@ -17,37 +14,55 @@ class C(BaseConstants):
 class Subsession(BaseSubsession):
     pass
 
-
 class Group(BaseGroup):
     pass
 
 
 class Player(BasePlayer):
-    role_type = models.StringField()
-
+    pass 
 
 def creating_session(subsession: Subsession):
-    for player in subsession.get_players():
-        if player.session.config['seeker'] == 'human' and player.id_in_group == 1:
-            player.role_type = 'seeker'
-        else:
-            player.role_type = 'hider'
+    pass 
 
-
-# PAGES
-class MyPage(Page):
-
+class WelcomePage(Page):
     @staticmethod
     def is_displayed(player: Player):
-        if player.role_type == 'seeker':
-            return True
-        return False
+        return True
 
+class _911_intro(Page):
     @staticmethod
-    def vars_for_template(player: Player):
+    def is_displayed(player: Player):
+        return True
 
-        return {"practice": player.session.config["practice"]}
+class HXA_intro(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return True
 
+class _911_HDA(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return True
 
-page_sequence = [MyPage]
+class _911_HCA(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return True
+
+class _911_HBA(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return True
+
+class _911_HPRA(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return True
+
+class FINDER_intro(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return True 
+
+page_sequence = [WelcomePage, _911_intro, _911_HDA, _911_HCA, _911_HBA, _911_HPRA, FINDER_intro]
 
