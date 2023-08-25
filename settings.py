@@ -13,11 +13,6 @@ SESSION_CONFIGS = [
         generating_process='ba', 
         randint=0, 
     ),
-    dict(
-        name="seeker_instruction", 
-        app_sequence=["seeker_instruction"],
-        num_demo_participants=1, 
-    )
 
     # dict(
     #     name='seeker_game_size_density', 

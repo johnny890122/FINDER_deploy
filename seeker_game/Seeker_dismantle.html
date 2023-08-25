@@ -2,7 +2,7 @@
 		{{ if practice == 0}}
 				Round {{which_round}}
 		{{ else }}
-				Practice Round {{which_round}}: G {{g_number}}
+				Practice Round {{which_round}}_{{stage}}: G {{g_number}}
 		{{ endif }}
 {{ endblock }}
 
@@ -19,7 +19,6 @@
 
 
 		<style>
-
 		.outer {
 		  display: flex;
 		  justify-content: center;
@@ -34,124 +33,148 @@
 		</style>
 	</head>
 
-		<body>
-			<div class="outer">
-			  <div class="middle">
-				<div class="mb-3 _formfield">
-					<label class="col-form-label" for="id_to_be_removed">
-						您選擇的節點為：
-					</label>
-					<div class="controls">
-						<input type="number" class="form-control" inputmode="numeric" id="id_to_be_removed" min="0" name="to_be_removed" required="" value="" placeholder="尚未選擇任何節點">
-					</div>
-				</div>
-
-				<div id="confirm_block" style="display: none;">
-						<p>確定要選擇此節點嗎？</p>
-						Highest in <p id ="info" style="display: inline;"> </p>
-						<ul>
-								<li>Degree: <p id ="degree" style="display: inline;"/></li>
-								<li>Closeness: <p id ="closeness" style="display: inline;"/></li>
-								<li>Betweenness: <p id ="betweenness" style="display: inline;"/></li>
-								<li>Pagerank: <p id ="pagerank" style="display: inline;"/></li>
-						</ul>
-						
-						<button id="yes_button" class="otree-btn-next btn btn-primary">
-								是，前往下一頁。
-						</button>
-
-						<!-- Fake button -->
-						<div id="no_button" class="otree-btn-next btn btn-primary" onclick="cancel()" 
-								style="background-color: gray; border-color: gray;">
-								否，取消。
-						</div>         
-				</div>
-
-				<!-- TODO: RWD -->
-				<div id="graph" 
-					 style="border-color: black; border-width: 1px; border-style: solid; padding:5px; width:fit-content;"></div>
-
-				<script>
-					const gData = { nodes: {{nodes}}, links: {{links}} };
-					const NODE_R = 5;
-					let highlight_node = new Set();
-
-					const Graph = ForceGraph()
-						(document.getElementById('graph'))
-						.graphData(gData)
-						.width(1400)
-						.height(800)
-						.minZoom(1)
-						.maxZoom(1)
-						.linkWidth(2)
-						.linkColor(link => "#000000")
-						.linkVisibility(link => link["display"] == "False" ? false : true)
-						.nodeVisibility(node => node["display"] == "False" ? false : true)
-						.onNodeClick(node => {
-							let info = ''
-							if (node.id == {{highest_degree_id}}) {
-									info += "Degree, "
-							}
-							if (node.id == {{highest_closeness_id}}){
-									info += "Closeness, "
-							}
-							if (node.id == {{highest_betweenness_id}}){
-									info += "Betweenness, "
-							}
-							if (node.id == {{highest_page_rank_id}}){
-									info += "Page Rank, "
-							}
-							info = info == '' ? '[]' : info;
-
-							highlight_node.clear();
-							document.getElementById("id_to_be_removed").value = node.id;
-							document.getElementById('confirm_block').style.display = "block";
-							document.getElementById("degree").innerHTML = node.degree;
-							document.getElementById("closeness").innerHTML = node.closeness;
-							document.getElementById("betweenness").innerHTML = node.betweenness;
-							document.getElementById("pagerank").innerHTML = node.pagerank;
-							document.getElementById("info").innerHTML = info;
-
-							highlight_node.add(node);
-						})
-						.nodeCanvasObject((node, ctx) => {
-							// 預設的著色
-						ctx.strokeStyle = '#568EA6';
-						if (node.id == {{highest_degree_id}}) {
-							ctx.fillStyle = "#9FE2BF";
-						}
-						else if (node.id == {{highest_degree_id}}){
-							ctx.fillStyle = "#9FE2BF";
-						}
-						else if (node.id == {{highest_closeness_id}}){
-							ctx.fillStyle = "#9FE2BF";
-						}
-						else if (node.id == {{highest_betweenness_id}}){
-							ctx.fillStyle = "#9FE2BF";
-						}
-						else if (node.id == {{highest_page_rank_id}}){
-							ctx.fillStyle = "#9FE2BF";
-						}
-
-						else{
-							ctx.fillStyle = "#ffffff";
-						}
-
-						// 標註被選中的 node
-						if (highlight_node.has(node)) {
-							ctx.fillStyle = "#B22222";
-							ctx.strokeStyle = "#B22222";
-						}
-
-						ctx.beginPath(); ctx.arc(node.x, node.y, NODE_R, 0, 2 * Math.PI, false); ctx.closePath();
-						ctx.fill()
-						ctx.stroke()
-					})
-				Graph.d3Force('center', null);
-				Graph.onEngineTick(() => Graph.zoomToFit(0, 10, node => true));
-				</script>
+	<body>
+		<div class="outer">
+			<div class="middle">
+			<div class="mb-3 _formfield">
+				<label class="col-form-label" for="id_to_be_removed">
+					您選擇的節點為：
+				</label>
+				<div class="controls">
+					<input type="number" class="form-control" inputmode="numeric" id="id_to_be_removed" min="0" name="to_be_removed" required="" value="" placeholder="尚未選擇任何節點">
 				</div>
 			</div>
-		</body>
+
+			<div id="confirm_block" style="display: none;">
+					<p>確定要選擇此節點嗎？</p>
+					Highest in <p id ="info" style="display: inline;"> </p>
+					<ul>
+							<li>Degree: <p id ="degree" style="display: inline;"/></li>
+							<li>Closeness: <p id ="closeness" style="display: inline;"/></li>
+							<li>Betweenness: <p id ="betweenness" style="display: inline;"/></li>
+							<li>Pagerank: <p id ="pagerank" style="display: inline;"/></li>
+					</ul>
+					
+					<button id="yes_button" class="otree-btn-next btn btn-primary">
+							是，前往下一頁。
+					</button>
+
+					<!-- Fake button -->
+					<div id="no_button" class="otree-btn-next btn btn-primary" onclick="cancel()" 
+							style="background-color: gray; border-color: gray;">
+							否，取消。
+					</div>         
+			</div>
+
+			<div id="graph" 
+					style="border-color: black; border-width: 1px; border-style: solid; padding:5px; width:fit-content;"></div>
+
+			<script>
+				const gData = { nodes: {{nodes}}, links: {{links}} };
+				const stage = "{{stage}}"
+				const degree_color = {{degree_ranking}};
+				const closeness_color = {{closeness_ranking}};
+				const betweenness_color = {{betweenness_ranking}};
+				const page_rank_color = {{page_rank_ranking}};
+				const NODE_R = 5;
+				let highlight_node = new Set();
+
+				const Graph = ForceGraph()
+					(document.getElementById('graph'))
+					.graphData(gData)
+					.width(1400)
+					.height(800)
+					.minZoom(1)
+					.maxZoom(1)
+					.linkWidth(2)
+					.linkColor(link => "#000000")
+					.linkVisibility(link => link["display"] == "False" ? false : true)
+					.nodeVisibility(node => node["display"] == "False" ? false : true)
+					.onNodeClick(node => {
+						let info = ''
+						if (node.id == {{highest_degree_id}}) {
+								info += "Degree, "
+						}
+						if (node.id == {{highest_closeness_id}}){
+								info += "Closeness, "
+						}
+						if (node.id == {{highest_betweenness_id}}){
+								info += "Betweenness, "
+						}
+						if (node.id == {{highest_page_rank_id}}){
+								info += "Page Rank, "
+						}
+						info = info == '' ? '[]' : info;
+
+						highlight_node.clear();
+						document.getElementById("id_to_be_removed").value = node.id;
+						document.getElementById('confirm_block').style.display = "block";
+						document.getElementById("degree").innerHTML = node.degree;
+						document.getElementById("closeness").innerHTML = node.closeness;
+						document.getElementById("betweenness").innerHTML = node.betweenness;
+						document.getElementById("pagerank").innerHTML = node.pagerank;
+						document.getElementById("info").innerHTML = info;
+
+						highlight_node.add(node);
+					})
+					.nodeCanvasObject((node, ctx) => {
+						// 預設的著色
+					ctx.strokeStyle = '#568EA6';
+					ctx.fillStyle = degree_color[node.id];
+					if (stage == "basic") {
+						// ctx.fillStyle = "#ffffff";
+						ctx.fillStyle = degree_color[node.id]; // for test
+					}
+					else if (stage == "HDA"){
+						ctx.fillStyle = degree_color[node.id];
+					}
+					else if (stage == "HCA"){
+						ctx.fillStyle = closeness_color[node.id];
+					}
+					else if (stage == "HBA"){
+						ctx.fillStyle = betweenness_color[node.id];
+					}
+					else if (stage == "HPRA"){
+						ctx.fillStyle = page_rank_color[node.id];
+					}
+					else{
+
+					}
+					
+					// if (node.id == {{highest_degree_id}}) {
+					// 	ctx.fillStyle = "#9FE2BF";
+					// }
+					// else if (node.id == {{highest_degree_id}}){
+					// 	ctx.fillStyle = "#9FE2BF";
+					// }
+					// else if (node.id == {{highest_closeness_id}}){
+					// 	ctx.fillStyle = "#9FE2BF";
+					// }
+					// else if (node.id == {{highest_betweenness_id}}){
+					// 	ctx.fillStyle = "#9FE2BF";
+					// }
+					// else if (node.id == {{highest_page_rank_id}}){
+					// 	ctx.fillStyle = "#9FE2BF";
+					// }
+					// else{
+					// 	ctx.fillStyle = ;
+					// }
+
+					// 標註被選中的 node
+					if (highlight_node.has(node)) {
+						ctx.fillStyle = "#B22222";
+						ctx.strokeStyle = "#B22222";
+					}
+
+					ctx.beginPath(); ctx.arc(node.x, node.y, NODE_R, 0, 2 * Math.PI, false); ctx.closePath();
+					ctx.fill()
+					ctx.stroke()
+				})
+			Graph.d3Force('center', null);
+			Graph.onEngineTick(() => Graph.zoomToFit(0, 10, node => true));
+			</script>
+			</div>
+		</div>
+	</body>
 
 {{ endblock }}

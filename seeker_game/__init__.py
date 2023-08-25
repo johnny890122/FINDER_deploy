@@ -3,7 +3,7 @@ import sys, os, random, json, io
 import networkx as nx
 import numpy as np
 
-from seeker_game.utility import G_links, G_nodes, to_list, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria, GCC_size, complete_genertor, read_911, current_dismantle_G
+from seeker_game.utility import G_links, G_nodes, to_list, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria, GCC_size, complete_genertor, read_911, current_dismantle_G, current_dismantle_stage
 
 sys.path.append(os.path.dirname(__file__) + os.sep + './')
 from FINDER import FINDER
@@ -24,7 +24,10 @@ class Subsession(BaseSubsession):
 
 class Group(BaseGroup):
     basic_911 = read_911()
-    HXA_911 = basic_911.copy()
+    HDA_911 = basic_911.copy()
+    HCA_911 = basic_911.copy()
+    HBA_911 = basic_911.copy()
+    HPRA_911 = basic_911.copy()
     G = nx.Graph()
 
 class Player(BasePlayer):
@@ -95,30 +98,60 @@ def creating_session(subsession: Subsession):
 class WelcomePage(Page):
     @staticmethod
     def is_displayed(player: Player):
-        if player.round_number == 1:
+        if  player.group.basic_911.number_of_edges() == read_911().number_of_edges():
             return True
         return False
 
-class ExamplePage(Page):
+class _911_intro(Page):
     @staticmethod
     def is_displayed(player: Player):
-        if player.round_number == 1:
+        if  player.group.basic_911.number_of_edges() == read_911().number_of_edges():
             return True
         return False
 
 class HXA_IntroPage(Page):
     @staticmethod
     def is_displayed(player: Player):
-        if player.round_number == 1:
+        if  player.group.basic_911.number_of_edges() == 0 and player.group.HDA_911.number_of_edges() == read_911().number_of_edges():
+            return True
+        return False
+
+class _911_HDA(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        if player.group.basic_911.number_of_edges() == 0 and player.group.HDA_911.number_of_edges() == read_911().number_of_edges():
+            return True
+        return False
+
+class _911_HCA(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        if player.group.HDA_911.number_of_edges() == 0 and player.group.HCA_911.number_of_edges() == read_911().number_of_edges():
+            return True
+        return False
+
+class _911_HBA(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        if player.group.HCA_911.number_of_edges() == 0 and player.group.HBA_911.number_of_edges() == read_911().number_of_edges():
+            return True
+        return False
+
+
+class _911_HPRA(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        if player.group.HBA_911.number_of_edges() == 0 and player.group.HPRA_911.number_of_edges() == read_911().number_of_edges():
             return True
         return False
 
 class FINDER_IntroPage(Page):
     @staticmethod
     def is_displayed(player: Player):
-        if player.round_number == 1:
-            return True
         return False
+        # if HPRA_911.number_of_edges() == 0 and G.number_of_edges() == :
+        #     return True
+        # return False
 
 class ReceptionPage(Page):
     @staticmethod
@@ -134,17 +167,28 @@ class Seeker_dismantle(Page):
     
     @staticmethod
     def is_displayed(player: Player):
+        
         G = current_dismantle_G(player)
-        if G.number_of_nodes() > 0:
+        if G.number_of_edges() > 0:
             return True
         return False
 
     @staticmethod
     def vars_for_template(player: Player):
+        stage = current_dismantle_stage(player)
         G = current_dismantle_G(player)
         centrality = node_centrality_criteria(G)
 
+        gradient_color = ["#9FE2BF", "#000000", "#ffffff"]
+        color_map = {}
+        for h_based, nodes in centrality.items():
+            color_map[h_based] = {
+                node: gradient_color[int((idx)//( (len(nodes) + 1) / len(gradient_color)))] 
+                    for idx, node in enumerate(nodes)
+            }
+            
         return {
+            "stage": stage, 
             "practice": int(player.session.config['pre_computed']), 
             "which_round": player.round_number,
 
@@ -152,10 +196,15 @@ class Seeker_dismantle(Page):
             "links": G_links(G), 
 
             "density": nx.density(G), 
-            "highest_degree_id": centrality["degree"],
-            "highest_closeness_id": centrality["closeness"],
-            "highest_betweenness_id": centrality["betweenness"],
-            "highest_page_rank_id": centrality["page_rank"], 
+            "highest_degree_id": centrality["degree"][0] if stage == "HDA" or stage == "official" else -1,
+            "highest_closeness_id": centrality["closeness"][0] if stage == "HCA" or stage == "official" else -1,
+            "highest_betweenness_id": centrality["betweenness"][0] if stage == "HBA" or stage == "official" else -1,
+            "highest_page_rank_id": centrality["page_rank"][0] if stage == "HPRA" or stage == "official" else -1, 
+            "degree_ranking": json.dumps(color_map["degree"]),
+            "closeness_ranking": json.dumps(color_map["closeness"]), 
+            "betweenness_ranking": json.dumps(color_map["betweenness"]), 
+            "page_rank_ranking": json.dumps(color_map["page_rank"]), 
+
             "g_number": randint, 
         }
 
@@ -173,12 +222,12 @@ class Seeker_dismantle(Page):
         player.remainGCC_size = GCC_size(G)
         
 
-
 # Seeker 確認該回合的破壞成果
 class Seeker_confirm(Page):
     @staticmethod
     def is_displayed(player: Player):
-        if player.group.G.number_of_nodes() > 0:
+        G = current_dismantle_G(player)
+        if G.number_of_edges() > 0:
             return True
         return False
 
@@ -224,5 +273,6 @@ class Seeker_confirm(Page):
             "current_GCC_size": player.remainGCC_size, 
         }
 
-page_sequence = [WelcomePage, Seeker_dismantle, HXA_IntroPage, FINDER_IntroPage, ReceptionPage]
-# page_sequence = [WelcomePage, ExamplePage, HXA_IntroPage, FINDER_IntroPage, ReceptionPage]
+page_sequence = [WelcomePage, HXA_IntroPage, _911_HDA, _911_HCA, _911_HBA, _911_HPRA, FINDER_IntroPage, Seeker_dismantle, Seeker_confirm]
+# page_sequence = [Seeker_dismantle, Seeker_confirm]
+

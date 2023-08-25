@@ -11,20 +11,34 @@ def read_911():
 
 def current_dismantle_stage(player):
     if player.group.basic_911.number_of_edges() > 0:
-        stage = 1
-    elif player.group.HXA_911.number_of_edges() > 0:
-        stage = 2
+        stage = "basic"
+    elif player.group.HDA_911.number_of_edges() > 0:
+        stage = "HDA"
+    elif player.group.HCA_911.number_of_edges() > 0:
+        stage = "HCA"
+    elif player.group.HBA_911.number_of_edges() > 0:
+        stage = "HBA"
+    elif player.group.HPRA_911.number_of_edges() > 0:
+        stage = "HPRA"
     else:
-        stage = 3
+        stage = "official"
 
     return stage
 
 def current_dismantle_G(player):
     stage = current_dismantle_stage(player)
-    if stage == 1:
+    assert stage in ["basic", "HDA", "HCA", "HBA", "HPRA", "official"]
+    
+    if stage == "basic":
         return player.group.basic_911
-    elif stage == 2:
-        return player.group.HXA_911
+    elif stage == "HDA":
+        return player.group.HDA_911
+    elif stage == "HCA":
+        return player.group.HCA_911
+    elif stage == "HBA":
+        return player.group.HBA_911
+    elif stage == "HPRA":
+        return player.group.HPRA_911   
     else:
         return player.group.G
 
@@ -82,15 +96,16 @@ def node_centrality_criteria(G):
         betweenness.append((node["id"], node["betweenness"]))
         pagerank.append((node["id"], node["pagerank"]))
 
-    highest_degree_id, _ = sorted(degree, key=lambda x: x[1], reverse=True)[0]
-    highest_closeness_id, _ = sorted(closeness, key=lambda x: x[1], reverse=True)[0]
-    highest_betweenness_id, _ = sorted(betweenness, key=lambda x: x[1], reverse=True)[0]
-    highest_page_rank_id, _ = sorted(pagerank, key=lambda x: x[1], reverse=True)[0]
+    degree_ranking = [ k[0] for k in sorted(degree, key=lambda x: x[1], reverse=True)] 
+    closeness_ranking = [ k[0] for k in sorted(closeness, key=lambda x: x[1], reverse=True)] 
+    betweenness_ranking = [ k[0] for k in sorted(betweenness, key=lambda x: x[1], reverse=True)] 
+    page_rank_ranking = [ k[0] for k in sorted(pagerank, key=lambda x: x[1], reverse=True)] 
+
     return {
-        "degree": highest_degree_id,
-        "closeness": highest_closeness_id,
-        "betweenness": highest_betweenness_id,
-        "page_rank": highest_page_rank_id,
+        "degree": degree_ranking,
+        "closeness": closeness_ranking,
+        "betweenness": betweenness_ranking,
+        "page_rank": page_rank_ranking,
     }
 
 # Utility
