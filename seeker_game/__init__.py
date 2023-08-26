@@ -2,7 +2,7 @@ from otree.api import *
 import sys, os, random, json, io
 import networkx as nx
 import numpy as np
-
+from scipy.stats import rankdata
 from seeker_game.utility import G_links, G_nodes, to_list, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria, GCC_size, complete_genertor, read_911, current_dismantle_G, current_dismantle_stage
 
 sys.path.append(os.path.dirname(__file__) + os.sep + './')
@@ -203,12 +203,15 @@ class Seeker_dismantle(Page):
         stage = current_dismantle_stage(player)
         G = current_dismantle_G(player, stage)
         centrality = node_centrality_criteria(G)
-
-        gradient_color = ["#000000", "#4d4d4d", "#949494", "#d6d6d6", "#ffffff"]
+        # print(centrality)
+        gradient_color = ["#ffffff", "#d6d6d6", "#949494", "#4d4d4d", "#000000"]
         color_map = {}
-        for h_based, nodes in centrality.items():
+        for h_based, (nodes, metric) in centrality.items():
+
+            metric = rankdata(metric, method='min').astype(int)
+            # print(metric)
             color_map[h_based] = {
-                node: gradient_color[int((idx)//( (len(nodes) + 1) / len(gradient_color)))] 
+                node: gradient_color[int((metric[idx])//( (len(nodes) + 1) / len(gradient_color)))] 
                     for idx, node in enumerate(nodes)
             }
         
@@ -224,10 +227,10 @@ class Seeker_dismantle(Page):
             "links": G_links(G), 
             "tool": player.in_round(player.round_number).tool,
             "density": nx.density(G), 
-            "highest_degree_id": centrality["degree"][0] if stage == "HDA" or stage == "official" else -1,
-            "highest_closeness_id": centrality["closeness"][0] if stage == "HCA" or stage == "official" else -1,
-            "highest_betweenness_id": centrality["betweenness"][0] if stage == "HBA" or stage == "official" else -1,
-            "highest_page_rank_id": centrality["page_rank"][0] if stage == "HPRA" or stage == "official" else -1, 
+            "highest_degree_id": centrality["degree"][0][0] if stage == "HDA" or stage == "official" else -1,
+            "highest_closeness_id": centrality["closeness"][0][0] if stage == "HCA" or stage == "official" else -1,
+            "highest_betweenness_id": centrality["betweenness"][0][0] if stage == "HBA" or stage == "official" else -1,
+            "highest_page_rank_id": centrality["page_rank"][0][0] if stage == "HPRA" or stage == "official" else -1, 
             "degree_ranking": json.dumps(color_map["degree"]),
             "closeness_ranking": json.dumps(color_map["closeness"]), 
             "betweenness_ranking": json.dumps(color_map["betweenness"]), 
@@ -244,8 +247,8 @@ class Seeker_dismantle(Page):
         player.num_edge = G.number_of_edges()
         player.num_node = G.number_of_nodes()
         player.GCC_size = GCC_size(G)
-
-        player.seeker_payoff = getRobustness(G, player.to_be_removed, player.in_round(1).GCC_size, player.in_round(1).num_node)
+        original_G = nx.read_gml(player.file_name)
+        player.seeker_payoff = getRobustness(G, player.to_be_removed, GCC_size(original_G), original_G.number_of_nodes())
         
         player.edge_remain = G.number_of_edges()
         player.remainGCC_size = GCC_size(G)

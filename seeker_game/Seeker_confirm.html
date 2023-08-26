@@ -37,8 +37,8 @@
             // 预留给轴线的距离
             let padding = { top: 50, right: 50, bottom: 50, left: 50 };
 
-            let xMax = seeker_data.length <= 5 ? 5 : seeker_data.length-1;
-            let yMax = d3.max(seeker_data.concat(finder_data.slice(0, seeker_data.length)), function(d) {
+            let xMax = seeker_data.length <= 10 ? 10 : seeker_data.length-1;
+            let yMax = d3.max(seeker_data.concat(finder_data.slice(0, xMax)), function(d) {
               return d[1];
             })
 
@@ -65,7 +65,7 @@
               .attr('transform', 'translate(' + padding.left + ',' + padding.top + ')')
               .call(yAxis);
 
-            for (let type of ["seeker", "finder"]) {
+            for (let type of ["finder", "seeker"]) {
               data = type == "seeker" ? seeker_data : finder_data;
               color = type == "seeker" ? "green" : "red";
 

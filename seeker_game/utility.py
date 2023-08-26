@@ -2,7 +2,7 @@ import networkx as nx
 import numpy as np
 
 def read_911():
-    G = nx.read_gml("./sample_data/911.gml")
+    G = nx.read_gml("./sample_data/full_911.gml")
     map_dct = {
         node: idx + 2 for idx, node in enumerate(G.nodes())
     }
@@ -95,10 +95,18 @@ def node_centrality_criteria(G):
         betweenness.append((node["id"], node["betweenness"]))
         pagerank.append((node["id"], node["pagerank"]))
 
-    degree_ranking = [ k[0] for k in sorted(degree, key=lambda x: x[1], reverse=True)] 
-    closeness_ranking = [ k[0] for k in sorted(closeness, key=lambda x: x[1], reverse=True)] 
-    betweenness_ranking = [ k[0] for k in sorted(betweenness, key=lambda x: x[1], reverse=True)] 
-    page_rank_ranking = [ k[0] for k in sorted(pagerank, key=lambda x: x[1], reverse=True)] 
+    
+    degree_ranking = sorted(degree, key=lambda x: x[1], reverse=True)
+    degree_ranking = [k[0] for k in degree_ranking], [k[1] for k in degree_ranking]
+
+    closeness_ranking = sorted(closeness, key=lambda x: x[1], reverse=True)
+    closeness_ranking = [k[0] for k in closeness_ranking], [k[1] for k in closeness_ranking]
+
+    betweenness_ranking = sorted(betweenness, key=lambda x: x[1], reverse=True)
+    betweenness_ranking = [k[0] for k in betweenness_ranking], [k[1] for k in betweenness_ranking]
+
+    page_rank_ranking = sorted(pagerank, key=lambda x: x[1], reverse=True)
+    page_rank_ranking = [k[0] for k in page_rank_ranking], [k[1] for k in page_rank_ranking]
 
     return {
         "degree": degree_ranking,
