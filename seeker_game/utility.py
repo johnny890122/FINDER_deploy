@@ -25,10 +25,9 @@ def current_dismantle_stage(player):
 
     return stage
 
-def current_dismantle_G(player):
-    stage = current_dismantle_stage(player)
+def current_dismantle_G(player, stage):
     assert stage in ["basic", "HDA", "HCA", "HBA", "HPRA", "official"]
-    
+
     if stage == "basic":
         return player.group.basic_911
     elif stage == "HDA":

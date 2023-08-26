@@ -1,8 +1,16 @@
 {{ block title }}
-		{{ if practice == 0}}
-				Round {{which_round}}
+		{{ if stage == "basic"}}
+			Page 2: Round {{which_round}} 
+		{{ elif stage == "HDA"}}
+			Page 4: Round {{which_round}} 
+		{{ elif stage == "HCA"}}
+			Page 5: Round {{which_round}} 
+		{{ elif stage == "HBA"}}
+			Page 6: Round {{which_round}} 
+		{{ elif stage == "HPRA"}}
+			Page 7: Round {{which_round}} 
 		{{ else }}
-				Practice Round {{which_round}}_{{stage}}: G {{g_number}}
+			Page 10: Round {{which_round}} 
 		{{ endif }}
 {{ endblock }}
 
@@ -47,13 +55,13 @@
 
 			<div id="confirm_block" style="display: none;">
 					<p>確定要選擇此節點嗎？</p>
-					Highest in <p id ="info" style="display: inline;"> </p>
+					<!-- Highest in <p id ="info" style="display: inline;"> </p>
 					<ul>
 							<li>Degree: <p id ="degree" style="display: inline;"/></li>
 							<li>Closeness: <p id ="closeness" style="display: inline;"/></li>
 							<li>Betweenness: <p id ="betweenness" style="display: inline;"/></li>
 							<li>Pagerank: <p id ="pagerank" style="display: inline;"/></li>
-					</ul>
+					</ul> -->
 					
 					<button id="yes_button" class="otree-btn-next btn btn-primary">
 							是，前往下一頁。
@@ -72,11 +80,12 @@
 			<script>
 				const gData = { nodes: {{nodes}}, links: {{links}} };
 				const stage = "{{stage}}"
+				const tool = "{{tool}}"
 				const degree_color = {{degree_ranking}};
 				const closeness_color = {{closeness_ranking}};
 				const betweenness_color = {{betweenness_ranking}};
 				const page_rank_color = {{page_rank_ranking}};
-				const NODE_R = 5;
+				const NODE_R = 10;
 				let highlight_node = new Set();
 
 				const Graph = ForceGraph()
@@ -109,36 +118,33 @@
 						highlight_node.clear();
 						document.getElementById("id_to_be_removed").value = node.id;
 						document.getElementById('confirm_block').style.display = "block";
-						document.getElementById("degree").innerHTML = node.degree;
-						document.getElementById("closeness").innerHTML = node.closeness;
-						document.getElementById("betweenness").innerHTML = node.betweenness;
-						document.getElementById("pagerank").innerHTML = node.pagerank;
-						document.getElementById("info").innerHTML = info;
+						// document.getElementById("degree").innerHTML = node.degree;
+						// document.getElementById("closeness").innerHTML = node.closeness;
+						// document.getElementById("betweenness").innerHTML = node.betweenness;
+						// document.getElementById("pagerank").innerHTML = node.pagerank;
+						// document.getElementById("info").innerHTML = info;
 
 						highlight_node.add(node);
 					})
 					.nodeCanvasObject((node, ctx) => {
 						// 預設的著色
 					ctx.strokeStyle = '#568EA6';
-					ctx.fillStyle = degree_color[node.id];
-					if (stage == "basic") {
-						// ctx.fillStyle = "#ffffff";
-						ctx.fillStyle = degree_color[node.id]; // for test
+					// ctx.fillStyle = degree_color[node.id];
+					if (stage == "basic" || (stage=="official" && tool == "no_help")) {
+						ctx.fillStyle = "#ffffff";
+						// ctx.fillStyle = degree_color[node.id]; // for test
 					}
-					else if (stage == "HDA"){
+					else if (stage == "HDA" || (stage=="official" && tool == "degree")){
 						ctx.fillStyle = degree_color[node.id];
 					}
-					else if (stage == "HCA"){
+					else if (stage == "HCA" || (stage=="official" && tool == "closeness")){
 						ctx.fillStyle = closeness_color[node.id];
 					}
-					else if (stage == "HBA"){
+					else if (stage == "HBA" || (stage=="official" && tool == "betweenness")){
 						ctx.fillStyle = betweenness_color[node.id];
 					}
-					else if (stage == "HPRA"){
+					else if (stage == "HPRA" || (stage=="official" && tool == "page_rank")){
 						ctx.fillStyle = page_rank_color[node.id];
-					}
-					else{
-
 					}
 					
 					// if (node.id == {{highest_degree_id}}) {

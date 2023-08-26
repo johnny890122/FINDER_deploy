@@ -7,7 +7,7 @@ SESSION_CONFIGS = [
         num_demo_participants=1, 
         seeker='human', 
 
-        size=100,
+        size=40,
         density=0.01, 
         pre_computed=True, 
         generating_process='ba', 

@@ -38,7 +38,11 @@ class Player(BasePlayer):
     # seeker 需要的 field
     seeker_payoff = models.FloatField(initial=0)
     confirm = models.BooleanField()
-    sub_practice_end = models.BooleanField(initial=False)
+    tool = models.StringField(
+        choices = ["no_help", "degree", "closeness", "betweenness", "page_rank", "AI_FINDER"],
+        widget=widgets.RadioSelect,
+        initial="empty"
+    )
 
     # Graph 需要的 field 
     num_edge = models.IntegerField(initial=-1)
@@ -52,6 +56,8 @@ class Player(BasePlayer):
     finder_hist = models.StringField(initial="2,3,4,5,6,7,8,9,10")
     node_plot_finder = models.StringField(initial="")
     payoff_finder = models.StringField(initial="")
+    stage = models.StringField(initial="")
+    file_name = models.StringField(initial="")
 
 def creating_session(subsession: Subsession):
     is_pre_computed = subsession.session.config['pre_computed']
@@ -84,7 +90,7 @@ def creating_session(subsession: Subsession):
         player.num_node = initial_G.number_of_nodes()
         player.node_plot_finder = ",".join([str(n) for n in GCC_hist_lst])
         player.payoff_finder = ",".join([str(p) for p in payoff_finder_lst])
-
+        player.file_name = file_name
         if player.round_number == 1:
 
             G = subsession.get_groups()[0].G
@@ -98,21 +104,21 @@ def creating_session(subsession: Subsession):
 class WelcomePage(Page):
     @staticmethod
     def is_displayed(player: Player):
-        if  player.group.basic_911.number_of_edges() == read_911().number_of_edges():
+        if player.group.basic_911.number_of_edges() == read_911().number_of_edges():
             return True
         return False
 
 class _911_intro(Page):
     @staticmethod
     def is_displayed(player: Player):
-        if  player.group.basic_911.number_of_edges() == read_911().number_of_edges():
+        if player.group.basic_911.number_of_edges() == read_911().number_of_edges():
             return True
         return False
 
 class HXA_IntroPage(Page):
     @staticmethod
     def is_displayed(player: Player):
-        if  player.group.basic_911.number_of_edges() == 0 and player.group.HDA_911.number_of_edges() == read_911().number_of_edges():
+        if player.group.basic_911.number_of_edges() == 0 and player.group.HDA_911.number_of_edges() == read_911().number_of_edges():
             return True
         return False
 
@@ -137,7 +143,6 @@ class _911_HBA(Page):
             return True
         return False
 
-
 class _911_HPRA(Page):
     @staticmethod
     def is_displayed(player: Player):
@@ -148,10 +153,30 @@ class _911_HPRA(Page):
 class FINDER_IntroPage(Page):
     @staticmethod
     def is_displayed(player: Player):
+        stage = current_dismantle_stage(player)
+        G = current_dismantle_G(player, stage)
+        if player.group.HPRA_911.number_of_edges() == 0 and G.number_of_edges() == nx.read_gml(player.file_name).number_of_edges():
+            return True
         return False
-        # if HPRA_911.number_of_edges() == 0 and G.number_of_edges() == :
-        #     return True
-        # return False
+
+class game_start(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        stage = current_dismantle_stage(player)
+        G = current_dismantle_G(player, stage)
+        if player.group.HPRA_911.number_of_edges() == 0 and G.number_of_edges() == nx.read_gml(player.file_name).number_of_edges():
+            return True
+        return False   
+
+class Tool_Selection_Page(Page):
+    form_model = "player"
+    form_fields = ['tool']
+
+    @staticmethod
+    def is_displayed(player: Player):
+        if player.group.HPRA_911.number_of_edges() == 0:
+            return True
+        return False
 
 class ReceptionPage(Page):
     @staticmethod
@@ -167,8 +192,8 @@ class Seeker_dismantle(Page):
     
     @staticmethod
     def is_displayed(player: Player):
-        
-        G = current_dismantle_G(player)
+        stage = current_dismantle_stage(player)
+        G = current_dismantle_G(player, stage)
         if G.number_of_edges() > 0:
             return True
         return False
@@ -176,25 +201,28 @@ class Seeker_dismantle(Page):
     @staticmethod
     def vars_for_template(player: Player):
         stage = current_dismantle_stage(player)
-        G = current_dismantle_G(player)
+        G = current_dismantle_G(player, stage)
         centrality = node_centrality_criteria(G)
 
-        gradient_color = ["#9FE2BF", "#000000", "#ffffff"]
+        gradient_color = ["#000000", "#4d4d4d", "#949494", "#d6d6d6", "#ffffff"]
         color_map = {}
         for h_based, nodes in centrality.items():
             color_map[h_based] = {
                 node: gradient_color[int((idx)//( (len(nodes) + 1) / len(gradient_color)))] 
                     for idx, node in enumerate(nodes)
             }
-            
+        
+        if stage != "official":
+            round_number = read_911().number_of_nodes() - G.number_of_nodes() + 1
+        else:
+            round_number = nx.read_gml(player.file_name).number_of_nodes() - G.number_of_nodes() + 1
         return {
             "stage": stage, 
             "practice": int(player.session.config['pre_computed']), 
-            "which_round": player.round_number,
-
+            "which_round": round_number, 
             "nodes": G_nodes(G), 
             "links": G_links(G), 
-
+            "tool": player.in_round(player.round_number).tool,
             "density": nx.density(G), 
             "highest_degree_id": centrality["degree"][0] if stage == "HDA" or stage == "official" else -1,
             "highest_closeness_id": centrality["closeness"][0] if stage == "HCA" or stage == "official" else -1,
@@ -210,7 +238,8 @@ class Seeker_dismantle(Page):
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
-        G = current_dismantle_G(player)
+        player.stage = current_dismantle_stage(player)
+        G = current_dismantle_G(player, player.stage)
         # 計算 reward
         player.num_edge = G.number_of_edges()
         player.num_node = G.number_of_nodes()
@@ -221,31 +250,36 @@ class Seeker_dismantle(Page):
         player.edge_remain = G.number_of_edges()
         player.remainGCC_size = GCC_size(G)
         
-
 # Seeker 確認該回合的破壞成果
 class Seeker_confirm(Page):
     @staticmethod
     def is_displayed(player: Player):
-        G = current_dismantle_G(player)
-        if G.number_of_edges() > 0:
+        stage = player.in_round(player.round_number).stage
+        # TODO 
+        # stage = "official"
+        G = current_dismantle_G(player, stage)
+        if G.number_of_edges() >= 0:
             return True
         return False
 
     @staticmethod
     def vars_for_template(player: Player):
-        num_past_practice_round = 0
-        if player.session.config['pre_computed']:
-            for p in player.in_previous_rounds(): 
-                if p.sub_practice_end:
-                    num_past_practice_round = p.round_number
 
         # Remaining node
         node_plot = [[0, player.in_round(1).GCC_size]]
         for n in range(1, player.round_number+1):
             node_plot.append([n, player.in_round(n).remainGCC_size])
+        # stage
+        stage = player.in_round(player.round_number).stage
+        G = current_dismantle_G(player, stage)
+        
+        if stage != "official":
+            round_number = read_911().number_of_nodes() - G.number_of_nodes()
+        else:
+            round_number = nx.read_gml(player.file_name).number_of_nodes() - G.number_of_nodes()
 
         # Accumulate payoff
-        payoff = [0] + [p.seeker_payoff for p in player.in_previous_rounds()] + [player.seeker_payoff]
+        payoff = [0] + [p.seeker_payoff for p in player.in_previous_rounds()[player.round_number-round_number:]] + [player.seeker_payoff]
         accum_payoff = np.add.accumulate(payoff)
         payoff_plot = [[i, p] for (i, p) in enumerate(accum_payoff)]
 
@@ -260,19 +294,17 @@ class Seeker_confirm(Page):
             payoff_finder = [[i, p] for (i, p) in enumerate(to_list(player.in_round(1).payoff_finder, "float"))]
             node_plot_finder = [[i, p] for (i, p) in enumerate(to_list(player.in_round(1).node_plot_finder))]
 
-        
         return {
+            "stage": stage, 
             "original_size": player.in_round(1).GCC_size, 
             "practice": int(player.session.config['pre_computed']),
-            "node_plot_finder": node_plot_finder,
-            "payoff_finder": payoff_finder, 
+            "node_plot_finder": node_plot_finder if stage == "official" else [],
+            "payoff_finder": payoff_finder if stage == "official" else [], 
             "node_line_plot": node_plot, 
             "payoff_line_plot": payoff_plot, 
-            "which_round": player.round_number, 
+            "which_round": round_number, 
             "caught": player.to_be_removed, 
             "current_GCC_size": player.remainGCC_size, 
         }
 
-page_sequence = [WelcomePage, HXA_IntroPage, _911_HDA, _911_HCA, _911_HBA, _911_HPRA, FINDER_IntroPage, Seeker_dismantle, Seeker_confirm]
-# page_sequence = [Seeker_dismantle, Seeker_confirm]
-
+page_sequence = [WelcomePage, _911_intro, HXA_IntroPage, _911_HDA, _911_HCA, _911_HBA, _911_HPRA, FINDER_IntroPage, game_start, Tool_Selection_Page, Seeker_dismantle, Seeker_confirm]

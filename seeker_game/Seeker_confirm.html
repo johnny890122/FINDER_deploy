@@ -1,10 +1,19 @@
 {{ block title }}
-    {{ if practice == 0}}
-        Round {{which_round}} 結果
-    {{ else }}
-        Practice Round {{which_round}} 結果
-    {{ endif }}
+  {{ if stage == "basic"}}
+    Page 2: Round {{which_round}} 
+  {{ elif stage == "HDA"}}
+    Page 4: Round {{which_round}} 
+  {{ elif stage == "HCA"}}
+    Page 5: Round {{which_round}} 
+  {{ elif stage == "HBA"}}
+    Page 6: Round {{which_round}} 
+  {{ elif stage == "HPRA"}}
+    Page 7: Round {{which_round}} 
+  {{ else }}
+    Real: Round {{which_round}} 
+  {{ endif }}
 {{ endblock }}
+
 {{ block content }}
     <head>
         <script src="https://d3js.org/d3.v4.js"></script>
@@ -95,11 +104,11 @@
             {{ endif }}
 
         <div style="width: 2000px;">
-            <div id="chart" style="display:inline-block; width: 700px;"></div>
+            <!-- <div id="chart" style="display:inline-block; width: 700px;"></div> -->
             <div id="payoff_chart" style="display:inline-block; width: 700px;"></div>      
         </div>
         <script>
-            plot("chart", {{node_line_plot}}, {{node_plot_finder}});
+            // plot("chart", {{node_line_plot}}, {{node_plot_finder}});
             plot("payoff_chart", {{payoff_line_plot}}, {{payoff_finder}});
         </script>
 
