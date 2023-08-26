@@ -1,8 +1,11 @@
 import networkx as nx
 import numpy as np
 
-def read_911():
-    G = nx.read_gml("./sample_data/full_911.gml")
+def read_911(full):
+    if full:
+        G = nx.read_gml("./sample_data/full_911.gml")
+    else:
+        G = nx.read_gml("./sample_data/911.gml")
     map_dct = {
         node: idx + 2 for idx, node in enumerate(G.nodes())
     }

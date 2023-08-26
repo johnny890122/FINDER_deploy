@@ -23,11 +23,11 @@ class Subsession(BaseSubsession):
     pass
 
 class Group(BaseGroup):
-    basic_911 = read_911()
-    HDA_911 = basic_911.copy()
-    HCA_911 = basic_911.copy()
-    HBA_911 = basic_911.copy()
-    HPRA_911 = basic_911.copy()
+    basic_911 = nx.Graph()
+    HDA_911 = nx.Graph()
+    HCA_911 = nx.Graph()
+    HBA_911 = nx.Graph()
+    HPRA_911 = nx.Graph()
     G = nx.Graph()
 
 class Player(BasePlayer):
@@ -100,53 +100,67 @@ def creating_session(subsession: Subsession):
 
             for e in initial_G.edges():
                 G.add_edge(int(e[0]), int(e[1]))
+            
+            for n in read_911(player.session.config["full"]).nodes():
+                player.group.basic_911.add_node(int(n))
+                player.group.HDA_911.add_node(int(n))
+                player.group.HCA_911.add_node(int(n))
+                player.group.HBA_911.add_node(int(n))
+                player.group.HPRA_911.add_node(int(n))
+            
+            for e in read_911(player.session.config["full"]).edges():
+                player.group.basic_911.add_edge(int(e[0]), int(e[1]))
+                player.group.HDA_911.add_edge(int(e[0]), int(e[1]))
+                player.group.HCA_911.add_edge(int(e[0]), int(e[1]))
+                player.group.HBA_911.add_edge(int(e[0]), int(e[1]))
+                player.group.HPRA_911.add_edge(int(e[0]), int(e[1]))
 
 class WelcomePage(Page):
     @staticmethod
     def is_displayed(player: Player):
-        if player.group.basic_911.number_of_edges() == read_911().number_of_edges():
+        if player.group.basic_911.number_of_edges() == read_911(player.session.config["full"]).number_of_edges():
             return True
         return False
 
 class _911_intro(Page):
     @staticmethod
     def is_displayed(player: Player):
-        if player.group.basic_911.number_of_edges() == read_911().number_of_edges():
+        if player.group.basic_911.number_of_edges() == read_911(player.session.config["full"]).number_of_edges():
             return True
         return False
 
 class HXA_IntroPage(Page):
     @staticmethod
     def is_displayed(player: Player):
-        if player.group.basic_911.number_of_edges() == 0 and player.group.HDA_911.number_of_edges() == read_911().number_of_edges():
+        if player.group.basic_911.number_of_edges() == 0 and player.group.HDA_911.number_of_edges() == read_911(player.session.config["full"]).number_of_edges():
             return True
         return False
 
 class _911_HDA(Page):
     @staticmethod
     def is_displayed(player: Player):
-        if player.group.basic_911.number_of_edges() == 0 and player.group.HDA_911.number_of_edges() == read_911().number_of_edges():
+        if player.group.basic_911.number_of_edges() == 0 and player.group.HDA_911.number_of_edges() == read_911(player.session.config["full"]).number_of_edges():
             return True
         return False
 
 class _911_HCA(Page):
     @staticmethod
     def is_displayed(player: Player):
-        if player.group.HDA_911.number_of_edges() == 0 and player.group.HCA_911.number_of_edges() == read_911().number_of_edges():
+        if player.group.HDA_911.number_of_edges() == 0 and player.group.HCA_911.number_of_edges() == read_911(player.session.config["full"]).number_of_edges():
             return True
         return False
 
 class _911_HBA(Page):
     @staticmethod
     def is_displayed(player: Player):
-        if player.group.HCA_911.number_of_edges() == 0 and player.group.HBA_911.number_of_edges() == read_911().number_of_edges():
+        if player.group.HCA_911.number_of_edges() == 0 and player.group.HBA_911.number_of_edges() == read_911(player.session.config["full"]).number_of_edges():
             return True
         return False
 
 class _911_HPRA(Page):
     @staticmethod
     def is_displayed(player: Player):
-        if player.group.HBA_911.number_of_edges() == 0 and player.group.HPRA_911.number_of_edges() == read_911().number_of_edges():
+        if player.group.HBA_911.number_of_edges() == 0 and player.group.HPRA_911.number_of_edges() == read_911(player.session.config["full"]).number_of_edges():
             return True
         return False
 
@@ -216,7 +230,7 @@ class Seeker_dismantle(Page):
             }
         
         if stage != "official":
-            round_number = read_911().number_of_nodes() - G.number_of_nodes() + 1
+            round_number = read_911(player.session.config["full"]).number_of_nodes() - G.number_of_nodes() + 1
         else:
             round_number = nx.read_gml(player.file_name).number_of_nodes() - G.number_of_nodes() + 1
         return {
@@ -277,7 +291,7 @@ class Seeker_confirm(Page):
         G = current_dismantle_G(player, stage)
         
         if stage != "official":
-            round_number = read_911().number_of_nodes() - G.number_of_nodes()
+            round_number = read_911(player.session.config["full"]).number_of_nodes() - G.number_of_nodes()
         else:
             round_number = nx.read_gml(player.file_name).number_of_nodes() - G.number_of_nodes()
 
