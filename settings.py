@@ -14,19 +14,19 @@ SESSION_CONFIGS = [
         randint=0, 
         full=True,
     ),
-    dict(
-        name='seeker_game_simplified', 
-        app_sequence=['seeker_game'], 
-        num_demo_participants=1, 
-        seeker='human', 
+    # dict(
+    #     name='seeker_game_simplified', 
+    #     app_sequence=['seeker_game'], 
+    #     num_demo_participants=1, 
+    #     seeker='human', 
 
-        size=40,
-        density=0.01, 
-        pre_computed=True, 
-        generating_process='ba', 
-        randint=0, 
-        full=False,
-    ),
+    #     size=40,
+    #     density=0.01, 
+    #     pre_computed=True, 
+    #     generating_process='ba', 
+    #     randint=0, 
+    #     full=False,
+    # ),
 
     # dict(
     #     name='seeker_game_size_density', 
