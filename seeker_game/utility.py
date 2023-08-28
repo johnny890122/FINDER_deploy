@@ -12,16 +12,16 @@ def read_911(full):
 
     return nx.relabel_nodes(G, map_dct, copy=True)
 
-def current_dismantle_stage(player):
-    if player.group.basic_911.number_of_edges() > 0:
+def current_dismantle_stage(player, num_911_nodes):
+    if player.group.basic_911.number_of_nodes() == num_911_nodes:
         stage = "basic"
-    elif player.group.HDA_911.number_of_edges() > 0:
+    elif player.group.HDA_911.number_of_nodes() == num_911_nodes:
         stage = "HDA"
-    elif player.group.HCA_911.number_of_edges() > 0:
+    elif player.group.HCA_911.number_of_nodes() == num_911_nodes:
         stage = "HCA"
-    elif player.group.HBA_911.number_of_edges() > 0:
+    elif player.group.HBA_911.number_of_nodes() == num_911_nodes:
         stage = "HBA"
-    elif player.group.HPRA_911.number_of_edges() > 0:
+    elif player.group.HPRA_911.number_of_nodes() == num_911_nodes:
         stage = "HPRA"
     else:
         stage = "official"
@@ -29,7 +29,7 @@ def current_dismantle_stage(player):
     return stage
 
 def current_dismantle_G(player, stage):
-    assert stage in ["basic", "HDA", "HCA", "HBA", "HPRA", "official"]
+    # assert stage in ["basic", "HDA", "HCA", "HBA", "HPRA", "official"]
 
     if stage == "basic":
         return player.group.basic_911
@@ -65,7 +65,7 @@ def G_links(G):
             keys = list(nx.degree_centrality(subgraph).keys())
             values = list(nx.degree_centrality(subgraph).values())
             node = keys[ np.argmax(values)]
-            links.append({"source": -1, "target": node, 'dashed': "False", "display": "False"})
+            links.append({"source": "source", "target": node, 'dashed': "False", "display": "False"})
     return links
 
 # Utility: 用來將 G 的 node attributes 轉換成前端接受的格式
@@ -85,38 +85,31 @@ def G_nodes(G):
     # add a pesudo node as center node
     if len(list(nx.connected_components(G))) > 1:
         nodes.append({
-            "id": -1, "degree": -1, "closeness": -1, "betweenness": -1, "pagerank": -1, "display": "False"
+            "id": "source", "degree": -1, "closeness": -1, "betweenness": -1, "pagerank": -1, "display": "False"
         })
 
     return nodes
 
 def node_centrality_criteria(G):
-    degree, closeness, betweenness, pagerank = [], [], [], []
-    for node in G_nodes(G):
-        degree.append((node["id"], node["degree"]))
-        closeness.append((node["id"], node["closeness"]))
-        betweenness.append((node["id"], node["betweenness"]))
-        pagerank.append((node["id"], node["pagerank"]))
 
-    
-    degree_ranking = sorted(degree, key=lambda x: x[1], reverse=True)
-    degree_ranking = [k[0] for k in degree_ranking], [k[1] for k in degree_ranking]
-
-    closeness_ranking = sorted(closeness, key=lambda x: x[1], reverse=True)
-    closeness_ranking = [k[0] for k in closeness_ranking], [k[1] for k in closeness_ranking]
-
-    betweenness_ranking = sorted(betweenness, key=lambda x: x[1], reverse=True)
-    betweenness_ranking = [k[0] for k in betweenness_ranking], [k[1] for k in betweenness_ranking]
-
-    page_rank_ranking = sorted(pagerank, key=lambda x: x[1], reverse=True)
-    page_rank_ranking = [k[0] for k in page_rank_ranking], [k[1] for k in page_rank_ranking]
-
-    return {
-        "degree": degree_ranking,
-        "closeness": closeness_ranking,
-        "betweenness": betweenness_ranking,
-        "page_rank": page_rank_ranking,
+    centrality = {
+        "degree": {}, "closeness": {}, "betweenness": {}, "page_rank": {}
     }
+    for metric in ["degree", "closeness", "betweenness", "page_rank"]:
+        node_lst = []
+        for node in G_nodes(G):
+            node_lst.append((node["id"], node["degree"]))
+        
+        hxa = sorted(node_lst, key=lambda x: x[1], reverse=True)
+        rank = 1
+        now_score = hxa[0][1]
+        for idx, (node, score) in enumerate(hxa): 
+            if now_score > score:
+                now_score = score
+                rank += 1
+            centrality[metric][node] = rank
+
+    return centrality
 
 # Utility
 def to_list(string, dytpe="int"):

@@ -55,9 +55,9 @@
 
 			<div id="confirm_block" style="display: none;">
 					<p>確定要選擇此節點嗎？</p>
-					<!-- Highest in <p id ="info" style="display: inline;"> </p>
-					<ul>
-							<li>Degree: <p id ="degree" style="display: inline;"/></li>
+					<p id ="info" style="display: block;"> </p>
+					<!-- <ul> -->
+							<!-- <li>Degree: <p id ="degree" style="display: inline;"/></li>
 							<li>Closeness: <p id ="closeness" style="display: inline;"/></li>
 							<li>Betweenness: <p id ="betweenness" style="display: inline;"/></li>
 							<li>Pagerank: <p id ="pagerank" style="display: inline;"/></li>
@@ -81,10 +81,15 @@
 				const gData = { nodes: {{nodes}}, links: {{links}} };
 				const stage = "{{stage}}"
 				const tool = "{{tool}}"
-				const degree_color = {{degree_ranking}};
-				const closeness_color = {{closeness_ranking}};
-				const betweenness_color = {{betweenness_ranking}};
-				const page_rank_color = {{page_rank_ranking}};
+				const degree_color = {{degree_color}};
+				const closeness_color = {{closeness_color}};
+				const betweenness_color = {{betweenness_color}};
+				const page_rank_color = {{page_rank_color}};
+
+				const degree_ranking = {{degree_ranking}};
+				const closeness_ranking = {{closeness_ranking}};
+				const betweenness_ranking = {{betweenness_ranking}};
+				const page_rank_ranking = {{page_rank_ranking}};
 				const NODE_R = 10;
 				let highlight_node = new Set();
 
@@ -101,19 +106,6 @@
 					.nodeVisibility(node => node["display"] == "False" ? false : true)
 					.onNodeClick(node => {
 						let info = ''
-						if (node.id == {{highest_degree_id}}) {
-								info += "Degree, "
-						}
-						if (node.id == {{highest_closeness_id}}){
-								info += "Closeness, "
-						}
-						if (node.id == {{highest_betweenness_id}}){
-								info += "Betweenness, "
-						}
-						if (node.id == {{highest_page_rank_id}}){
-								info += "Page Rank, "
-						}
-						info = info == '' ? '[]' : info;
 
 						highlight_node.clear();
 						document.getElementById("id_to_be_removed").value = node.id;
@@ -122,17 +114,31 @@
 						// document.getElementById("closeness").innerHTML = node.closeness;
 						// document.getElementById("betweenness").innerHTML = node.betweenness;
 						// document.getElementById("pagerank").innerHTML = node.pagerank;
-						// document.getElementById("info").innerHTML = info;
+						// document.getElementById("info").innerHTML = node;
+						if (stage == "basic" || (stage=="official" && tool == "no_help")) {
+							document.getElementById('info').style.display = "none";
+						}
+						else if (stage == "HDA" || (stage=="official" && tool == "degree")){
+							document.getElementById("info").innerHTML = "Degree Rank " + degree_ranking[node.id]
+						}
+						else if (stage == "HCA" || (stage=="official" && tool == "closeness")){
+							document.getElementById("info").innerHTML = "Closeness Rank " + closeness_ranking[node.id]
+						}
+						else if (stage == "HBA" || (stage=="official" && tool == "betweenness")){
+							document.getElementById("info").innerHTML = "Betweenness Rank " + betweenness_ranking[node.id]
+						}
+						else if (stage == "HPRA" || (stage=="official" && tool == "page_rank")){
+							document.getElementById("info").innerHTML = "Page rank Rank " + page_rank_ranking[node.id]
+						}
+						document.getElementById('info').style.display = "block";
 
 						highlight_node.add(node);
 					})
 					.nodeCanvasObject((node, ctx) => {
-						// 預設的著色
+					// 預設的著色
 					ctx.strokeStyle = '#568EA6';
-					// ctx.fillStyle = degree_color[node.id];
 					if (stage == "basic" || (stage=="official" && tool == "no_help")) {
 						ctx.fillStyle = "#ffffff";
-						// ctx.fillStyle = degree_color[node.id]; // for test
 					}
 					else if (stage == "HDA" || (stage=="official" && tool == "degree")){
 						ctx.fillStyle = degree_color[node.id];
@@ -150,24 +156,6 @@
 						ctx.fillStyle = "#ffffff";
 					}
 					
-					// if (node.id == {{highest_degree_id}}) {
-					// 	ctx.fillStyle = "#9FE2BF";
-					// }
-					// else if (node.id == {{highest_degree_id}}){
-					// 	ctx.fillStyle = "#9FE2BF";
-					// }
-					// else if (node.id == {{highest_closeness_id}}){
-					// 	ctx.fillStyle = "#9FE2BF";
-					// }
-					// else if (node.id == {{highest_betweenness_id}}){
-					// 	ctx.fillStyle = "#9FE2BF";
-					// }
-					// else if (node.id == {{highest_page_rank_id}}){
-					// 	ctx.fillStyle = "#9FE2BF";
-					// }
-					// else{
-					// 	ctx.fillStyle = ;
-					// }
 
 					// 標註被選中的 node
 					if (highlight_node.has(node)) {
