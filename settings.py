@@ -1,5 +1,12 @@
 from os import environ
 
+ROOMS = [
+    dict(
+        name='game_link',
+        display_name='Unified Link for Seeker Game'
+    ),
+]
+
 SESSION_CONFIGS = [
     dict(
         name='seeker_game', 

@@ -17,6 +17,7 @@
 {{ block content }}
 	<head>
 		<script src="//unpkg.com/force-graph"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js"></script>
 
 		<style>
 		.outer {
@@ -40,6 +41,7 @@
 					style="border-color: black; border-width: 1px; border-style: solid; padding:5px; width:fit-content;"></div>
 
 			<script>
+				Math.seedrandom('abcde')
 				const gData = { nodes: {{nodes}}, links: {{links}} };
 				const stage = "{{stage}}";
 				const tool = "{{tool}}"
@@ -48,6 +50,8 @@
 				const betweenness_color = {{betweenness_color}};
 				const page_rank_color = {{page_rank_color}};
 				const NODE_R = 10;
+
+
 				const Graph = ForceGraph()
 					(document.getElementById('graph'))
 					.graphData(gData)

@@ -1,5 +1,6 @@
 import networkx as nx
 import numpy as np
+import pygsheets
 
 def read_911(full):
     if full:
@@ -176,3 +177,25 @@ def convert_to_FINDER_format(file_name, input_dir, output_dir):
 
 def complete_genertor(n=20):
     return nx.complete_graph(n)
+
+def fetch_link(sheet_url, auth_file):
+    buffer = 0.01
+    gc = pygsheets.authorize(service_file = auth_file)
+    sheet = gc.open_by_url(sheet_url)
+
+    df = sheet.worksheet_by_title("link").get_as_df()
+    df = df[df["num_used"] <= df["total_avaiable"]*(1-buffer)]
+
+    return df["link"].iloc[0]
+
+def upload_info(sheet_url, auth_file, link):
+
+	gc = pygsheets.authorize(service_file = auth_file)
+    
+	sheet = gc.open_by_url(sheet_url)
+	df = sheet.worksheet_by_title("link").get_as_df()
+
+	df.loc[df["link"] == link, "num_used"] += 1
+	sheet.worksheet_by_title("link").clear()
+
+	sheet.worksheet_by_title("link").set_dataframe(df, start = "A1")

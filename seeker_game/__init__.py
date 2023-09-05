@@ -3,10 +3,11 @@ import sys, os, random, json, io
 import networkx as nx
 import numpy as np
 from scipy.stats import rankdata
-from seeker_game.utility import G_links, G_nodes, to_list, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria, GCC_size, complete_genertor, read_911, current_dismantle_G, current_dismantle_stage
+from seeker_game.utility import G_links, G_nodes, to_list, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria, GCC_size, complete_genertor, read_911, current_dismantle_G, current_dismantle_stage, fetch_link, upload_info
+# from const import finder_link_sheet_url, auth_file
 
 sys.path.append(os.path.dirname(__file__) + os.sep + './')
-from FINDER import FINDER
+# from FINDER import FINDER
 
 doc = """
 human seeker 單機版 
@@ -43,6 +44,7 @@ class Player(BasePlayer):
         widget=widgets.RadioSelect,
         initial="empty"
     )
+    link = models.StringField()
 
     # Graph 需要的 field 
     num_edge = models.IntegerField(initial=-1)
@@ -390,4 +392,31 @@ class Seeker_confirm(Page):
             "current_GCC_size": player.remainGCC_size, 
         }
 
-page_sequence = [WelcomePage, _911_intro, HXA_IntroPage, _911_HDA, _911_HCA, _911_HBA, _911_HPRA, FINDER_IntroPage, game_start, Tool_Selection_Page, Seeker_dismantle, Seeker_dismantle_result, Seeker_confirm]
+class Next_Link(Page):
+
+    @staticmethod
+    def is_displayed(player: Player):
+        stage = player.in_round(player.round_number).stage
+        G = current_dismantle_G(player, stage)
+        
+        if stage == "official" and G.numberof_edges() == 0:
+            return True
+        return False
+    
+    @staticmethod
+    def vars_for_template(player: Player):
+        finder_link_sheet_url = "https://docs.google.com/spreadsheets/d/15t8MjE9mLmHGQDWzGGqEPiri402DKU1Ux8EX9XyxwcA/"
+        auth_file = "finderlink-381806-aa232dd1eff5.json"
+        link = fetch_link(finder_link_sheet_url, auth_file)
+        player.link = link
+        return {
+            "links": player.link
+        }
+
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        finder_link_sheet_url = "https://docs.google.com/spreadsheets/d/15t8MjE9mLmHGQDWzGGqEPiri402DKU1Ux8EX9XyxwcA/"
+        auth_file = "finderlink-381806-aa232dd1eff5.json"
+        upload_info(finder_link_sheet_url, auth_file, player.link)
+        
+page_sequence = [WelcomePage, HXA_IntroPage, FINDER_IntroPage, game_start, Tool_Selection_Page, Seeker_dismantle, Seeker_dismantle_result, Seeker_confirm, Next_Link]
