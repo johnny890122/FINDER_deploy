@@ -3,7 +3,7 @@ import sys, os, random, json, io
 import networkx as nx
 import numpy as np
 from scipy.stats import rankdata
-from seeker_game.utility import G_links, G_nodes, to_list, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria, GCC_size, complete_genertor, read_911, current_dismantle_G, current_dismantle_stage, fetch_link, upload_info
+from seeker_game.utility import G_links, G_nodes, to_list, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria, GCC_size, complete_genertor, read_911, current_dismantle_G, current_dismantle_stage, fetch_link, upload_info, read_everett
 # from const import finder_link_sheet_url, auth_file
 
 sys.path.append(os.path.dirname(__file__) + os.sep + './')
@@ -14,6 +14,9 @@ human seeker 單機版
 """
 
 randint = np.random.randint(5)
+
+def read_911(full):
+    return read_everett(full)
 
 class C(BaseConstants):
     NAME_IN_URL = 'seeker_game'
@@ -120,8 +123,9 @@ def creating_session(subsession: Subsession):
 class WelcomePage(Page):
     @staticmethod
     def is_displayed(player: Player):
+        print(read_911(player.session.config["full"]).nodes())
         num_911_nodes = read_911(player.session.config["full"]).number_of_nodes()
-
+        print(num_911_nodes)
         if player.group.basic_911.number_of_nodes() == num_911_nodes:
             return True
         return False

@@ -140,6 +140,7 @@
 			<script>
 				var prng = new Math.seedrandom('abcde');
 				const gData = { nodes: {{nodes}}, links: {{links}} };
+				gData.nodes.forEach(node => { node.fx = node.x; node.fy = node.y; });
 				const stage = "{{stage}}";
 				const tool = "{{tool}}";
 				const degree_color = {{degree_color}};
@@ -154,7 +155,7 @@
 				const NODE_R = 10;
 				let highlight_node = new Set();
 				
-				// gData.nodes.forEach(node => { node.fx = 100; node.fy = 100; });
+				gData.nodes.forEach(node => { node.fx = node.x; node.fy = node.y; });
 
 				const Graph = ForceGraph()
 					(document.getElementById('graph'))

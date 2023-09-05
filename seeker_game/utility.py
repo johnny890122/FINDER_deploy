@@ -1,18 +1,39 @@
 import networkx as nx
 import numpy as np
-import pygsheets
+import pygsheets, json
+from networkx.readwrite import json_graph
 
 def read_911(full):
     if full:
-        G = nx.read_gml("./sample_data/full_911.gml")
+        filename = "./sample_data/full_911.json"
     else:
-        G = nx.read_gml("./sample_data/911.gml")
-    map_dct = {
-        node: idx + 2 for idx, node in enumerate(G.nodes())
-    }
-
+        filename = "./sample_data/911.json"
+    with open(filename) as f:
+        js_graph = json.load(f)
+    G = json_graph.node_link_graph(js_graph, multigraph=False)
+    map_dct = {node: int(node) for node in G.nodes()}
     return nx.relabel_nodes(G, map_dct, copy=True)
 
+    # if full:
+    #     G = nx.read_gml("../sample_data/full_911.gml")
+    # else:
+    #     G = nx.read_gml("../sample_data/911.gml")
+    # map_dct = {
+    #     node: idx + 2 for idx, node in enumerate(G.nodes())
+    # }
+    # return nx.relabel_nodes(G, map_dct, copy=True)
+
+def read_everett(full):
+
+    # G = nx.read_gml("./sample_data/everett.gml")
+    # return G
+    filename = "./sample_data/everett.json"
+    with open(filename) as f:
+        js_graph = json.load(f)
+    G = json_graph.node_link_graph(js_graph, multigraph=False)
+    map_dct = {node: int(node) for node in G.nodes()}
+    return nx.relabel_nodes(G, map_dct, copy=True)
+    
 def current_dismantle_stage(player, num_911_nodes):
     if player.group.basic_911.number_of_nodes() == num_911_nodes:
         stage = "basic"
@@ -78,10 +99,15 @@ def G_nodes(G):
     pagerank = {node: pagerank for (node, pagerank) in nx.pagerank(G).items()}
 
     nodes = []
-    for n in list(G.nodes()):
-        nodes.append({
-            "id": n, "degree": round(degree[n], 2), "closeness": round(closeness[n], 2), "betweenness": round(betweenness[n], 2), "pagerank": round(pagerank[n], 2), "display": "True",
-        })
+    for n, data in list(G.nodes(data=True)):
+        dct = {
+            "id": n, "degree": round(degree[n], 2), "closeness": round(closeness[n], 2), 
+            "betweenness": round(betweenness[n], 2), "pagerank": round(pagerank[n], 2), "display": "True"
+        }
+        if "x" in data.keys() and "y" in data.keys():
+            dct["x"] = data["x"]
+            dct["y"] = data["y"]
+        nodes.append(dct)
 
     # add a pesudo node as center node
     if len(list(nx.connected_components(G))) > 1:
