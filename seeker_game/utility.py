@@ -4,35 +4,36 @@ import pygsheets, json
 from networkx.readwrite import json_graph
 
 def read_911(full):
-    if full:
-        filename = "./sample_data/full_911.json"
-    else:
-        filename = "./sample_data/911.json"
-    with open(filename) as f:
-        js_graph = json.load(f)
-    G = json_graph.node_link_graph(js_graph, multigraph=False)
-    map_dct = {node: int(node) for node in G.nodes()}
-    return nx.relabel_nodes(G, map_dct, copy=True)
-
     # if full:
-    #     G = nx.read_gml("../sample_data/full_911.gml")
+    #     filename = "./sample_data/full_911.json"
     # else:
-    #     G = nx.read_gml("../sample_data/911.gml")
-    # map_dct = {
-    #     node: idx + 2 for idx, node in enumerate(G.nodes())
-    # }
+    #     filename = "./sample_data/911.json"
+    # with open(filename) as f:
+    #     js_graph = json.load(f)
+    # G = json_graph.node_link_graph(js_graph, multigraph=False)
+    # map_dct = {node: int(node) for node in G.nodes()}
     # return nx.relabel_nodes(G, map_dct, copy=True)
+
+    if full:
+        G = nx.read_gml("../sample_data/full_911.gml")
+    else:
+        G = nx.read_gml("../sample_data/911.gml")
+    map_dct = {
+        node: idx + 2 for idx, node in enumerate(G.nodes())
+    }
+    return nx.relabel_nodes(G, map_dct, copy=True)
 
 def read_everett(full):
 
-    # G = nx.read_gml("./sample_data/everett.gml")
-    # return G
-    filename = "./sample_data/everett.json"
-    with open(filename) as f:
-        js_graph = json.load(f)
-    G = json_graph.node_link_graph(js_graph, multigraph=False)
-    map_dct = {node: int(node) for node in G.nodes()}
-    return nx.relabel_nodes(G, map_dct, copy=True)
+    G = nx.read_gml("./sample_data/everett.gml")
+    return G
+
+    # filename = "./sample_data/everett.json"
+    # with open(filename) as f:
+    #     js_graph = json.load(f)
+    # G = json_graph.node_link_graph(js_graph, multigraph=False)
+    # map_dct = {node: int(node) for node in G.nodes()}
+    # return nx.relabel_nodes(G, map_dct, copy=True)
     
 def current_dismantle_stage(player, num_911_nodes):
     if player.group.basic_911.number_of_nodes() == num_911_nodes:
@@ -91,7 +92,7 @@ def G_links(G):
     return links
 
 # Utility: 用來將 G 的 node attributes 轉換成前端接受的格式
-def G_nodes(G):
+def G_nodes(G, graph_layout={}):
 
     degree = {node: degree for (node, degree) in G.degree()}
     closeness = {node: closeness for (node, closeness) in nx.closeness_centrality(G).items()}
@@ -99,20 +100,21 @@ def G_nodes(G):
     pagerank = {node: pagerank for (node, pagerank) in nx.pagerank(G).items()}
 
     nodes = []
+    # graph_layout[dct["id"]] = {"x": dct["x"], "y": dct["y"]}
     for n, data in list(G.nodes(data=True)):
         dct = {
-            "id": n, "degree": round(degree[n], 2), "closeness": round(closeness[n], 2), 
-            "betweenness": round(betweenness[n], 2), "pagerank": round(pagerank[n], 2), "display": "True"
+            "id": n, "degree": degree[n], "closeness": closeness[n], 
+            "betweenness": betweenness[n], "page_rank": pagerank[n], "display": "True"
         }
-        if "x" in data.keys() and "y" in data.keys():
-            dct["x"] = data["x"]
-            dct["y"] = data["y"]
+        if graph_layout != {}:
+            dct["x"] = graph_layout[n]["x"]
+            dct["y"] = graph_layout[n]["y"]
         nodes.append(dct)
 
     # add a pesudo node as center node
     if len(list(nx.connected_components(G))) > 1:
         nodes.append({
-            "id": "source", "degree": -1, "closeness": -1, "betweenness": -1, "pagerank": -1, "display": "False"
+            "id": "source", "degree": -1, "closeness": -1, "betweenness": -1, "page_rank": -1, "display": "False"
         })
 
     return nodes
@@ -120,21 +122,23 @@ def G_nodes(G):
 def node_centrality_criteria(G):
 
     centrality = {
-        "degree": {}, "closeness": {}, "betweenness": {}, "page_rank": {}
+        "degree": {"node":[], "value":[]}, "closeness": {"node":[], "value":[]}, "betweenness": {"node":[], "value":[]}, "page_rank": {"node":[], "value":[]}
     }
     for metric in ["degree", "closeness", "betweenness", "page_rank"]:
         node_lst = []
         for node in G_nodes(G):
-            node_lst.append((node["id"], node["degree"]))
+            node_lst.append((node["id"], node[metric]))
         
         hxa = sorted(node_lst, key=lambda x: x[1], reverse=True)
+        print(hxa)
         rank = 1
         now_score = hxa[0][1]
         for idx, (node, score) in enumerate(hxa): 
             if now_score > score:
                 now_score = score
                 rank += 1
-            centrality[metric][node] = rank
+            centrality[metric]["node"].append(node)
+            centrality[metric]["value"].append(rank)
 
     return centrality
 

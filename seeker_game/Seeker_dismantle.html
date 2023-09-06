@@ -96,12 +96,10 @@
 			<div>
 				現在請您挑選一個點，像是顏色最深的那個點（人物），將之移除，看看移除之後對整個網絡所產生的效應。
 			</div>
-			<br/>
 		{{ else }}
 			Page 10: Round {{which_round}} 
 		{{ endif }}
 
-		<br/>
 		<div class="outer">
 			<div class="middle">
 			<div class="mb-3 _formfield">
@@ -110,20 +108,16 @@
 				</label>
 				<div class="controls">
 					<input type="number" class="form-control" inputmode="numeric" id="id_to_be_removed" min="0" name="to_be_removed" required="" value="" placeholder="尚未選擇任何節點">
+					<input type="text" class="form-control" id="id_graph_layout" name="graph_layout" required="" value="" style="display: none;">
 				</div>
+				{{ formfield_errors 'graph_layout' }}
 			</div>
 
 			<div id="confirm_block" style="display: none;">
 					<p>確定要選擇此節點嗎？</p>
 					<p id ="info" style="display: block;"> </p>
-					<!-- <ul> -->
-							<!-- <li>Degree: <p id ="degree" style="display: inline;"/></li>
-							<li>Closeness: <p id ="closeness" style="display: inline;"/></li>
-							<li>Betweenness: <p id ="betweenness" style="display: inline;"/></li>
-							<li>Pagerank: <p id ="pagerank" style="display: inline;"/></li>
-					</ul> -->
 					
-					<button id="yes_button" class="otree-btn-next btn btn-primary">
+					<button id="yes_button" class="otree-btn-next btn btn-primary" onclick="submit_Gdata()">
 							是，前往下一頁。
 					</button>
 
@@ -153,15 +147,15 @@
 				const betweenness_ranking = {{betweenness_ranking}};
 				const page_rank_ranking = {{page_rank_ranking}};
 				const NODE_R = 10;
-				let highlight_node = new Set();
+				let highlight_node = -1;
 				
 				gData.nodes.forEach(node => { node.fx = node.x; node.fy = node.y; });
 
 				const Graph = ForceGraph()
 					(document.getElementById('graph'))
 					.graphData(gData)
-					.width(1400)
-					.height(800)
+					.width(document.querySelector('.otree-body').offsetWidth)
+					.height(window.innerHeight*0.4)
 					.minZoom(1)
 					.maxZoom(1)
 					.linkWidth(2)
@@ -171,14 +165,8 @@
 					.onNodeClick(node => {
 						let info = ''
 
-						highlight_node.clear();
 						document.getElementById("id_to_be_removed").value = node.id;
 						document.getElementById('confirm_block').style.display = "block";
-						// document.getElementById("degree").innerHTML = node.degree;
-						// document.getElementById("closeness").innerHTML = node.closeness;
-						// document.getElementById("betweenness").innerHTML = node.betweenness;
-						// document.getElementById("pagerank").innerHTML = node.pagerank;
-						// document.getElementById("info").innerHTML = node;
 						if (stage == "basic" || (stage=="official" && tool == "no_help")) {
 							document.getElementById('info').style.display = "none";
 						}
@@ -196,12 +184,16 @@
 						}
 						document.getElementById('info').style.display = "block";
 
-						highlight_node.add(node);
+						highlight_node = node.id;
 					})
 					.nodeCanvasObject((node, ctx) => {
 					// 預設的著色
 					ctx.strokeStyle = '#568EA6';
-					if (stage == "basic" || (stage=="official" && tool == "no_help")) {
+					if (node.id == highlight_node) {
+						ctx.fillStyle = "#B22222";
+						ctx.strokeStyle = "#B22222";
+					}
+					else if (stage == "basic" || (stage=="official" && tool == "no_help")) {
 						ctx.fillStyle = "#ffffff";
 					}
 					else if (stage == "HDA" || (stage=="official" && tool == "degree")){
@@ -219,13 +211,6 @@
 					else{
 						ctx.fillStyle = "#ffffff";
 					}
-					
-
-					// 標註被選中的 node
-					if (highlight_node.has(node)) {
-						ctx.fillStyle = "#B22222";
-						ctx.strokeStyle = "#B22222";
-					}
 
 					ctx.beginPath(); ctx.arc(node.x, node.y, NODE_R, 0, 2 * Math.PI, false); ctx.closePath();
 					ctx.fill()
@@ -233,6 +218,16 @@
 				})
 			Graph.d3Force('center', null);
 			Graph.onEngineTick(() => Graph.zoomToFit(0, 10, node => true));
+			</script>
+			<script>
+				function submit_Gdata() {
+					data = new Array();
+					for (var n of gData.nodes){
+						data.push({id: n.id, x: n.x, y: n.y})
+					}
+					document.getElementById("id_graph_layout").value = JSON.stringify(data);
+				}
+
 			</script>
 			</div>
 		</div>

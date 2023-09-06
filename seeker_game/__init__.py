@@ -1,8 +1,7 @@
 from otree.api import *
-import sys, os, random, json, io
+import sys, os, json
 import networkx as nx
 import numpy as np
-from scipy.stats import rankdata
 from seeker_game.utility import G_links, G_nodes, to_list, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria, GCC_size, complete_genertor, read_911, current_dismantle_G, current_dismantle_stage, fetch_link, upload_info, read_everett
 # from const import finder_link_sheet_url, auth_file
 
@@ -63,6 +62,7 @@ class Player(BasePlayer):
     payoff_finder = models.StringField(initial="")
     stage = models.StringField(initial="")
     file_name = models.StringField(initial="")
+    graph_layout = models.StringField(initial="")
 
 def creating_session(subsession: Subsession):
     is_pre_computed = subsession.session.config['pre_computed']
@@ -123,9 +123,7 @@ def creating_session(subsession: Subsession):
 class WelcomePage(Page):
     @staticmethod
     def is_displayed(player: Player):
-        print(read_911(player.session.config["full"]).nodes())
         num_911_nodes = read_911(player.session.config["full"]).number_of_nodes()
-        print(num_911_nodes)
         if player.group.basic_911.number_of_nodes() == num_911_nodes:
             return True
         return False
@@ -236,30 +234,36 @@ class Seeker_dismantle_result(Page):
         gradient_color = ["#000000", "#4d4d4d", "#949494", "#d6d6d6", "#ffffff"]
         color_map = {}
         for h_based, node_map in centrality.items():
-            nodes = list(node_map.keys())
-            rank = list(node_map.values())
+            nodes = [n for n in node_map["node"]]
+            ranks = [v for v in node_map["value"]]
 
-            color = gradient_color[0:rank[-1]-1] if rank[-1] <= len(gradient_color) else gradient_color
+            color = gradient_color[0:ranks[-1]-1] if ranks[-1] <= len(gradient_color) else gradient_color
             color_map[h_based] = {
-                node: color[int((node_map[node]-1)//( (rank[-1]) / len(color)))] 
-                    for idx, node in enumerate(nodes) if node != "source"
+                node: color[int((rank-1)//( (ranks[-1]) / len(color)))] 
+                    for node, rank in zip(nodes, ranks) if node != "source"
             }
         G.remove_node(player.to_be_removed)
         if stage != "official":
             round_number = read_911(player.session.config["full"]).number_of_nodes() - G.number_of_nodes()
+        # print(player.graph_layout)
+        
+        graph_layout = {}
+        for dct in eval(player.graph_layout):
+            graph_layout[dct["id"]] = {"x": dct["x"], "y": dct["y"]}
+
 
         return {
             "stage": stage, 
             "practice": int(player.session.config['pre_computed']), 
             "which_round": round_number, 
-            "nodes": G_nodes(G), 
+            "nodes": G_nodes(G, graph_layout), 
             "links": G_links(G), 
             "tool": player.in_round(player.round_number).tool,
             "density": nx.density(G), 
-            "degree_ranking": centrality["degree"],
-            "closeness_ranking": centrality["closeness"],
-            "betweenness_ranking": centrality["betweenness"],
-            "page_rank_ranking": centrality["page_rank"], 
+            "degree_ranking": { n: v for n, v in zip(centrality["degree"]["node"], centrality["degree"]["value"])},
+            "closeness_ranking": { n: v for n, v in zip(centrality["closeness"]["node"], centrality["closeness"]["value"])},
+            "betweenness_ranking": { n: v for n, v in zip(centrality["betweenness"]["node"], centrality["betweenness"]["value"])},
+            "page_rank_ranking": { n: v for n, v in zip(centrality["page_rank"]["node"], centrality["page_rank"]["value"])},
             "degree_color": json.dumps(color_map["degree"]),
             "closeness_color": json.dumps(color_map["closeness"]), 
             "betweenness_color": json.dumps(color_map["betweenness"]), 
@@ -269,7 +273,7 @@ class Seeker_dismantle_result(Page):
 # Seeker 破壞的頁面
 class Seeker_dismantle(Page):
     form_model = 'player'
-    form_fields = ['to_be_removed']
+    form_fields = ['to_be_removed', 'graph_layout']
     
     @staticmethod
     def is_displayed(player: Player):
@@ -292,13 +296,13 @@ class Seeker_dismantle(Page):
         gradient_color = ["#000000", "#4d4d4d", "#949494", "#d6d6d6", "#ffffff"]
         color_map = {}
         for h_based, node_map in centrality.items():
-            nodes = list(node_map.keys())
-            rank = list(node_map.values())
+            nodes = [n for n in node_map["node"]]
+            ranks = [v for v in node_map["value"]]
 
-            color = gradient_color[0:rank[-1]-1] if rank[-1] <= len(gradient_color) else gradient_color
+            color = gradient_color[0:ranks[-1]-1] if ranks[-1] <= len(gradient_color) else gradient_color
             color_map[h_based] = {
-                node: color[int((node_map[node]-1)//( (rank[-1]) / len(color)))] 
-                    for idx, node in enumerate(nodes) if node != "source"
+                node: color[int((rank-1)//( (ranks[-1]) / len(color)))] 
+                    for node, rank in zip(nodes, ranks) if node != "source"
             }
         
         if stage != "official":
@@ -313,10 +317,10 @@ class Seeker_dismantle(Page):
             "links": G_links(G), 
             "tool": player.in_round(player.round_number).tool,
             "density": nx.density(G), 
-            "degree_ranking": centrality["degree"],
-            "closeness_ranking": centrality["closeness"],
-            "betweenness_ranking": centrality["betweenness"],
-            "page_rank_ranking": centrality["page_rank"], 
+            "degree_ranking": { n: v for n, v in zip(centrality["degree"]["node"], centrality["degree"]["value"])},
+            "closeness_ranking": { n: v for n, v in zip(centrality["closeness"]["node"], centrality["closeness"]["value"])},
+            "betweenness_ranking": { n: v for n, v in zip(centrality["betweenness"]["node"], centrality["betweenness"]["value"])},
+            "page_rank_ranking": { n: v for n, v in zip(centrality["page_rank"]["node"], centrality["page_rank"]["value"])},
             "degree_color": json.dumps(color_map["degree"]),
             "closeness_color": json.dumps(color_map["closeness"]), 
             "betweenness_color": json.dumps(color_map["betweenness"]), 
@@ -347,6 +351,7 @@ class Seeker_confirm(Page):
         stage = player.in_round(player.round_number).stage
         G = current_dismantle_G(player, stage)
         num_911_nodes = read_911(player.session.config["full"]).number_of_nodes()
+        
         if stage == "official" and G.number_of_edges() >= 0:
             return True
         return False
@@ -422,5 +427,5 @@ class Next_Link(Page):
         finder_link_sheet_url = "https://docs.google.com/spreadsheets/d/15t8MjE9mLmHGQDWzGGqEPiri402DKU1Ux8EX9XyxwcA/"
         auth_file = "finderlink-381806-aa232dd1eff5.json"
         upload_info(finder_link_sheet_url, auth_file, player.link)
-        
+
 page_sequence = [WelcomePage, HXA_IntroPage, FINDER_IntroPage, game_start, Tool_Selection_Page, Seeker_dismantle, Seeker_dismantle_result, Seeker_confirm, Next_Link]

@@ -37,11 +37,9 @@
 	<body>
 		<div class="outer">
 			<div class="middle">
-			<div id="graph" 
-					style="border-color: black; border-width: 1px; border-style: solid; padding:5px; width:fit-content;"></div>
+			<div id="graph" style="border-color: black; border-width: 1px; border-style: solid; padding:5px; width:fit-content;"></div>
 
 			<script>
-				Math.seedrandom('abcde')
 				const gData = { nodes: {{nodes}}, links: {{links}} };
 				gData.nodes.forEach(node => { node.fx = node.x; node.fy = node.y; });
 				const stage = "{{stage}}";
@@ -56,8 +54,8 @@
 				const Graph = ForceGraph()
 					(document.getElementById('graph'))
 					.graphData(gData)
-					.width(1400)
-					.height(800)
+					.width(document.querySelector('.otree-body').offsetWidth)
+					.height(window.innerHeight*0.4)
 					.minZoom(1)
 					.maxZoom(1)
 					.linkWidth(2)
