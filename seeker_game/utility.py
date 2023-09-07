@@ -205,13 +205,13 @@ def fetch_link(sheet_url, auth_file):
     return df["link"].iloc[0]
 
 def upload_info(sheet_url, auth_file, link):
-
-	gc = pygsheets.authorize(service_file = auth_file)
+    pass 
+	# gc = pygsheets.authorize(service_file = auth_file)
     
-	sheet = gc.open_by_url(sheet_url)
-	df = sheet.worksheet_by_title("link").get_as_df()
+	# sheet = gc.open_by_url(sheet_url)
+	# df = sheet.worksheet_by_title("link").get_as_df()
 
-	df.loc[df["link"] == link, "num_used"] += 1
-	sheet.worksheet_by_title("link").clear()
+	# df.loc[df["link"] == link, "num_used"] += 1
+	# sheet.worksheet_by_title("link").clear()
 
-	sheet.worksheet_by_title("link").set_dataframe(df, start = "A1")
+	# sheet.worksheet_by_title("link").set_dataframe(df, start = "A1")
