@@ -3,7 +3,9 @@ from os import environ
 ROOMS = [
     dict(
         name='game_link',
-        display_name='Unified Link for Seeker Game'
+        display_name='Unified Link for Seeker Game',
+        # participant_label_file='_rooms/econ101.txt',
+        # use_secure_urls=True
     ),
 ]
 
@@ -11,7 +13,7 @@ SESSION_CONFIGS = [
     dict(
         name='seeker_game', 
         app_sequence=['seeker_game'], 
-        num_demo_participants=100, 
+        num_demo_participants=1, 
         seeker='human', 
         sample_data="everett", 
         size=40,

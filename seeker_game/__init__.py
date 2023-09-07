@@ -16,7 +16,7 @@ randint = np.random.randint(5)
 
 class C(BaseConstants):
     NAME_IN_URL = 'seeker_game'
-    PLAYERS_PER_GROUP = 100
+    PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 100 # TODO: 理論上，設定成一個很大的數字即可（size+1）。
 
 class Subsession(BaseSubsession):
