@@ -11,9 +11,9 @@ SESSION_CONFIGS = [
     dict(
         name='seeker_game', 
         app_sequence=['seeker_game'], 
-        num_demo_participants=1, 
+        num_demo_participants=100, 
         seeker='human', 
-
+        sample_data="everett", 
         size=40,
         density=0.01, 
         pre_computed=True, 
@@ -21,6 +21,7 @@ SESSION_CONFIGS = [
         randint=0, 
         full=True,
     ),
+
     # dict(
     #     name='seeker_game_simplified', 
     #     app_sequence=['seeker_game'], 

@@ -3,37 +3,23 @@ import numpy as np
 import pygsheets, json
 from networkx.readwrite import json_graph
 
-def read_911(full):
-    # if full:
-    #     filename = "./sample_data/full_911.json"
-    # else:
-    #     filename = "./sample_data/911.json"
-    # with open(filename) as f:
-    #     js_graph = json.load(f)
-    # G = json_graph.node_link_graph(js_graph, multigraph=False)
-    # map_dct = {node: int(node) for node in G.nodes()}
-    # return nx.relabel_nodes(G, map_dct, copy=True)
-
-    if full:
-        G = nx.read_gml("../sample_data/full_911.gml")
-    else:
+def read_sample(sample):
+    assert sample in ["911", "everett", "borgatti", "potts"]
+    if sample == "911":
         G = nx.read_gml("../sample_data/911.gml")
-    map_dct = {
-        node: idx + 2 for idx, node in enumerate(G.nodes())
-    }
-    return nx.relabel_nodes(G, map_dct, copy=True)
-
-def read_everett(full):
-
-    G = nx.read_gml("./sample_data/everett.gml")
-    return G
-
-    # filename = "./sample_data/everett.json"
-    # with open(filename) as f:
-    #     js_graph = json.load(f)
-    # G = json_graph.node_link_graph(js_graph, multigraph=False)
-    # map_dct = {node: int(node) for node in G.nodes()}
-    # return nx.relabel_nodes(G, map_dct, copy=True)
+        map_dct = {
+            node: idx + 2 for idx, node in enumerate(G.nodes())
+        }
+        return nx.relabel_nodes(G, map_dct, copy=True)
+    elif sample == "everett":
+        G = nx.read_gml("./sample_data/everett.gml")
+        return G
+    elif sample == "potts":
+        G = nx.read_gml("./sample_data/potts.gml")
+        return G
+    elif sample == "borgatti":
+        G = nx.read_gml("./sample_data/borgatti.gml")
+        return G
     
 def current_dismantle_stage(player, num_911_nodes):
     if player.group.basic_911.number_of_nodes() == num_911_nodes:

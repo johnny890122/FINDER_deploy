@@ -2,7 +2,7 @@ from otree.api import *
 import sys, os, json
 import networkx as nx
 import numpy as np
-from seeker_game.utility import G_links, G_nodes, to_list, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria, GCC_size, complete_genertor, read_911, current_dismantle_G, current_dismantle_stage, fetch_link, upload_info, read_everett
+from seeker_game.utility import G_links, G_nodes, to_list, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria, GCC_size, complete_genertor, read_sample, current_dismantle_G, current_dismantle_stage, fetch_link, upload_info
 # from const import finder_link_sheet_url, auth_file
 
 sys.path.append(os.path.dirname(__file__) + os.sep + './')
@@ -14,12 +14,9 @@ human seeker 單機版
 
 randint = np.random.randint(5)
 
-def read_911(full):
-    return read_everett(full)
-
 class C(BaseConstants):
     NAME_IN_URL = 'seeker_game'
-    PLAYERS_PER_GROUP = None
+    PLAYERS_PER_GROUP = 100
     NUM_ROUNDS = 100 # TODO: 理論上，設定成一個很大的數字即可（size+1）。
 
 class Subsession(BaseSubsession):
@@ -34,13 +31,8 @@ class Group(BaseGroup):
     G = nx.Graph()
 
 class Player(BasePlayer):
-    # 實驗的參數
-    cons = C()
-    role_type = models.StringField(initial="seeker")
-
     # seeker 需要的 field
     seeker_payoff = models.FloatField(initial=0)
-    confirm = models.BooleanField()
     tool = models.StringField(
         choices = ["no_help", "degree", "closeness", "betweenness", "page_rank", "AI_FINDER"],
         widget=widgets.RadioSelect,
@@ -101,19 +93,21 @@ def creating_session(subsession: Subsession):
             G = subsession.get_groups()[0].G
 
             for n in initial_G.nodes():
-                G.add_node(int(n))
+                if n <= 20:
+                    G.add_node(int(n))
 
             for e in initial_G.edges():
-                G.add_edge(int(e[0]), int(e[1]))
+                if int(e[0]) <= 20 and int(e[1]) <= 20:
+                    G.add_edge(int(e[0]), int(e[1]))
             
-            for n in read_911(player.session.config["full"]).nodes():
+            for n in read_sample(player.session.config["sample_data"]).nodes():
                 player.group.basic_911.add_node(int(n))
                 player.group.HDA_911.add_node(int(n))
                 player.group.HCA_911.add_node(int(n))
                 player.group.HBA_911.add_node(int(n))
                 player.group.HPRA_911.add_node(int(n))
             
-            for e in read_911(player.session.config["full"]).edges():
+            for e in read_sample(player.session.config["sample_data"]).edges():
                 player.group.basic_911.add_edge(int(e[0]), int(e[1]))
                 player.group.HDA_911.add_edge(int(e[0]), int(e[1]))
                 player.group.HCA_911.add_edge(int(e[0]), int(e[1]))
@@ -123,15 +117,28 @@ def creating_session(subsession: Subsession):
 class WelcomePage(Page):
     @staticmethod
     def is_displayed(player: Player):
-        num_911_nodes = read_911(player.session.config["full"]).number_of_nodes()
+        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
         if player.group.basic_911.number_of_nodes() == num_911_nodes:
             return True
         return False
 
+    @staticmethod
+    def vars_for_template(player: Player):
+        finder_link_sheet_url = "https://docs.google.com/spreadsheets/d/15t8MjE9mLmHGQDWzGGqEPiri402DKU1Ux8EX9XyxwcA/"
+        auth_file = "finderlink-381806-aa232dd1eff5.json"
+        link = fetch_link(finder_link_sheet_url, auth_file)
+        player.link = link
+
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        finder_link_sheet_url = "https://docs.google.com/spreadsheets/d/15t8MjE9mLmHGQDWzGGqEPiri402DKU1Ux8EX9XyxwcA/"
+        auth_file = "finderlink-381806-aa232dd1eff5.json"
+        upload_info(finder_link_sheet_url, auth_file, player.link)
+
 class _911_intro(Page):
     @staticmethod
     def is_displayed(player: Player):
-        num_911_nodes = read_911(player.session.config["full"]).number_of_nodes()
+        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
         if player.group.basic_911.number_of_nodes() == num_911_nodes:
             return True
         return False
@@ -139,7 +146,7 @@ class _911_intro(Page):
 class HXA_IntroPage(Page):
     @staticmethod
     def is_displayed(player: Player):
-        num_911_nodes = read_911(player.session.config["full"]).number_of_nodes()
+        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
         if player.group.basic_911.number_of_nodes() == num_911_nodes-1 and player.group.HDA_911.number_of_nodes() == num_911_nodes:
             return True
         return False
@@ -147,7 +154,7 @@ class HXA_IntroPage(Page):
 class _911_HDA(Page):
     @staticmethod
     def is_displayed(player: Player):
-        num_911_nodes = read_911(player.session.config["full"]).number_of_nodes()
+        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
         if player.group.basic_911.number_of_nodes() == num_911_nodes-1 and player.group.HDA_911.number_of_nodes() == num_911_nodes:
             return True
         return False
@@ -155,7 +162,7 @@ class _911_HDA(Page):
 class _911_HCA(Page):
     @staticmethod
     def is_displayed(player: Player):
-        num_911_nodes = read_911(player.session.config["full"]).number_of_nodes()
+        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
         if player.group.HDA_911.number_of_nodes() == num_911_nodes-1 and player.group.HCA_911.number_of_nodes() == num_911_nodes:
             return True
         return False
@@ -163,7 +170,7 @@ class _911_HCA(Page):
 class _911_HBA(Page):
     @staticmethod
     def is_displayed(player: Player):
-        num_911_nodes = read_911(player.session.config["full"]).number_of_nodes()
+        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
         if player.group.HCA_911.number_of_nodes() == num_911_nodes-1 and player.group.HBA_911.number_of_nodes() == num_911_nodes:
             return True
         return False
@@ -171,7 +178,7 @@ class _911_HBA(Page):
 class _911_HPRA(Page):
     @staticmethod
     def is_displayed(player: Player):
-        num_911_nodes = read_911(player.session.config["full"]).number_of_nodes()
+        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
         if player.group.HBA_911.number_of_nodes() == num_911_nodes-1 and player.group.HPRA_911.number_of_nodes() == num_911_nodes:
             return True
         return False
@@ -179,7 +186,7 @@ class _911_HPRA(Page):
 class FINDER_IntroPage(Page):
     @staticmethod
     def is_displayed(player: Player):
-        num_911_nodes = read_911(player.session.config["full"]).number_of_nodes()
+        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
         stage = current_dismantle_stage(player, num_911_nodes)
         G = current_dismantle_G(player, stage)
         if player.group.HPRA_911.number_of_nodes() == num_911_nodes-1 and G.number_of_nodes() == nx.read_gml(player.file_name).number_of_nodes():
@@ -189,7 +196,7 @@ class FINDER_IntroPage(Page):
 class game_start(Page):
     @staticmethod
     def is_displayed(player: Player):
-        num_911_nodes = read_911(player.session.config["full"]).number_of_nodes()
+        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
         stage = current_dismantle_stage(player, num_911_nodes)
         G = current_dismantle_G(player, stage)
         if player.group.HPRA_911.number_of_nodes() == num_911_nodes-1 and G.number_of_nodes() == nx.read_gml(player.file_name).number_of_nodes():
@@ -202,7 +209,7 @@ class Tool_Selection_Page(Page):
 
     @staticmethod
     def is_displayed(player: Player):
-        num_911_nodes = read_911(player.session.config["full"]).number_of_nodes()
+        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
         if player.group.HPRA_911.number_of_nodes() == num_911_nodes-1:
             return True
         return False
@@ -217,7 +224,7 @@ class ReceptionPage(Page):
 class Seeker_dismantle_result(Page):
     @staticmethod
     def is_displayed(player: Player):
-        num_911_nodes = read_911(player.session.config["full"]).number_of_nodes()
+        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
         stage = player.in_round(player.round_number).stage
 
         G = current_dismantle_G(player, stage)
@@ -227,9 +234,9 @@ class Seeker_dismantle_result(Page):
         
     @staticmethod
     def vars_for_template(player: Player):
-        num_911_nodes = read_911(player.session.config["full"]).number_of_nodes()
+        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
         stage = player.in_round(player.round_number).stage
-        G = read_911(player.session.config["full"])
+        G = read_sample(player.session.config["sample_data"])
         centrality = node_centrality_criteria(G)
         gradient_color = ["#000000", "#4d4d4d", "#949494", "#d6d6d6", "#ffffff"]
         color_map = {}
@@ -244,13 +251,11 @@ class Seeker_dismantle_result(Page):
             }
         G.remove_node(player.to_be_removed)
         if stage != "official":
-            round_number = read_911(player.session.config["full"]).number_of_nodes() - G.number_of_nodes()
-        # print(player.graph_layout)
+            round_number = read_sample(player.session.config["sample_data"]).number_of_nodes() - G.number_of_nodes()
         
         graph_layout = {}
         for dct in eval(player.graph_layout):
             graph_layout[dct["id"]] = {"x": dct["x"], "y": dct["y"]}
-
 
         return {
             "stage": stage, 
@@ -277,7 +282,7 @@ class Seeker_dismantle(Page):
     
     @staticmethod
     def is_displayed(player: Player):
-        num_911_nodes = read_911(player.session.config["full"]).number_of_nodes()
+        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
         stage = current_dismantle_stage(player, num_911_nodes)
 
         G = current_dismantle_G(player, stage)
@@ -289,7 +294,7 @@ class Seeker_dismantle(Page):
 
     @staticmethod
     def vars_for_template(player: Player):
-        num_911_nodes = read_911(player.session.config["full"]).number_of_nodes()
+        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
         stage = current_dismantle_stage(player, num_911_nodes)
         G = current_dismantle_G(player, stage)
         centrality = node_centrality_criteria(G)
@@ -306,7 +311,7 @@ class Seeker_dismantle(Page):
             }
         
         if stage != "official":
-            round_number = read_911(player.session.config["full"]).number_of_nodes() - G.number_of_nodes() + 1
+            round_number = read_sample(player.session.config["sample_data"]).number_of_nodes() - G.number_of_nodes() + 1
         else:
             round_number = nx.read_gml(player.file_name).number_of_nodes() - G.number_of_nodes() + 1
         return {
@@ -331,7 +336,7 @@ class Seeker_dismantle(Page):
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
-        num_911_nodes = read_911(player.session.config["full"]).number_of_nodes()
+        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
         player.stage = current_dismantle_stage(player, num_911_nodes)
         G = current_dismantle_G(player, player.stage)
         # 計算 reward
@@ -350,7 +355,7 @@ class Seeker_confirm(Page):
     def is_displayed(player: Player):
         stage = player.in_round(player.round_number).stage
         G = current_dismantle_G(player, stage)
-        num_911_nodes = read_911(player.session.config["full"]).number_of_nodes()
+        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
         
         if stage == "official" and G.number_of_edges() >= 0:
             return True
@@ -368,7 +373,7 @@ class Seeker_confirm(Page):
         G = current_dismantle_G(player, stage)
         
         if stage != "official":
-            round_number = read_911(player.session.config["full"]).number_of_nodes() - G.number_of_nodes()
+            round_number = read_sample(player.session.config["sample_data"]).number_of_nodes() - G.number_of_nodes()
         else:
             round_number = nx.read_gml(player.file_name).number_of_nodes() - G.number_of_nodes()
 
@@ -408,7 +413,8 @@ class Next_Link(Page):
         stage = player.in_round(player.round_number).stage
         G = current_dismantle_G(player, stage)
         
-        if stage == "official" and G.numberof_edges() == 0:
+        # if stage == "official" and G.number_of_edges() == 0:
+        if stage == "official":
             return True
         return False
     
@@ -422,10 +428,6 @@ class Next_Link(Page):
             "links": player.link
         }
 
-    @staticmethod
-    def before_next_page(player: Player, timeout_happened):
-        finder_link_sheet_url = "https://docs.google.com/spreadsheets/d/15t8MjE9mLmHGQDWzGGqEPiri402DKU1Ux8EX9XyxwcA/"
-        auth_file = "finderlink-381806-aa232dd1eff5.json"
-        upload_info(finder_link_sheet_url, auth_file, player.link)
+
 
 page_sequence = [WelcomePage, HXA_IntroPage, FINDER_IntroPage, game_start, Tool_Selection_Page, Seeker_dismantle, Seeker_dismantle_result, Seeker_confirm, Next_Link]
