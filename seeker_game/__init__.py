@@ -39,6 +39,10 @@ class Player(BasePlayer):
         initial="empty"
     )
     link = models.StringField()
+    playing_graph = models.StringField(
+        choices = ["everett", "borgatti", "potts"], 
+        widget=widgets.RadioSelect,
+    )
 
     # Graph 需要的 field 
     num_edge = models.IntegerField(initial=-1)
@@ -93,11 +97,11 @@ def creating_session(subsession: Subsession):
             G = subsession.get_groups()[0].G
 
             for n in initial_G.nodes():
-                if n <= 20:
+                if n <= 5:
                     G.add_node(int(n))
 
             for e in initial_G.edges():
-                if int(e[0]) <= 20 and int(e[1]) <= 20:
+                if int(e[0]) <= 5 and int(e[1]) <= 5:
                     G.add_edge(int(e[0]), int(e[1]))
             
             for n in read_sample(player.session.config["sample_data"]).nodes():
@@ -407,14 +411,16 @@ class Seeker_confirm(Page):
         }
 
 class Next_Link(Page):
+    form_model = "player"
+    form_fields = ['playing_graph']
 
     @staticmethod
     def is_displayed(player: Player):
         stage = player.in_round(player.round_number).stage
         G = current_dismantle_G(player, stage)
         
-        # if stage == "official" and G.number_of_edges() == 0:
-        if stage == "official":
+        if stage == "official" and G.number_of_edges() == 0:
+        # if stage == "official":
             return True
         return False
     
@@ -428,6 +434,19 @@ class Next_Link(Page):
             "links": player.link
         }
 
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        initial_G = read_sample(player.playing_graph)
+        stage = player.in_round(player.round_number).stage
+        G = current_dismantle_G(player, stage)
+        nodes = list(G.nodes())
+        for n in nodes:
+            G.remove_node(n)
 
+        for n in initial_G.nodes():
+            G.add_node(int(n))
+
+        for e in initial_G.edges():
+            G.add_edge(int(e[0]), int(e[1]))
 
 page_sequence = [WelcomePage, HXA_IntroPage, FINDER_IntroPage, game_start, Tool_Selection_Page, Seeker_dismantle, Seeker_dismantle_result, Seeker_confirm, Next_Link]
