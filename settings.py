@@ -4,8 +4,6 @@ ROOMS = [
     dict(
         name='game_link',
         display_name='Unified Link for Seeker Game',
-        # participant_label_file='_rooms/econ101.txt',
-        # use_secure_urls=True
     ),
 ]
 
@@ -14,94 +12,15 @@ SESSION_CONFIGS = [
         name='seeker_game', 
         app_sequence=['seeker_game'], 
         num_demo_participants=1, 
-        seeker='human', 
-        sample_data="everett", 
+        basic_sample_data= "911", 
+        HXA_sample_data = "everett",
+        first_playing_data = "PREVERE1MODE",
         size=40,
         density=0.01, 
         pre_computed=True, 
         generating_process='ba', 
         randint=0, 
-        full=True,
     ),
-
-    # dict(
-    #     name='seeker_game_simplified', 
-    #     app_sequence=['seeker_game'], 
-    #     num_demo_participants=1, 
-    #     seeker='human', 
-
-    #     size=40,
-    #     density=0.01, 
-    #     pre_computed=True, 
-    #     generating_process='ba', 
-    #     randint=0, 
-    #     full=False,
-    # ),
-
-    # dict(
-    #     name='seeker_game_size_density', 
-    #     # app_sequence=['seeker_instruction', 'seeker_game'], 
-    #     app_sequence=['seeker_game'], 
-    #     num_demo_participants=1, 
-    #     seeker='human', 
-    #     pre_computed=False,
-
-    #     size=50,
-    #     density=0.1, 
-        
-    #     degree_distribution=None,
-    #     generating_process='ba_graph', 
-    #     visualization=None,
-    #     # graph_config = "density_low", 
-    #     randint=1, 
-    # ),
-
-    # dict(
-    #     name='only_human_seeker',
-    #     # app_sequence=['seeker_instruction', 'hider_instruction', 'actual_rounds', 'payoff'],
-    #     app_sequence=['actual_rounds'],
-    #     num_demo_participants=1, 
-    #     hider='not_human',
-    #     seeker='human',
-    #     practice=False,
-
-    #     num_sythetic_hider=20, 
-    #     density=0.1, 
-    #     degree_distribution=None,
-    #     generating_process="ba_graph",
-    #     visualization=None,
-    # ),
-
-    # dict(
-    #     name='only_human_seeker_no_practice',
-    #     # app_sequence=['seeker_instruction', 'hider_instruction', 'actual_rounds', 'payoff'],
-    #     app_sequence=['actual_rounds'],
-    #     num_demo_participants=1,
-    #     hider='not_human',
-    #     seeker='human',
-    #     num_demo=8,
-    #     practice=False,
-    # ),
-
-    # dict(
-    #     name='only_human_hider',
-    #     # app_sequence=['seeker_instruction', 'hider_instruction', 'actual_rounds', 'payoff'],
-    #     app_sequence=['actual_rounds'],
-    #     num_demo_participants=4,
-    #     hider='human',
-    #     seeker='not_human',
-    #     practice=True,
-    # ),
-
-    # dict(
-    #     name='only_human_hider_no_practice',
-    #     # app_sequence=['seeker_instruction', 'hider_instruction', 'actual_rounds', 'payoff'],
-    #     app_sequence=['actual_rounds'],
-    #     num_demo_participants=4,
-    #     hider='human',
-    #     seeker='not_human',
-    #     practice=False,
-    # ),
 ]
 
 # if you set a property in SESSION_CONFIG_DEFAULTS, it will be inherited by all configs

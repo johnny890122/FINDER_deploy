@@ -2,35 +2,43 @@ import networkx as nx
 import numpy as np
 import pygsheets, json
 from networkx.readwrite import json_graph
+from typing import Type
+
+def copy_G(source_G, target_G):
+    for n in source_G.nodes():
+        target_G.add_node(int(n))
+    for e in source_G.edges():
+        target_G.add_edge(int(e[0]), int(e[1]))
 
 def read_sample(sample):
-    assert sample in ["911", "everett", "borgatti", "potts"]
+    assert sample in [
+        "911", "everett", "borgatti", "potts", "DOMESTICTERRORWEB", 
+        "HEROIN_DEALING", "MAIL",  "suicide", "SWINGERS_club", "HAMBURG_TIE_YEAR"
+    ]
+
     if sample == "911":
-        G = nx.read_gml("../sample_data/911.gml")
-        map_dct = {
-            node: idx + 2 for idx, node in enumerate(G.nodes())
-        }
-        return nx.relabel_nodes(G, map_dct, copy=True)
-    elif sample == "everett":
-        G = nx.read_gml("./sample_data/everett.gml")
-        return G
-    elif sample == "potts":
-        G = nx.read_gml("./sample_data/potts.gml")
-        return G
-    elif sample == "borgatti":
-        G = nx.read_gml("./sample_data/borgatti.gml")
-        return G
+        G = nx.read_gml("./sample_data/911.gml")
+    elif sample in ["everett", "potts", "borgatti"]:
+        G = nx.read_gml(f"./sample_data/{sample}.gml")
+    else:
+        G = nx.read_gml(f"./empirical_data/{sample}.gml")
+
+    map_dct = {node: idx for idx, node in enumerate(G.nodes())}
+    return nx.relabel_nodes(G, map_dct, copy=True)
     
-def current_dismantle_stage(player, num_911_nodes):
-    if player.group.basic_911.number_of_nodes() == num_911_nodes:
+def current_dismantle_stage(player):
+    basic_full_nodes = read_sample(player.session.config["basic_sample_data"]).number_of_nodes()
+    HXA_full_nodes = read_sample(player.session.config["HXA_sample_data"]).number_of_nodes()
+    
+    if player.group.basic_G.number_of_nodes() == basic_full_nodes:
         stage = "basic"
-    elif player.group.HDA_911.number_of_nodes() == num_911_nodes:
+    elif player.group.HDA_G.number_of_nodes() == HXA_full_nodes:
         stage = "HDA"
-    elif player.group.HCA_911.number_of_nodes() == num_911_nodes:
+    elif player.group.HCA_G.number_of_nodes() == HXA_full_nodes:
         stage = "HCA"
-    elif player.group.HBA_911.number_of_nodes() == num_911_nodes:
+    elif player.group.HBA_G.number_of_nodes() == HXA_full_nodes:
         stage = "HBA"
-    elif player.group.HPRA_911.number_of_nodes() == num_911_nodes:
+    elif player.group.HPRA_G.number_of_nodes() == HXA_full_nodes:
         stage = "HPRA"
     else:
         stage = "official"
@@ -38,18 +46,16 @@ def current_dismantle_stage(player, num_911_nodes):
     return stage
 
 def current_dismantle_G(player, stage):
-    # assert stage in ["basic", "HDA", "HCA", "HBA", "HPRA", "official"]
-
     if stage == "basic":
-        return player.group.basic_911
+        return player.group.basic_G
     elif stage == "HDA":
-        return player.group.HDA_911
+        return player.group.HDA_G
     elif stage == "HCA":
-        return player.group.HCA_911
+        return player.group.HCA_G
     elif stage == "HBA":
-        return player.group.HBA_911
+        return player.group.HBA_G
     elif stage == "HPRA":
-        return player.group.HPRA_911   
+        return player.group.HPRA_G   
     else:
         return player.group.G
 
@@ -116,7 +122,6 @@ def node_centrality_criteria(G):
             node_lst.append((node["id"], node[metric]))
         
         hxa = sorted(node_lst, key=lambda x: x[1], reverse=True)
-        print(hxa)
         rank = 1
         now_score = hxa[0][1]
         for idx, (node, score) in enumerate(hxa): 
@@ -127,6 +132,11 @@ def node_centrality_criteria(G):
             centrality[metric]["value"].append(rank)
 
     return centrality
+
+def relabel_G(G):
+    map_dct = {node: idx for idx, node in enumerate(G.nodes())}
+    reverse_map_dct = {val: key for key, val in map_dct.items()}
+    return nx.relabel_nodes(G, map_dct, copy=True), reverse_map_dct
 
 # Utility
 def to_list(string, dytpe="int"):
@@ -147,11 +157,18 @@ def remove_node(to_be_removed, G):
     G.remove_node(to_be_removed)
     return G
 
-def getRobustness(G, sol, fullGCCsize, N):
-    G.remove_node(int(sol))
-    remainGCCsize = GCC_size(G)
+def getRobustness(full_g: Type[nx.classes.graph.Graph], G: Type[nx.classes.graph.Graph], sol: int):    
+    fullGCCsize = len(max(nx.connected_components(full_g), key=len))
 
-    return ((fullGCCsize - remainGCCsize) / fullGCCsize) / N
+    G.remove_node(int(sol))
+
+    remainGCC = nx.connected_components(G)
+
+    if len(list(remainGCC)) != 0:
+        remainGCCsize = len(max(nx.connected_components(G), key=len))
+    else:
+        remainGCCsize = 1
+    return 1 - remainGCCsize/fullGCCsize
 
 def generate_ba_graph_with_density(n, density):
     total_possible_edges = (n * (n - 1)) / 2
@@ -194,24 +211,3 @@ def convert_to_FINDER_format(file_name, input_dir, output_dir):
 def complete_genertor(n=20):
     return nx.complete_graph(n)
 
-def fetch_link(sheet_url, auth_file):
-    buffer = 0.01
-    gc = pygsheets.authorize(service_file = auth_file)
-    sheet = gc.open_by_url(sheet_url)
-
-    df = sheet.worksheet_by_title("link").get_as_df()
-    df = df[df["num_used"] <= df["total_avaiable"]*(1-buffer)]
-
-    return df["link"].iloc[0]
-
-def upload_info(sheet_url, auth_file, link):
-    pass 
-	# gc = pygsheets.authorize(service_file = auth_file)
-    
-	# sheet = gc.open_by_url(sheet_url)
-	# df = sheet.worksheet_by_title("link").get_as_df()
-
-	# df.loc[df["link"] == link, "num_used"] += 1
-	# sheet.worksheet_by_title("link").clear()
-
-	# sheet.worksheet_by_title("link").set_dataframe(df, start = "A1")

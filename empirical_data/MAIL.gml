@@ -1,147 +1,147 @@
 graph [
   node [
     id 0
-    label "0"
+    label "Abdel_Hakim"
   ]
   node [
     id 1
-    label "1"
+    label "Abdelhakim_Belhadj"
   ]
   node [
     id 2
-    label "2"
+    label "Abdelkrim_Taleb"
   ]
   node [
     id 3
-    label "3"
+    label "Abdelmalek_Droukdel"
   ]
   node [
     id 4
-    label "4"
+    label "Abou_Zeid"
   ]
   node [
     id 5
-    label "5"
+    label "Adnan_Abou_Walid_Sahraoui"
   ]
   node [
     id 6
-    label "6"
+    label "Ahmada_Ag_Bibi"
   ]
   node [
     id 7
-    label "7"
+    label "Ahmed_Tilemsi"
   ]
   node [
     id 8
-    label "8"
+    label "Alghabass_Ag_Intalla"
   ]
   node [
     id 9
-    label "9"
+    label "Bilal_Ag_Cherif"
   ]
   node [
     id 10
-    label "10"
+    label "Bilal_Hicham"
   ]
   node [
     id 11
-    label "11"
+    label "Bouna_Ag_Tahib"
   ]
   node [
     id 12
-    label "12"
+    label "Cheikh_Ag_Awissa"
   ]
   node [
     id 13
-    label "13"
+    label "Deity_Ag_Sidamou"
   ]
   node [
     id 14
-    label "14"
+    label "Hama_Ag_Sid'Hamed"
   ]
   node [
     id 15
-    label "15"
+    label "Hamada_Ould_Khairou"
   ]
   node [
     id 16
-    label "16"
+    label "Hassan_Fagaga"
   ]
   node [
     id 17
-    label "17"
+    label "Hassan_Medhi"
   ]
   node [
     id 18
-    label "18"
+    label "Ibrahim_Ag_Bahanga"
   ]
   node [
     id 19
-    label "19"
+    label "Ibrahim_Ag_Mohamed_Assaleh"
   ]
   node [
     id 20
-    label "20"
+    label "Iyad_Ag_Ghaly"
   ]
   node [
     id 21
-    label "21"
+    label "Khadim_Ould_Semane"
   ]
   node [
     id 22
-    label "22"
+    label "Mahmoud_Ag_Aghaly"
   ]
   node [
     id 23
-    label "23"
+    label "Mohamed_Ag_Najim"
   ]
   node [
     id 24
-    label "24"
+    label "Mohamed_Ould_Hicham"
   ]
   node [
     id 25
-    label "25"
+    label "Mokhtar_Belmokhtar"
   ]
   node [
     id 26
-    label "26"
+    label "Moussa_Ag_Acharatoumane"
   ]
   node [
     id 27
-    label "27"
+    label "Moussa_Ag_Assarid"
   ]
   node [
     id 28
-    label "28"
+    label "Nabil_Abou_Alkama"
   ]
   node [
     id 29
-    label "29"
+    label "Necib_Tayeb"
   ]
   node [
     id 30
-    label "30"
+    label "Nina_Wallet_Intalou"
   ]
   node [
     id 31
-    label "31"
+    label "Omar_Sid'Ahmed_Ould_Hamma"
   ]
   node [
     id 32
-    label "32"
+    label "Salah_Abou_Mohamed"
   ]
   node [
     id 33
-    label "33"
+    label "Sanda_Ould_Boumama"
   ]
   node [
     id 34
-    label "34"
+    label "Sultan_Ould_Baldi"
   ]
   node [
     id 35
-    label "35"
+    label "Yahyia_Abou_Hamman"
   ]
   edge [
     source 0

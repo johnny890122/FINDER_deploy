@@ -2,32 +2,31 @@ from otree.api import *
 import sys, os, json
 import networkx as nx
 import numpy as np
-from seeker_game.utility import G_links, G_nodes, to_list, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria, GCC_size, complete_genertor, read_sample, current_dismantle_G, current_dismantle_stage, fetch_link, upload_info
-# from const import finder_link_sheet_url, auth_file
+from seeker_game.utility import G_links, G_nodes, to_list, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria, GCC_size, complete_genertor, read_sample, current_dismantle_G, current_dismantle_stage, copy_G, relabel_G
 
 sys.path.append(os.path.dirname(__file__) + os.sep + './')
-# from FINDER import FINDER
+from FINDER import FINDER
 
 doc = """
 human seeker 單機版 
 """
 
 randint = np.random.randint(5)
-
+HXA = ["HDA", "HCA", "HBA", "HPRA"]
 class C(BaseConstants):
     NAME_IN_URL = 'seeker_game'
     PLAYERS_PER_GROUP = None
-    NUM_ROUNDS = 100 # TODO: 理論上，設定成一個很大的數字即可（size+1）。
+    NUM_ROUNDS = 100 # 理論上，設定成一個很大的數字即可。
 
 class Subsession(BaseSubsession):
     pass
 
 class Group(BaseGroup):
-    basic_911 = nx.Graph()
-    HDA_911 = nx.Graph()
-    HCA_911 = nx.Graph()
-    HBA_911 = nx.Graph()
-    HPRA_911 = nx.Graph()
+    basic_G = nx.Graph()
+    HDA_G = nx.Graph()
+    HCA_G = nx.Graph()
+    HBA_G = nx.Graph()
+    HPRA_G = nx.Graph()
     G = nx.Graph()
 
 class Player(BasePlayer):
@@ -38,10 +37,10 @@ class Player(BasePlayer):
         widget=widgets.RadioSelect,
         initial="empty"
     )
-    link = models.StringField()
     playing_graph = models.StringField(
-        choices = ["everett", "borgatti", "potts"], 
+        choices = ["911", "DOMESTICTERRORWEB", "suicide", "MAIL", "HEROIN_DEALING", "HAMBURG_TIE_YEAR", "SWINGERS_club"], 
         widget=widgets.RadioSelect,
+        initial="HAMBURG_TIE_YEAR", 
     )
 
     # Graph 需要的 field 
@@ -53,157 +52,127 @@ class Player(BasePlayer):
 
     GCC_size = models.IntegerField(initial=-1)
     remainGCC_size = models.IntegerField(initial=-1)
-    finder_hist = models.StringField(initial="2,3,4,5,6,7,8,9,10")
-    node_plot_finder = models.StringField(initial="")
+    finder_hist = models.StringField(initial="")
+    # node_plot_finder = models.StringField(initial="")
     payoff_finder = models.StringField(initial="")
     stage = models.StringField(initial="")
-    file_name = models.StringField(initial="")
     graph_layout = models.StringField(initial="")
 
 def creating_session(subsession: Subsession):
-    is_pre_computed = subsession.session.config['pre_computed']
-    generating_process = subsession.session.config["generating_process"]
-    assert generating_process in ["ba", "covert", "dark"]
-
-    if not is_pre_computed:
-        size = subsession.session.config["size"]
-        density = subsession.session.config["density"]
-        initial_G = generate_ba_graph_with_density(size, density)
-        initial_G = nx.relabel_nodes(initial_G, lambda x: str(x+2))
-    else:
-        file_name = f"./data/{generating_process}/g_{randint}"
-        initial_G = nx.read_gml(file_name)
-        initial_G = nx.relabel_nodes(initial_G, lambda x: int(x) + 2)
-
-        hist = np.loadtxt(f"./data/{generating_process}/finder_node_hist/g_{randint}.txt", delimiter=",").tolist()
-        hist = [h[1] for h in hist]
-        
-        hist_G = initial_G.copy()
-        full_GCCsize = GCC_size(hist_G)
-        full_G_size = hist_G.number_of_nodes()
-        GCC_hist_lst, payoff_finder_lst = [full_GCCsize], [0]
-        for n in hist:
-            payoff = getRobustness(hist_G, int(n)+2, full_GCCsize, full_G_size)
-            payoff_finder_lst.append(payoff)
-            GCC_hist_lst.append(GCC_size(hist_G))
-
     for player in subsession.get_players():
-        player.num_node = initial_G.number_of_nodes()
-        player.node_plot_finder = ",".join([str(n) for n in GCC_hist_lst])
-        player.payoff_finder = ",".join([str(p) for p in payoff_finder_lst])
-        player.file_name = file_name
         if player.round_number == 1:
 
-            G = subsession.get_groups()[0].G
 
-            for n in initial_G.nodes():
-                if n <= 5:
-                    G.add_node(int(n))
+            initial_G = read_sample(player.in_round(1).playing_graph)
+            
+            dqn = FINDER()
+            model_file = f'./models/Model_EMPIRICAL/{player.in_round(1).playing_graph}.ckpt'
+            _, sol = dqn.Evaluate(initial_G.copy(), model_file)
 
-            for e in initial_G.edges():
-                if int(e[0]) <= 5 and int(e[1]) <= 5:
-                    G.add_edge(int(e[0]), int(e[1]))
+            hist_G = initial_G.copy()
+            payoff_finder_lst = [0]
             
-            for n in read_sample(player.session.config["sample_data"]).nodes():
-                player.group.basic_911.add_node(int(n))
-                player.group.HDA_911.add_node(int(n))
-                player.group.HCA_911.add_node(int(n))
-                player.group.HBA_911.add_node(int(n))
-                player.group.HPRA_911.add_node(int(n))
-            
-            for e in read_sample(player.session.config["sample_data"]).edges():
-                player.group.basic_911.add_edge(int(e[0]), int(e[1]))
-                player.group.HDA_911.add_edge(int(e[0]), int(e[1]))
-                player.group.HCA_911.add_edge(int(e[0]), int(e[1]))
-                player.group.HBA_911.add_edge(int(e[0]), int(e[1]))
-                player.group.HPRA_911.add_edge(int(e[0]), int(e[1]))
+            for node in sol:
+                payoff_finder_lst.append(getRobustness(initial_G, hist_G, int(node)))
+
+            for _ in range(initial_G.number_of_nodes() - len(payoff_finder_lst)):
+                GCCsize = len(max(nx.connected_components(initial_G), key=len))
+                payoff_finder_lst.append(1 - 1/GCCsize)
+                
+            payoff_finder_lst = (np.cumsum(payoff_finder_lst) / initial_G.number_of_nodes()).tolist()
+
+            player.num_node = initial_G.number_of_nodes()
+            # player.node_plot_finder = ",".join([str(n) for n in GCC_hist_lst])
+            player.payoff_finder = ",".join([str(p) for p in payoff_finder_lst])
+
+
+            basic_ = read_sample(player.session.config["basic_sample_data"])
+            copy_G(source_G= basic_, target_G=player.group.basic_G)
+
+            HXA_ = read_sample(player.session.config["HXA_sample_data"])
+            copy_G(source_G= HXA_, target_G=player.group.HDA_G)
+            copy_G(source_G= HXA_, target_G=player.group.HCA_G)
+            copy_G(source_G= HXA_, target_G=player.group.HBA_G)
+            copy_G(source_G= HXA_, target_G=player.group.HPRA_G)
+
+            playing_ = read_sample(player.playing_graph)
+            copy_G(source_G= playing_, target_G=subsession.get_groups()[0].G)
 
 class WelcomePage(Page):
     @staticmethod
     def is_displayed(player: Player):
-        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
-        if player.group.basic_911.number_of_nodes() == num_911_nodes:
+        basic_full_nodes = read_sample(player.session.config["basic_sample_data"]).number_of_nodes()
+        if player.group.basic_G.number_of_nodes() == basic_full_nodes:
             return True
         return False
-
-    @staticmethod
-    def vars_for_template(player: Player):
-        finder_link_sheet_url = "https://docs.google.com/spreadsheets/d/15t8MjE9mLmHGQDWzGGqEPiri402DKU1Ux8EX9XyxwcA/"
-        auth_file = "finderlink-381806-aa232dd1eff5.json"
-        link = fetch_link(finder_link_sheet_url, auth_file)
-        player.link = link
-
-    @staticmethod
-    def before_next_page(player: Player, timeout_happened):
-        finder_link_sheet_url = "https://docs.google.com/spreadsheets/d/15t8MjE9mLmHGQDWzGGqEPiri402DKU1Ux8EX9XyxwcA/"
-        auth_file = "finderlink-381806-aa232dd1eff5.json"
-        upload_info(finder_link_sheet_url, auth_file, player.link)
 
 class _911_intro(Page):
     @staticmethod
     def is_displayed(player: Player):
-        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
-        if player.group.basic_911.number_of_nodes() == num_911_nodes:
+        basic_full_nodes = read_sample(player.session.config["basic_sample_data"]).number_of_nodes()
+        if player.group.basic_G.number_of_nodes() == basic_full_nodes:
             return True
         return False
 
 class HXA_IntroPage(Page):
     @staticmethod
     def is_displayed(player: Player):
-        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
-        if player.group.basic_911.number_of_nodes() == num_911_nodes-1 and player.group.HDA_911.number_of_nodes() == num_911_nodes:
+        basic_full_nodes = read_sample(player.session.config["basic_sample_data"]).number_of_nodes()
+        HXA_full_nodes = read_sample(player.session.config["HXA_sample_data"]).number_of_nodes()
+        if player.group.basic_G.number_of_nodes() == basic_full_nodes-1 and player.group.HDA_G.number_of_nodes() == HXA_full_nodes:
             return True
         return False
 
 class _911_HDA(Page):
     @staticmethod
     def is_displayed(player: Player):
-        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
-        if player.group.basic_911.number_of_nodes() == num_911_nodes-1 and player.group.HDA_911.number_of_nodes() == num_911_nodes:
+        basic_full_nodes = read_sample(player.session.config["basic_sample_data"]).number_of_nodes()
+        HXA_full_nodes = read_sample(player.session.config["HXA_sample_data"]).number_of_nodes()
+        if player.group.basic_G.number_of_nodes() == basic_full_nodes-1 and player.group.HDA_G.number_of_nodes() == HXA_full_nodes:
             return True
         return False
 
 class _911_HCA(Page):
     @staticmethod
     def is_displayed(player: Player):
-        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
-        if player.group.HDA_911.number_of_nodes() == num_911_nodes-1 and player.group.HCA_911.number_of_nodes() == num_911_nodes:
+        HXA_full_nodes = read_sample(player.session.config["HXA_sample_data"]).number_of_nodes()
+        if player.group.HDA_G.number_of_nodes() == HXA_full_nodes-1 and player.group.HCA_G.number_of_nodes() == HXA_full_nodes:
             return True
         return False
 
 class _911_HBA(Page):
     @staticmethod
     def is_displayed(player: Player):
-        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
-        if player.group.HCA_911.number_of_nodes() == num_911_nodes-1 and player.group.HBA_911.number_of_nodes() == num_911_nodes:
+        HXA_full_nodes = read_sample(player.session.config["HXA_sample_data"]).number_of_nodes()
+        if player.group.HCA_G.number_of_nodes() == HXA_full_nodes-1 and player.group.HBA_G.number_of_nodes() == HXA_full_nodes:
             return True
         return False
 
 class _911_HPRA(Page):
     @staticmethod
     def is_displayed(player: Player):
-        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
-        if player.group.HBA_911.number_of_nodes() == num_911_nodes-1 and player.group.HPRA_911.number_of_nodes() == num_911_nodes:
+        HXA_full_nodes = read_sample(player.session.config["HXA_sample_data"]).number_of_nodes()
+        if player.group.HBA_G.number_of_nodes() == HXA_full_nodes-1 and player.group.HPRA_G.number_of_nodes() == HXA_full_nodes:
             return True
         return False
 
 class FINDER_IntroPage(Page):
     @staticmethod
     def is_displayed(player: Player):
-        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
-        stage = current_dismantle_stage(player, num_911_nodes)
+        stage = current_dismantle_stage(player)
         G = current_dismantle_G(player, stage)
-        if player.group.HPRA_911.number_of_nodes() == num_911_nodes-1 and G.number_of_nodes() == nx.read_gml(player.file_name).number_of_nodes():
+        HXA_full_nodes = read_sample(player.session.config["HXA_sample_data"]).number_of_nodes()
+        if player.group.HPRA_G.number_of_nodes() == HXA_full_nodes-1 and G.number_of_nodes() == read_sample(player.in_round(1).playing_graph).number_of_nodes():
             return True
         return False
 
 class game_start(Page):
     @staticmethod
     def is_displayed(player: Player):
-        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
-        stage = current_dismantle_stage(player, num_911_nodes)
+        stage = current_dismantle_stage(player)
         G = current_dismantle_G(player, stage)
-        if player.group.HPRA_911.number_of_nodes() == num_911_nodes-1 and G.number_of_nodes() == nx.read_gml(player.file_name).number_of_nodes():
+        HXA_full_nodes = read_sample(player.session.config["HXA_sample_data"]).number_of_nodes()
+        if player.group.HPRA_G.number_of_nodes() == HXA_full_nodes-1 and G.number_of_nodes() == read_sample(player.in_round(1).playing_graph).number_of_nodes():
             return True
         return False   
 
@@ -213,8 +182,8 @@ class Tool_Selection_Page(Page):
 
     @staticmethod
     def is_displayed(player: Player):
-        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
-        if player.group.HPRA_911.number_of_nodes() == num_911_nodes-1:
+        full_nodes = read_sample(player.session.config["HXA_sample_data"]).number_of_nodes()
+        if player.group.HPRA_G.number_of_nodes() == full_nodes-1:
             return True
         return False
 
@@ -228,19 +197,26 @@ class ReceptionPage(Page):
 class Seeker_dismantle_result(Page):
     @staticmethod
     def is_displayed(player: Player):
-        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
         stage = player.in_round(player.round_number).stage
 
         G = current_dismantle_G(player, stage)
-        if stage != "official" and G.number_of_nodes() == num_911_nodes-1:
+
+        basic_full_nodes = read_sample(player.session.config["basic_sample_data"]).number_of_nodes()
+        HXA_full_nodes = read_sample(player.session.config["HXA_sample_data"]).number_of_nodes()
+        if stage == "basic" and G.number_of_nodes() == basic_full_nodes - 1:
+            return True
+        elif stage in HXA and G.number_of_nodes() == HXA_full_nodes - 1:
             return True
         return False
         
     @staticmethod
     def vars_for_template(player: Player):
-        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
         stage = player.in_round(player.round_number).stage
-        G = read_sample(player.session.config["sample_data"])
+        if stage == "basic":
+            G = read_sample(player.session.config["basic_sample_data"])
+        elif stage in HXA:
+            G = read_sample(player.session.config["HXA_sample_data"])
+        
         centrality = node_centrality_criteria(G)
         gradient_color = ["#000000", "#4d4d4d", "#949494", "#d6d6d6", "#ffffff"]
         color_map = {}
@@ -253,10 +229,8 @@ class Seeker_dismantle_result(Page):
                 node: color[int((rank-1)//( (ranks[-1]) / len(color)))] 
                     for node, rank in zip(nodes, ranks) if node != "source"
             }
-        G.remove_node(player.to_be_removed)
-        if stage != "official":
-            round_number = read_sample(player.session.config["sample_data"]).number_of_nodes() - G.number_of_nodes()
         
+        G.remove_node(player.to_be_removed)
         graph_layout = {}
         for dct in eval(player.graph_layout):
             graph_layout[dct["id"]] = {"x": dct["x"], "y": dct["y"]}
@@ -264,7 +238,6 @@ class Seeker_dismantle_result(Page):
         return {
             "stage": stage, 
             "practice": int(player.session.config['pre_computed']), 
-            "which_round": round_number, 
             "nodes": G_nodes(G, graph_layout), 
             "links": G_links(G), 
             "tool": player.in_round(player.round_number).tool,
@@ -286,69 +259,96 @@ class Seeker_dismantle(Page):
     
     @staticmethod
     def is_displayed(player: Player):
-        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
-        stage = current_dismantle_stage(player, num_911_nodes)
-
+        stage = current_dismantle_stage(player)
+        basic_full_nodes = read_sample(player.session.config["basic_sample_data"]).number_of_nodes()
+        HXA_full_nodes = read_sample(player.session.config["HXA_sample_data"]).number_of_nodes()
         G = current_dismantle_G(player, stage)
         if stage == "official" and G.number_of_edges() > 0:
             return True
-        elif stage != "official" and G.number_of_nodes() == num_911_nodes:
+        elif stage == "basic" and G.number_of_nodes() == basic_full_nodes:
+            return True
+        elif stage in HXA and G.number_of_nodes() == HXA_full_nodes:
             return True
         return False
 
     @staticmethod
     def vars_for_template(player: Player):
-        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
-        stage = current_dismantle_stage(player, num_911_nodes)
+        stage = current_dismantle_stage(player)
         G = current_dismantle_G(player, stage)
         centrality = node_centrality_criteria(G)
+        tool = player.in_round(player.round_number).tool
+        tool_selected = player.in_round(player.round_number).tool
+        if tool_selected == "AI_FINDER":
+            dqn = FINDER()
+            model_file = f'./models/Model_EMPIRICAL/{player.playing_graph}.ckpt'
+            g = G.copy()
+            g, map_dct = relabel_G(g)
+            _, sol = dqn.Evaluate(g, model_file)
+            not_sol = [n for n in g.nodes() if n not in sol]
+            sol = [map_dct[s] for s in sol]
+            not_sol = [map_dct[s] for s in not_sol]
+
+            value = []
+            for idx in range(len(sol)):
+                value.append(idx+1)
+            for idx in range(len(not_sol)):
+                value.append(len(sol)+1)
+
+            centrality["AI_FINDER"] = {
+                "node": sol + not_sol, 
+                "value": value, 
+            }
+
         gradient_color = ["#000000", "#4d4d4d", "#949494", "#d6d6d6", "#ffffff"]
         color_map = {}
-        for h_based, node_map in centrality.items():
+        for base, node_map in centrality.items():
             nodes = [n for n in node_map["node"]]
             ranks = [v for v in node_map["value"]]
 
             color = gradient_color[0:ranks[-1]-1] if ranks[-1] <= len(gradient_color) else gradient_color
-            color_map[h_based] = {
+            color_map[base] = {
                 node: color[int((rank-1)//( (ranks[-1]) / len(color)))] 
                     for node, rank in zip(nodes, ranks) if node != "source"
             }
         
-        if stage != "official":
-            round_number = read_sample(player.session.config["sample_data"]).number_of_nodes() - G.number_of_nodes() + 1
+        if stage == "basic":
+            round_number = read_sample(player.session.config["basic_sample_data"]).number_of_nodes() - G.number_of_nodes() + 1
+        elif stage in HXA:
+            round_number = read_sample(player.session.config["HXA_sample_data"]).number_of_nodes() - G.number_of_nodes() + 1
         else:
-            round_number = nx.read_gml(player.file_name).number_of_nodes() - G.number_of_nodes() + 1
+            round_number = read_sample(player.playing_graph).number_of_nodes() - G.number_of_nodes() + 1
+        
         return {
             "stage": stage, 
             "practice": int(player.session.config['pre_computed']), 
             "which_round": round_number, 
             "nodes": G_nodes(G), 
             "links": G_links(G), 
-            "tool": player.in_round(player.round_number).tool,
+            "tool": tool,
             "density": nx.density(G), 
             "degree_ranking": { n: v for n, v in zip(centrality["degree"]["node"], centrality["degree"]["value"])},
             "closeness_ranking": { n: v for n, v in zip(centrality["closeness"]["node"], centrality["closeness"]["value"])},
             "betweenness_ranking": { n: v for n, v in zip(centrality["betweenness"]["node"], centrality["betweenness"]["value"])},
             "page_rank_ranking": { n: v for n, v in zip(centrality["page_rank"]["node"], centrality["page_rank"]["value"])},
+            "FINDER_ranking": { n: v for n, v in zip(centrality["AI_FINDER"]["node"], centrality["AI_FINDER"]["value"])} if tool == "AI_FINDER" else {},
             "degree_color": json.dumps(color_map["degree"]),
             "closeness_color": json.dumps(color_map["closeness"]), 
             "betweenness_color": json.dumps(color_map["betweenness"]), 
             "page_rank_color": json.dumps(color_map["page_rank"]), 
-
+            "FINDER_color": json.dumps(color_map["AI_FINDER"]) if tool == "AI_FINDER" else {}, 
             "g_number": randint, 
         }
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
-        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
-        player.stage = current_dismantle_stage(player, num_911_nodes)
+        player.stage = current_dismantle_stage(player)
         G = current_dismantle_G(player, player.stage)
         # 計算 reward
         player.num_edge = G.number_of_edges()
         player.num_node = G.number_of_nodes()
         player.GCC_size = GCC_size(G)
-        original_G = nx.read_gml(player.file_name)
-        player.seeker_payoff = getRobustness(G, player.to_be_removed, GCC_size(original_G), original_G.number_of_nodes())
+        original_G = read_sample(player.in_round(1).playing_graph)
+        player.seeker_payoff = getRobustness(full_g=original_G, G=G, sol=player.to_be_removed) / original_G.number_of_nodes()
         
         player.edge_remain = G.number_of_edges()
         player.remainGCC_size = GCC_size(G)
@@ -359,7 +359,6 @@ class Seeker_confirm(Page):
     def is_displayed(player: Player):
         stage = player.in_round(player.round_number).stage
         G = current_dismantle_G(player, stage)
-        num_911_nodes = read_sample(player.session.config["sample_data"]).number_of_nodes()
         
         if stage == "official" and G.number_of_edges() >= 0:
             return True
@@ -377,31 +376,23 @@ class Seeker_confirm(Page):
         G = current_dismantle_G(player, stage)
         
         if stage != "official":
-            round_number = read_sample(player.session.config["sample_data"]).number_of_nodes() - G.number_of_nodes()
+            round_number = read_sample(player.session.config["basic_sample_data"]).number_of_nodes() - G.number_of_nodes()
         else:
-            round_number = nx.read_gml(player.file_name).number_of_nodes() - G.number_of_nodes()
+            round_number = read_sample(player.in_round(1).playing_graph).number_of_nodes() - G.number_of_nodes()
 
         # Accumulate payoff
         payoff = [0] + [p.seeker_payoff for p in player.in_previous_rounds()[player.round_number-round_number:]] + [player.seeker_payoff]
         accum_payoff = np.add.accumulate(payoff)
         payoff_plot = [[i, p] for (i, p) in enumerate(accum_payoff)]
 
-        if player.session.config['pre_computed']:
-            payoff_finder = to_list(player.payoff_finder, dytpe="float")
-            node_plot_finder = to_list(player.node_plot_finder, dytpe="int")
-            payoff_finder = [[i, p] for (i, p) in enumerate(np.cumsum(payoff_finder))]
-            node_plot_finder = [[i, p] for (i, p) in enumerate(node_plot_finder)]
-        else:
-            #TODO: real-time finder 
-            hist = [[i, n] for (i, n) in enumerate(to_list(player.in_round(1).finder_hist))]
-            payoff_finder = [[i, p] for (i, p) in enumerate(to_list(player.in_round(1).payoff_finder, "float"))]
-            node_plot_finder = [[i, p] for (i, p) in enumerate(to_list(player.in_round(1).node_plot_finder))]
+        payoff_finder = [[i, p] for (i, p) in enumerate(to_list(player.in_round(1).payoff_finder, "float"))]
+
 
         return {
             "stage": stage, 
             "original_size": player.in_round(1).GCC_size, 
             "practice": int(player.session.config['pre_computed']),
-            "node_plot_finder": node_plot_finder if stage == "official" else [],
+            # "node_plot_finder": node_plot_finder if stage == "official" else [],
             "payoff_finder": payoff_finder if stage == "official" else [], 
             "node_line_plot": node_plot, 
             "payoff_line_plot": payoff_plot, 
@@ -420,19 +411,8 @@ class Next_Link(Page):
         G = current_dismantle_G(player, stage)
         
         if stage == "official" and G.number_of_edges() == 0:
-        # if stage == "official":
             return True
         return False
-    
-    @staticmethod
-    def vars_for_template(player: Player):
-        finder_link_sheet_url = "https://docs.google.com/spreadsheets/d/15t8MjE9mLmHGQDWzGGqEPiri402DKU1Ux8EX9XyxwcA/"
-        auth_file = "finderlink-381806-aa232dd1eff5.json"
-        link = fetch_link(finder_link_sheet_url, auth_file)
-        player.link = link
-        return {
-            "links": player.link
-        }
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
@@ -443,10 +423,6 @@ class Next_Link(Page):
         for n in nodes:
             G.remove_node(n)
 
-        for n in initial_G.nodes():
-            G.add_node(int(n))
-
-        for e in initial_G.edges():
-            G.add_edge(int(e[0]), int(e[1]))
+        copy_G(source_G=initial_G, target_G=G)
 
 page_sequence = [WelcomePage, HXA_IntroPage, FINDER_IntroPage, game_start, Tool_Selection_Page, Seeker_dismantle, Seeker_dismantle_result, Seeker_confirm, Next_Link]

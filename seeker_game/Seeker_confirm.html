@@ -17,6 +17,53 @@
 {{ block content }}
     <head>
         <script src="https://d3js.org/d3.v4.js"></script>
+        <style>
+          /* CSS for the legend */
+          .legend {
+              font-family: Arial, sans-serif;
+              background-color: #f0f0f0;
+              border: 1px solid #ccc;
+              padding: 10px;
+              margin: 20px;
+              max-width: 300px;
+          }
+  
+          /* Style for the title */
+          .legend h2 {
+              font-size: 20px;
+              color: #333;
+              margin-top: 0;
+          }
+  
+          /* Style for the icons */
+          .legend .icon {
+              display: flex;
+              align-items: center;
+              margin: 10px 0;
+          }
+  
+          /* Red line icon */
+          .legend .icon .red-line {
+              width: 20px;
+              height: 2px;
+              background-color: red;
+              margin-right: 10px;
+          }
+  
+          /* Gray line icon */
+          .legend .icon .gray-line {
+              width: 20px;
+              height: 2px;
+              background-color: gray;
+              margin-right: 10px;
+          }
+  
+          /* Text descriptions */
+          .legend .text {
+              font-size: 14px;
+              color: #666;
+          }
+        </style>
 
         <script>
           function plot(block_id, seeker_data, finder_data) {
@@ -67,7 +114,7 @@
 
             for (let type of ["finder", "seeker"]) {
               data = type == "seeker" ? seeker_data : finder_data;
-              color = type == "seeker" ? "green" : "red";
+              color = type == "seeker" ? "red" : "gray";
 
               svg.append('g')
                 .selectAll('circle')
@@ -104,16 +151,25 @@
             {{ endif }}
 
         <div style="width: 2000px;">
-            <!-- <div id="chart" style="display:inline-block; width: 700px;"></div> -->
-            <div id="payoff_chart" style="display:inline-block; width: 700px;"></div>      
+            <div id="payoff_chart" style="display:inline-block; width: 700px;"></div>    
         </div>
+
+        <div class="legend">
+          <h2>圖標</h2>
+          <div class="icon">
+              <div class="red-line"></div>
+              <div class="text">您的成績</div>
+          </div>
+          <div class="icon">
+              <div class="gray-line"></div>
+              <div class="text">AI FINDER 的成績</div>
+          </div>
+      </div>  
         <script>
-            // plot("chart", {{node_line_plot}}, {{node_plot_finder}});
             plot("payoff_chart", {{payoff_line_plot}}, {{payoff_finder}});
         </script>
 
     </body>
-
 
 {{ next_button }}
 

@@ -1,14 +1,14 @@
 {{ block title }}
 		{{ if stage == "basic"}}
-			Page 2: Round {{which_round}} 
+			Page 2
 		{{ elif stage == "HDA"}}
-			Page 4: Round {{which_round}} 
+			Page 4
 		{{ elif stage == "HCA"}}
-			Page 5: Round {{which_round}} 
+			Page 5
 		{{ elif stage == "HBA"}}
-			Page 6: Round {{which_round}} 
+			Page 6
 		{{ elif stage == "HPRA"}}
-			Page 7: Round {{which_round}} 
+			Page 7
 		{{ else }}
 			Page 10: Round {{which_round}} 
 		{{ endif }}
@@ -159,11 +159,14 @@
 				const closeness_color = {{closeness_color}};
 				const betweenness_color = {{betweenness_color}};
 				const page_rank_color = {{page_rank_color}};
+				const FINDER_color = {{FINDER_color}};
 
 				const degree_ranking = {{degree_ranking}};
 				const closeness_ranking = {{closeness_ranking}};
 				const betweenness_ranking = {{betweenness_ranking}};
 				const page_rank_ranking = {{page_rank_ranking}};
+				const FINDER_ranking = {{FINDER_ranking}};
+
 				const NODE_R = 10;
 				let highlight_node = -1;
 				
@@ -200,6 +203,10 @@
 						else if (stage == "HPRA" || (stage=="official" && tool == "page_rank")){
 							document.getElementById("info").innerHTML = `連結程度排名第 ${page_rank_ranking[node.id]} 高`
 						}
+						else if (stage=="official" && tool == "AI_FINDER"){
+							document.getElementById("info").innerHTML = `連結程度排名第 ${FINDER_ranking[node.id]} 高`
+						}
+
 						document.getElementById('info').style.display = "block";
 
 						highlight_node = node.id;
@@ -225,6 +232,9 @@
 					}
 					else if (stage == "HPRA" || (stage=="official" && tool == "page_rank")){
 						ctx.fillStyle = page_rank_color[node.id];
+					}
+					else if (stage=="official" && tool == "AI_FINDER"){
+						ctx.fillStyle = FINDER_color[node.id];
 					}
 					else{
 						ctx.fillStyle = "#ffffff";

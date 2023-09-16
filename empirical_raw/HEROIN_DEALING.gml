@@ -1,166 +1,224 @@
 graph [
   node [
     id 0
-    label "Abdel_Hakim"
+    label "0"
   ]
   node [
     id 1
-    label "Abdelhakim_Belhadj"
+    label "1"
   ]
   node [
     id 2
-    label "Abdelkrim_Taleb"
+    label "2"
   ]
   node [
     id 3
-    label "Abdelmalek_Droukdel"
+    label "3"
   ]
   node [
     id 4
-    label "Abou_Zeid"
+    label "4"
   ]
   node [
     id 5
-    label "Adnan_Abou_Walid_Sahraoui"
+    label "5"
   ]
   node [
     id 6
-    label "Ahmada_Ag_Bibi"
+    label "6"
   ]
   node [
     id 7
-    label "Ahmed_Tilemsi"
+    label "7"
   ]
   node [
     id 8
-    label "Alghabass_Ag_Intalla"
+    label "8"
   ]
   node [
     id 9
-    label "Bilal_Ag_Cherif"
+    label "9"
   ]
   node [
     id 10
-    label "Bilal_Hicham"
+    label "10"
   ]
   node [
     id 11
-    label "Bouna_Ag_Tahib"
+    label "11"
   ]
   node [
     id 12
-    label "Cheikh_Ag_Awissa"
+    label "12"
   ]
   node [
     id 13
-    label "Deity_Ag_Sidamou"
+    label "13"
   ]
   node [
     id 14
-    label "Hama_Ag_Sid'Hamed"
+    label "14"
   ]
   node [
     id 15
-    label "Hamada_Ould_Khairou"
+    label "15"
   ]
   node [
     id 16
-    label "Hassan_Fagaga"
+    label "16"
   ]
   node [
     id 17
-    label "Hassan_Medhi"
+    label "17"
   ]
   node [
     id 18
-    label "Ibrahim_Ag_Bahanga"
+    label "18"
   ]
   node [
     id 19
-    label "Ibrahim_Ag_Mohamed_Assaleh"
+    label "19"
   ]
   node [
     id 20
-    label "Iyad_Ag_Ghaly"
+    label "20"
   ]
   node [
     id 21
-    label "Khadim_Ould_Semane"
+    label "21"
   ]
   node [
     id 22
-    label "Mahmoud_Ag_Aghaly"
+    label "22"
   ]
   node [
     id 23
-    label "Mohamed_Ag_Najim"
+    label "23"
   ]
   node [
     id 24
-    label "Mohamed_Ould_Hicham"
+    label "24"
   ]
   node [
     id 25
-    label "Mokhtar_Belmokhtar"
+    label "25"
   ]
   node [
     id 26
-    label "Moussa_Ag_Acharatoumane"
+    label "26"
   ]
   node [
     id 27
-    label "Moussa_Ag_Assarid"
+    label "27"
   ]
   node [
     id 28
-    label "Nabil_Abou_Alkama"
+    label "28"
   ]
   node [
     id 29
-    label "Necib_Tayeb"
+    label "29"
   ]
   node [
     id 30
-    label "Nina_Wallet_Intalou"
+    label "30"
   ]
   node [
     id 31
-    label "Omar_Sid'Ahmed_Ould_Hamma"
+    label "31"
   ]
   node [
     id 32
-    label "Salah_Abou_Mohamed"
+    label "32"
   ]
   node [
     id 33
-    label "Sanda_Ould_Boumama"
+    label "33"
   ]
   node [
     id 34
-    label "Sultan_Ould_Baldi"
+    label "34"
   ]
   node [
     id 35
-    label "Yahyia_Abou_Hamman"
+    label "35"
+  ]
+  node [
+    id 36
+    label "36"
+  ]
+  node [
+    id 37
+    label "37"
   ]
   edge [
     source 0
-    target 15
+    target 6
+    weight 1
+  ]
+  edge [
+    source 0
+    target 30
+    weight 1
+  ]
+  edge [
+    source 0
+    target 33
     weight 1
   ]
   edge [
     source 1
-    target 25
+    target 6
     weight 1
   ]
   edge [
-    source 2
+    source 1
+    target 11
+    weight 1
+  ]
+  edge [
+    source 1
+    target 16
+    weight 1
+  ]
+  edge [
+    source 1
     target 20
     weight 1
   ]
   edge [
+    source 1
+    target 21
+    weight 1
+  ]
+  edge [
+    source 1
+    target 26
+    weight 1
+  ]
+  edge [
+    source 2
+    target 14
+    weight 1
+  ]
+  edge [
+    source 2
+    target 30
+    weight 1
+  ]
+  edge [
     source 3
-    target 4
+    target 12
+    weight 1
+  ]
+  edge [
+    source 3
+    target 21
+    weight 1
+  ]
+  edge [
+    source 3
+    target 26
     weight 1
   ]
   edge [
@@ -175,52 +233,62 @@ graph [
   ]
   edge [
     source 3
-    target 35
+    target 30
     weight 1
   ]
   edge [
-    source 4
-    target 15
-    weight 1
-  ]
-  edge [
-    source 4
-    target 20
-    weight 1
-  ]
-  edge [
-    source 4
-    target 32
-    weight 1
-  ]
-  edge [
-    source 4
-    target 35
-    weight 1
-  ]
-  edge [
-    source 5
-    target 15
-    weight 1
-  ]
-  edge [
-    source 5
-    target 24
-    weight 1
-  ]
-  edge [
-    source 5
+    source 3
     target 31
     weight 1
   ]
   edge [
+    source 3
+    target 36
+    weight 1
+  ]
+  edge [
+    source 4
+    target 6
+    weight 1
+  ]
+  edge [
+    source 4
+    target 33
+    weight 1
+  ]
+  edge [
+    source 5
+    target 6
+    weight 1
+  ]
+  edge [
+    source 5
+    target 20
+    weight 1
+  ]
+  edge [
+    source 5
+    target 33
+    weight 1
+  ]
+  edge [
     source 6
-    target 8
+    target 7
+    weight 1
+  ]
+  edge [
+    source 6
+    target 9
     weight 1
   ]
   edge [
     source 6
     target 13
+    weight 1
+  ]
+  edge [
+    source 6
+    target 15
     weight 1
   ]
   edge [
@@ -230,37 +298,62 @@ graph [
   ]
   edge [
     source 6
-    target 18
+    target 17
     weight 1
   ]
   edge [
     source 6
-    target 20
+    target 21
     weight 1
   ]
   edge [
-    source 7
-    target 15
+    source 6
+    target 22
     weight 1
   ]
   edge [
-    source 7
+    source 6
     target 25
     weight 1
   ]
   edge [
-    source 7
+    source 6
+    target 27
+    weight 1
+  ]
+  edge [
+    source 6
+    target 31
+    weight 1
+  ]
+  edge [
+    source 6
+    target 32
+    weight 1
+  ]
+  edge [
+    source 6
+    target 33
+    weight 1
+  ]
+  edge [
+    source 6
     target 34
     weight 1
   ]
   edge [
-    source 8
-    target 9
+    source 6
+    target 35
     weight 1
   ]
   edge [
-    source 8
-    target 13
+    source 6
+    target 37
+    weight 1
+  ]
+  edge [
+    source 7
+    target 33
     weight 1
   ]
   edge [
@@ -269,8 +362,13 @@ graph [
     weight 1
   ]
   edge [
+    source 8
+    target 30
+    weight 1
+  ]
+  edge [
     source 9
-    target 11
+    target 13
     weight 1
   ]
   edge [
@@ -280,7 +378,7 @@ graph [
   ]
   edge [
     source 9
-    target 18
+    target 16
     weight 1
   ]
   edge [
@@ -290,67 +388,82 @@ graph [
   ]
   edge [
     source 9
-    target 23
+    target 30
     weight 1
   ]
   edge [
     source 9
-    target 26
+    target 31
     weight 1
   ]
   edge [
     source 9
-    target 27
+    target 33
     weight 1
   ]
   edge [
     source 10
-    target 15
-    weight 1
-  ]
-  edge [
-    source 12
-    target 20
-    weight 1
-  ]
-  edge [
-    source 14
     target 18
     weight 1
   ]
   edge [
+    source 10
+    target 30
+    weight 1
+  ]
+  edge [
+    source 11
+    target 20
+    weight 1
+  ]
+  edge [
+    source 11
+    target 30
+    weight 1
+  ]
+  edge [
+    source 12
+    target 29
+    weight 1
+  ]
+  edge [
+    source 12
+    target 30
+    weight 1
+  ]
+  edge [
+    source 13
+    target 14
+    weight 1
+  ]
+  edge [
+    source 13
+    target 15
+    weight 1
+  ]
+  edge [
+    source 13
+    target 20
+    weight 1
+  ]
+  edge [
+    source 13
+    target 31
+    weight 1
+  ]
+  edge [
     source 14
     target 20
     weight 1
   ]
   edge [
     source 14
-    target 22
+    target 28
     weight 1
   ]
   edge [
     source 14
-    target 23
-    weight 1
-  ]
-  edge [
-    source 14
-    target 27
-    weight 1
-  ]
-  edge [
-    source 15
-    target 20
-    weight 1
-  ]
-  edge [
-    source 15
-    target 21
-    weight 1
-  ]
-  edge [
-    source 15
-    target 24
+    target 30
     weight 1
   ]
   edge [
@@ -364,83 +477,43 @@ graph [
     weight 1
   ]
   edge [
-    source 15
-    target 34
-    weight 1
-  ]
-  edge [
     source 16
-    target 18
-    weight 1
-  ]
-  edge [
-    source 16
-    target 20
-    weight 1
-  ]
-  edge [
-    source 17
     target 19
     weight 1
   ]
   edge [
-    source 18
-    target 20
+    source 16
+    target 31
     weight 1
   ]
   edge [
     source 18
-    target 22
-    weight 1
-  ]
-  edge [
-    source 18
-    target 23
-    weight 1
-  ]
-  edge [
-    source 18
-    target 26
+    target 30
     weight 1
   ]
   edge [
     source 19
-    target 27
+    target 32
     weight 1
   ]
   edge [
     source 20
-    target 25
+    target 21
     weight 1
   ]
   edge [
     source 20
-    target 35
+    target 22
+    weight 1
+  ]
+  edge [
+    source 21
+    target 33
     weight 1
   ]
   edge [
     source 22
-    target 23
-    weight 1
-  ]
-  edge [
-    source 22
-    target 26
-    weight 1
-  ]
-  edge [
-    source 22
-    target 27
-    weight 1
-  ]
-  edge [
-    source 23
-    target 26
-    weight 1
-  ]
-  edge [
-    source 23
-    target 27
+    target 30
     weight 1
   ]
   edge [
@@ -450,32 +523,67 @@ graph [
   ]
   edge [
     source 24
+    target 33
+    weight 1
+  ]
+  edge [
+    source 25
+    target 33
+    weight 1
+  ]
+  edge [
+    source 26
+    target 30
+    weight 1
+  ]
+  edge [
+    source 27
+    target 30
+    weight 1
+  ]
+  edge [
+    source 28
+    target 29
+    weight 1
+  ]
+  edge [
+    source 28
+    target 30
+    weight 1
+  ]
+  edge [
+    source 28
+    target 36
+    weight 1
+  ]
+  edge [
+    source 29
+    target 30
+    weight 1
+  ]
+  edge [
+    source 29
+    target 36
+    weight 1
+  ]
+  edge [
+    source 30
     target 31
     weight 1
   ]
   edge [
-    source 25
-    target 28
-    weight 1
-  ]
-  edge [
-    source 25
-    target 31
-    weight 1
-  ]
-  edge [
-    source 25
-    target 34
-    weight 1
-  ]
-  edge [
-    source 25
+    source 30
     target 35
     weight 1
   ]
   edge [
-    source 33
+    source 31
     target 35
+    weight 1
+  ]
+  edge [
+    source 32
+    target 33
     weight 1
   ]
 ]

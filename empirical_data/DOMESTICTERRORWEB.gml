@@ -1,131 +1,131 @@
 graph [
   node [
     id 0
-    label "0"
+    label "14words.com"
   ]
   node [
     id 1
-    label "1"
+    label "americanpatrol.org"
   ]
   node [
     id 2
-    label "2"
+    label "amprom.org"
   ]
   node [
     id 3
-    label "3"
+    label "anti-semitism.net"
   ]
   node [
     id 4
-    label "4"
+    label "arayannationsknights.com"
   ]
   node [
     id 5
-    label "5"
+    label "aryan-nations.org"
   ]
   node [
     id 6
-    label "6"
+    label "aryannationsknights.com"
   ]
   node [
     id 7
-    label "7"
+    label "christianseparatis.org"
   ]
   node [
     id 8
-    label "8"
+    label "circ.net"
   ]
   node [
     id 9
-    label "9"
+    label "cofcc.org"
   ]
   node [
     id 10
-    label "10"
+    label "creator.org"
   ]
   node [
     id 11
-    label "11"
+    label "crownrights.com"
   ]
   node [
     id 12
-    label "12"
+    label "crusader.net"
   ]
   node [
     id 13
-    label "13"
+    label "dixienet.org"
   ]
   node [
     id 14
-    label "14"
+    label "dixierising.com"
   ]
   node [
     id 15
-    label "15"
+    label "folkandfaith.com"
   ]
   node [
     id 16
-    label "16"
+    label "georgiacsa.org"
   ]
   node [
     id 17
-    label "17"
+    label "godhatesfgs.com"
   ]
   node [
     id 18
-    label "18"
+    label "kingidentity.com"
   ]
   node [
     id 19
-    label "19"
+    label "kinsmanredeemer.com"
   ]
   node [
     id 20
-    label "20"
+    label "kkkk.net"
   ]
   node [
     id 21
-    label "21"
+    label "natall.com"
   ]
   node [
     id 22
-    label "22"
+    label "natallar.com"
   ]
   node [
     id 23
-    label "23"
+    label "nationalist.org"
   ]
   node [
     id 24
-    label "24"
+    label "palmetto.org"
   ]
   node [
     id 25
-    label "25"
+    label "resist.com"
   ]
   node [
     id 26
-    label "26"
+    label "seek-info.com"
   ]
   node [
     id 27
-    label "27"
+    label "southerncaucus.org"
   ]
   node [
     id 28
-    label "28"
+    label "southernmessenger.org"
   ]
   node [
     id 29
-    label "29"
+    label "southernsentinel.tripod.com"
   ]
   node [
     id 30
-    label "30"
+    label "stormfront.org"
   ]
   node [
     id 31
-    label "31"
+    label "texasis.org"
   ]
   edge [
     source 0
@@ -355,6 +355,11 @@ graph [
   edge [
     source 25
     target 30
+    weight 1
+  ]
+  edge [
+    source 27
+    target 27
     weight 1
   ]
   edge [
