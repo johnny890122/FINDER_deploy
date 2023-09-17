@@ -23,7 +23,7 @@ def read_sample(sample):
     else:
         G = nx.read_gml(f"./empirical_data/{sample}.gml")
 
-    map_dct = {node: str.encode(str(idx)) for idx, node in enumerate(G.nodes())}
+    map_dct = {node: int(idx) for idx, node in enumerate(G.nodes())}
     return nx.relabel_nodes(G, map_dct, copy=True)
     
 def current_dismantle_stage(player):
@@ -160,7 +160,7 @@ def remove_node(to_be_removed, G):
 def getRobustness(full_g: Type[nx.classes.graph.Graph], G: Type[nx.classes.graph.Graph], sol: int):    
     fullGCCsize = len(max(nx.connected_components(full_g), key=len))
 
-    G.remove_node(str.encode(str(sol)))
+    G.remove_node(sol)
 
     remainGCC = nx.connected_components(G)
 

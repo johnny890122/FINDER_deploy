@@ -34,7 +34,8 @@ class Player(BasePlayer):
     # seeker 需要的 field
     seeker_payoff = models.FloatField(initial=0)
     tool = models.StringField(
-        choices = ["no_help", "degree", "closeness", "betweenness", "page_rank", "AI_FINDER"],
+        choices = ["no_help", "degree", "closeness", "betweenness", "page_rank"],
+        # choices = ["no_help", "degree", "closeness", "betweenness", "page_rank", "AI_FINDER"],
         widget=widgets.RadioSelect,
         initial="empty"
     )
@@ -68,13 +69,14 @@ def creating_session(subsession: Subsession):
             initial_G = read_sample(player.in_round(1).playing_graph)
             
             model_file = f'./models/Model_EMPIRICAL/{player.in_round(1).playing_graph}.ckpt'
-            _, sol = dqn.Evaluate(initial_G.copy(), model_file)
-
+            # TODO
+            # _, sol = dqn.Evaluate(initial_G.copy(), model_file)
+            sol = []
             hist_G = initial_G.copy()
             payoff_finder_lst = [0]
             
             for node in sol:
-                payoff_finder_lst.append(getRobustness(initial_G, hist_G, str(node)))
+                payoff_finder_lst.append(getRobustness(initial_G, hist_G, node))
 
             for _ in range(initial_G.number_of_nodes() - len(payoff_finder_lst)):
                 GCCsize = len(max(nx.connected_components(initial_G), key=len))
@@ -232,7 +234,7 @@ class Seeker_dismantle_result(Page):
                     for node, rank in zip(nodes, ranks) if node != "source"
             }
         
-        G.remove_node(str(player.to_be_removed))
+        G.remove_node(player.to_be_removed)
         graph_layout = {}
         for dct in eval(player.graph_layout):
             graph_layout[dct["id"]] = {"x": dct["x"], "y": dct["y"]}
@@ -283,24 +285,25 @@ class Seeker_dismantle(Page):
         tool = player.in_round(player.round_number).tool
         tool_selected = player.in_round(player.round_number).tool
         if tool_selected == "AI_FINDER":
-            model_file = f'./models/Model_EMPIRICAL/{player.playing_graph}.ckpt'
-            g = G.copy()
-            g, map_dct = relabel_G(g)
-            _, sol = dqn.Evaluate(g, model_file)
-            not_sol = [n for n in g.nodes() if n not in sol]
-            sol = [map_dct[s] for s in sol]
-            not_sol = [map_dct[s] for s in not_sol]
+            pass
+            # model_file = f'./models/Model_EMPIRICAL/{player.playing_graph}.ckpt'
+            # g = G.copy()
+            # g, map_dct = relabel_G(g)
+            # _, sol = dqn.Evaluate(g, model_file)
+            # not_sol = [n for n in g.nodes() if n not in sol]
+            # sol = [map_dct[s] for s in sol]
+            # not_sol = [map_dct[s] for s in not_sol]
 
-            value = []
-            for idx in range(len(sol)):
-                value.append(idx+1)
-            for idx in range(len(not_sol)):
-                value.append(len(sol)+1)
+            # value = []
+            # for idx in range(len(sol)):
+            #     value.append(idx+1)
+            # for idx in range(len(not_sol)):
+            #     value.append(len(sol)+1)
 
-            centrality["AI_FINDER"] = {
-                "node": sol + not_sol, 
-                "value": value, 
-            }
+            # centrality["AI_FINDER"] = {
+            #     "node": sol + not_sol, 
+            #     "value": value, 
+            # }
 
         gradient_color = ["#000000", "#4d4d4d", "#949494", "#d6d6d6", "#ffffff"]
         color_map = {}
@@ -334,6 +337,7 @@ class Seeker_dismantle(Page):
             "betweenness_ranking": { n: v for n, v in zip(centrality["betweenness"]["node"], centrality["betweenness"]["value"])},
             "page_rank_ranking": { n: v for n, v in zip(centrality["page_rank"]["node"], centrality["page_rank"]["value"])},
             "FINDER_ranking": { n: v for n, v in zip(centrality["AI_FINDER"]["node"], centrality["AI_FINDER"]["value"])} if tool == "AI_FINDER" else {},
+            
             "degree_color": json.dumps(color_map["degree"]),
             "closeness_color": json.dumps(color_map["closeness"]), 
             "betweenness_color": json.dumps(color_map["betweenness"]), 
