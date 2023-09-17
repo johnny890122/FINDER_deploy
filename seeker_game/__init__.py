@@ -13,6 +13,7 @@ human seeker 單機版
 
 randint = np.random.randint(5)
 HXA = ["HDA", "HCA", "HBA", "HPRA"]
+dqn = FINDER()
 class C(BaseConstants):
     NAME_IN_URL = 'seeker_game'
     PLAYERS_PER_GROUP = None
@@ -64,10 +65,8 @@ def creating_session(subsession: Subsession):
     for player in subsession.get_players():
         if player.round_number == 1:
 
-
             initial_G = read_sample(player.in_round(1).playing_graph)
             
-            dqn = FINDER()
             model_file = f'./models/Model_EMPIRICAL/{player.in_round(1).playing_graph}.ckpt'
             _, sol = dqn.Evaluate(initial_G.copy(), model_file)
 
@@ -284,7 +283,6 @@ class Seeker_dismantle(Page):
         tool = player.in_round(player.round_number).tool
         tool_selected = player.in_round(player.round_number).tool
         if tool_selected == "AI_FINDER":
-            dqn = FINDER()
             model_file = f'./models/Model_EMPIRICAL/{player.playing_graph}.ckpt'
             g = G.copy()
             g, map_dct = relabel_G(g)
