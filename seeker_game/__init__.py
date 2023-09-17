@@ -47,7 +47,8 @@ class Player(BasePlayer):
     num_edge = models.IntegerField(initial=-1)
     num_node = models.IntegerField(initial=-1)
     to_be_removed = models.IntegerField(initial=-1)
-    to_be_removed_ranking = models.IntegerField(initial=0)
+    to_be_removed_ranking = models.IntegerField(initial=0
+    )
     num_edge_removed = models.IntegerField(initial=-1)
     edge_remain = models.IntegerField(initial=-1)
 
@@ -74,7 +75,7 @@ def creating_session(subsession: Subsession):
             payoff_finder_lst = [0]
             
             for node in sol:
-                payoff_finder_lst.append(getRobustness(initial_G, hist_G, int(node)))
+                payoff_finder_lst.append(getRobustness(initial_G, hist_G, str(node)))
 
             for _ in range(initial_G.number_of_nodes() - len(payoff_finder_lst)):
                 GCCsize = len(max(nx.connected_components(initial_G), key=len))
@@ -232,7 +233,7 @@ class Seeker_dismantle_result(Page):
                     for node, rank in zip(nodes, ranks) if node != "source"
             }
         
-        G.remove_node(player.to_be_removed)
+        G.remove_node(str(player.to_be_removed))
         graph_layout = {}
         for dct in eval(player.graph_layout):
             graph_layout[dct["id"]] = {"x": dct["x"], "y": dct["y"]}

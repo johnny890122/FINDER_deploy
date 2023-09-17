@@ -6,9 +6,9 @@ from typing import Type
 
 def copy_G(source_G, target_G):
     for n in source_G.nodes():
-        target_G.add_node(int(n))
+        target_G.add_node(str(n))
     for e in source_G.edges():
-        target_G.add_edge(int(e[0]), int(e[1]))
+        target_G.add_edge(str(e[0]), str(e[1]))
 
 def read_sample(sample):
     assert sample in [
@@ -23,7 +23,7 @@ def read_sample(sample):
     else:
         G = nx.read_gml(f"./empirical_data/{sample}.gml")
 
-    map_dct = {node: idx for idx, node in enumerate(G.nodes())}
+    map_dct = {node: str(idx) for idx, node in enumerate(G.nodes())}
     return nx.relabel_nodes(G, map_dct, copy=True)
     
 def current_dismantle_stage(player):
@@ -160,7 +160,7 @@ def remove_node(to_be_removed, G):
 def getRobustness(full_g: Type[nx.classes.graph.Graph], G: Type[nx.classes.graph.Graph], sol: int):    
     fullGCCsize = len(max(nx.connected_components(full_g), key=len))
 
-    G.remove_node(int(sol))
+    G.remove_node(str(sol))
 
     remainGCC = nx.connected_components(G)
 
