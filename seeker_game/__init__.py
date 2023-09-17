@@ -47,6 +47,7 @@ class Player(BasePlayer):
     num_edge = models.IntegerField(initial=-1)
     num_node = models.IntegerField(initial=-1)
     to_be_removed = models.IntegerField(initial=-1)
+    to_be_removed_ranking = models.IntegerField(initial=0)
     num_edge_removed = models.IntegerField(initial=-1)
     edge_remain = models.IntegerField(initial=-1)
 
@@ -220,6 +221,7 @@ class Seeker_dismantle_result(Page):
         centrality = node_centrality_criteria(G)
         gradient_color = ["#000000", "#4d4d4d", "#949494", "#d6d6d6", "#ffffff"]
         color_map = {}
+        to_be_removed_ranking = -1
         for h_based, node_map in centrality.items():
             nodes = [n for n in node_map["node"]]
             ranks = [v for v in node_map["value"]]
@@ -236,6 +238,8 @@ class Seeker_dismantle_result(Page):
             graph_layout[dct["id"]] = {"x": dct["x"], "y": dct["y"]}
 
         return {
+            "to_be_removed_ranking": player.in_round(player.round_number).to_be_removed_ranking,
+            "to_be_removed": player.to_be_removed, 
             "stage": stage, 
             "practice": int(player.session.config['pre_computed']), 
             "nodes": G_nodes(G, graph_layout), 
@@ -255,7 +259,7 @@ class Seeker_dismantle_result(Page):
 # Seeker 破壞的頁面
 class Seeker_dismantle(Page):
     form_model = 'player'
-    form_fields = ['to_be_removed', 'graph_layout']
+    form_fields = ['to_be_removed', 'to_be_removed_ranking', 'graph_layout']
     
     @staticmethod
     def is_displayed(player: Player):

@@ -86,6 +86,7 @@
 			<div>
 				現在請您挑選一個點，像是顏色最深的那個點（人物），將之移除，看看移除之後對整個網絡所產生的效應。
 			</div>
+			<br/>
 		{{ elif stage == "HBA"}}
 			<div>
 				同樣的9/11劫機恐怖份子的合作網絡。這次我們把每一個人物（點），依據他們的「中介程度」（指標C）用顏色深淺區分，顏色越深的點，它的中介程度越高。
@@ -115,6 +116,7 @@
 			<div>
 				現在請您挑選一個點，像是顏色最深的那個點（人物），將之移除，看看移除之後對整個網絡所產生的效應。
 			</div>
+			<br/>
 		{{ else }}
 			Page 10: Round {{which_round}} 
 		{{ endif }}
@@ -122,32 +124,37 @@
 			<label class="col-form-label" for="id_to_be_removed">
 				請在以下的網絡圖中，挑選一個點，進行移除。
 			</label>
+			
 			<div class="controls">
-				<input type="number" class="form-control" inputmode="numeric" id="id_to_be_removed" min="0" name="to_be_removed" required="" value="" placeholder="尚未選擇任何節點">
+				<input type="number" class="form-control" inputmode="numeric" id="id_to_be_removed" min="0" name="to_be_removed" required="" value="" placeholder="尚未選擇任何節點" readonly>
+				<input type="number" class="form-control" id="id_to_be_removed_ranking" name="to_be_removed_ranking" required="" value="" style="display: none;">
 				<input type="text" class="form-control" id="id_graph_layout" name="graph_layout" required="" value="" style="display: none;">
 			</div>
-			{{ formfield_errors 'graph_layout' }}
+			<!-- {{ formfield "to_be_removed_ranking" }}
+			{{ formfield_errors 'graph_layout' }} -->
+
+			<div id ="info"></div>
 		</div>
 		<div id="confirm_block" style="display: none;">
-			<p>確定要選擇此節點嗎？</p>
-			<p id ="info" style="display: block;"> </p>
 			
+			<p>
 			<button id="yes_button" class="otree-btn-next btn btn-primary" onclick="submit_Gdata()">
-					是，前往下一頁。
+					Next
 			</button>
 
 			<!-- Fake button -->
-			<div id="no_button" class="otree-btn-next btn btn-primary" onclick="cancel()" 
+			<!-- <div id="no_button" class="otree-btn-next btn btn-primary" onclick="cancel()" 
 					style="background-color: gray; border-color: gray;">
 					否，取消。
-			</div>         
+			</div>  -->
+			</p>
+        
 		</div>
 
 		<div class="outer">
 			<div class="middle">
 
-			<div id="graph" 
-					style="border-color: black; border-width: 1px; border-style: solid; padding:5px; width:fit-content;"></div>
+			<div id="graph" style="border-color: black; border-width: 1px; border-style: solid; padding:5px; width:fit-content;"></div>
 
 			<script>
 				var prng = new Math.seedrandom('abcde');
@@ -175,7 +182,7 @@
 				const Graph = ForceGraph()
 					(document.getElementById('graph'))
 					.graphData(gData)
-					.width(document.querySelector('.otree-body').offsetWidth*1.2)
+					.width(document.querySelector('.otree-body').offsetWidth*1)
 					.height(window.innerHeight*0.4)
 					.minZoom(1)
 					.maxZoom(1)
@@ -184,30 +191,32 @@
 					.linkVisibility(link => link["display"] == "False" ? false : true)
 					.nodeVisibility(node => node["display"] == "False" ? false : true)
 					.onNodeClick(node => {
-						let info = ''
-
 						document.getElementById("id_to_be_removed").value = node.id;
 						document.getElementById('confirm_block').style.display = "block";
+						let ranking = 0;
 						if (stage == "basic" || (stage=="official" && tool == "no_help")) {
 							document.getElementById('info').style.display = "none";
 						}
 						else if (stage == "HDA" || (stage=="official" && tool == "degree")){
-							document.getElementById("info").innerHTML = `連結程度排名第 ${degree_ranking[node.id]} 高`
+							ranking = degree_ranking[node.id]
 						}
 						else if (stage == "HCA" || (stage=="official" && tool == "closeness")){
-							document.getElementById("info").innerHTML = `連結程度排名第 ${closeness_ranking[node.id]} 高`
+							ranking = closeness_ranking[node.id]
 						}
 						else if (stage == "HBA" || (stage=="official" && tool == "betweenness")){
-							document.getElementById("info").innerHTML = `連結程度排名第 ${betweenness_ranking[node.id]} 高`
+							ranking = betweenness_ranking[node.id]
 						}
 						else if (stage == "HPRA" || (stage=="official" && tool == "page_rank")){
-							document.getElementById("info").innerHTML = `連結程度排名第 ${page_rank_ranking[node.id]} 高`
+							ranking = page_rank_ranking[node.id]
 						}
 						else if (stage=="official" && tool == "AI_FINDER"){
-							document.getElementById("info").innerHTML = `連結程度排名第 ${FINDER_ranking[node.id]} 高`
+							ranking = FINDER_ranking[node.id]
 						}
-
+						if (ranking !== 0) {
+							document.getElementById("info").innerHTML = `連結程度排名第 ${ranking} 高`;
+						}
 						document.getElementById('info').style.display = "block";
+						document.getElementById("id_to_be_removed_ranking").value = ranking;
 
 						highlight_node = node.id;
 					})

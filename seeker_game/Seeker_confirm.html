@@ -26,6 +26,7 @@
               padding: 10px;
               margin: 20px;
               max-width: 300px;
+              /* flex: 1; */
           }
   
           /* Style for the title */
@@ -63,6 +64,13 @@
               font-size: 14px;
               color: #666;
           }
+          .outer {
+            display: flex; justify-content: center; align-items: center;
+          }
+
+          .middle {
+            display: flex; flex-direction: column;
+          }
         </style>
 
         <script>
@@ -84,7 +92,7 @@
             // 预留给轴线的距离
             let padding = { top: 50, right: 50, bottom: 50, left: 50 };
 
-            let xMax = seeker_data.length <= 10 ? 10 : seeker_data.length-1;
+            let xMax = seeker_data.length <= 15 ? 15 : seeker_data.length-1;
             let yMax = d3.max(seeker_data.concat(finder_data.slice(0, xMax)), function(d) {
               return d[1];
             })
@@ -141,20 +149,17 @@
     </head>
 
     <body>
-        <div>
-            <p>您移除的是編號 {{caught}} 的節點。</p>
+      <p>您移除的是編號 {{caught}} 的節點。</p>
 
-            <p>目前 GCC size: {{current_GCC_size}} </p>
+      <p>目前 GCC size: {{current_GCC_size}} </p>
 
-            {{ if current_GCC_size == 0}} 
-                <p>您已移除全部的節點。</p>
-            {{ endif }}
+      {{ if current_GCC_size == 0}} 
+          <p>您已移除全部的節點。</p>
+      {{ endif }}
+      <div class="outer">
 
-        <div style="width: 2000px;">
-            <div id="payoff_chart" style="display:inline-block; width: 700px;"></div>    
-        </div>
-
-        <div class="legend">
+        <div class="plot" id="payoff_chart" style="display:inline-block; width: 700px;"></div>
+        <div class="legend middle">
           <h2>圖標</h2>
           <div class="icon">
               <div class="red-line"></div>
@@ -164,10 +169,12 @@
               <div class="gray-line"></div>
               <div class="text">AI FINDER 的成績</div>
           </div>
-      </div>  
-        <script>
-            plot("payoff_chart", {{payoff_line_plot}}, {{payoff_finder}});
-        </script>
+        </div> 
+      </div>
+
+      <script>
+          plot("payoff_chart", {{payoff_line_plot}}, {{payoff_finder}});
+      </script>
 
     </body>
 

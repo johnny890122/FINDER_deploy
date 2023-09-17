@@ -1,200 +1,212 @@
 {{ block title }}
-		{{ if stage == "basic"}}
-			Page 2
-		{{ elif stage == "HDA"}}
-			Page 4
-		{{ elif stage == "HCA"}}
-			Page 5
-		{{ elif stage == "HBA"}}
-			Page 6
-		{{ elif stage == "HPRA"}}
-			Page 7
-		{{ else }}
-			Page 10
-		{{ endif }}
+{{ if stage == "basic"}}
+	Page 2
+{{ elif stage == "HDA"}}
+	Page 4
+{{ elif stage == "HCA"}}
+	Page 5
+{{ elif stage == "HBA"}}
+	Page 6
+{{ elif stage == "HPRA"}}
+	Page 7
+{{ else }}
+	Page 10
+{{ endif }}
 {{ endblock }}
 
 {{ block content }}
-	<head>
-		<script src="//unpkg.com/force-graph"></script>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js"></script>
+<head>
+	<script src="//unpkg.com/force-graph"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js"></script>
+	<style>
+	.outer {
+		display: flex; justify-content: center; align-items: center;
+	}
 
+	.middle {
+		display: flex; flex-direction: column;
+	}
+	</style>
+</head>
 
-		<style>
-		.outer {
-		  display: flex;
-		  justify-content: center;
-		  align-items: center;
-		}
-
-		.middle {
-		  display: flex;
-		  flex-direction: column;
-		}
-
-		</style>
-	</head>
-
-	<body>
-		{{ if stage == "basic"}}
-			<div>
-				接下來我們透過一個範例來讓您體會一下遊戲的過程！
-			</div>
-			<br/>
-		
-			<div>
-				以下這個網絡圖，展示的是2001年9月11日劫機攻擊美國本土的蓋達組織恐怖份子關係圖。圖中每一個點是一位劫機犯，每一條線顯示他們曾經有通聯紀錄，因此推斷有密謀關係。
-			</div>
-			<br/>
-		
-			<div>
-				現在請您開始每次挑選一個點（人物），直到這個恐怖份子的所有關係被移除為止，達成任務。
-			</div>
-			<br/>
-		{{ elif stage == "HDA"}}
-			<div>
-				讓我們回到之前那個9/11劫機恐怖份子的合作網絡。這次我們把每一個人物（點），依據他們的「連結程度」（指標A）用顏色深淺區分，顏色越深的連結程度越高，越淺的越低。
-			</div>
-			<br/>
-			<div>
-				「連結程度」是指，只要不是孤立的點，每一個點都會有連線。一個網絡裡，有一些點所連的線比較多，有一些比較少。
-			</div>
-			<br/>
-			
-			<div>
-				現在請您挑選一個點，像是顏色最深的那個點（人物），將之移除，看看移除之後對整個網絡所產生的效應。
-			</div>
-			<br/>
-		{{ elif stage == "HCA"}}
-			<div>
-				同樣的9/11劫機恐怖份子的合作網絡。這次我們把每一個人物（點），依據他們的「距離長短」（指標B）用顏色深淺區分，顏色越深的點，平均而言與其他點之間的距離越短。
-			</div>
-			<br/>
-			<div>
-				所謂「距離長短」，是指從一個點走到另外一個指定的點，需要幾步（如圖示）。一個網絡裡，有一些點跟其他點彼此之間的路徑距離比較短，有一些則比較長。
-			</div>
-			<br/>
-		
-			<div>
-				現在請您挑選一個點，像是顏色最深的那個點（人物），將之移除，看看移除之後對整個網絡所產生的效應。
-			</div>
-		{{ elif stage == "HBA"}}
-			<div>
-				同樣的9/11劫機恐怖份子的合作網絡。這次我們把每一個人物（點），依據他們的「中介程度」（指標C）用顏色深淺區分，顏色越深的點，它的中介程度越高。
-			</div>
-			<br/>
-
-			<div>
-				所謂「中介程度」，是指從一個點A到另外一個點B，需要經過某個點C（如圖示），這裡C就扮演A與之B之間的中介。一個網絡裡，有一些點的中介程度很強；換句話說，它扮演了重要的橋接角色，而其他點的中介性就比較弱。
-			</div>
-			<br/>
-
-			<div>
-				現在請您挑選一個點，像是顏色最深的那個點（人物），將之移除，看看移除之後對整個網絡所產生的效應。
-			</div>
-			<br/>
-		{{ elif stage == "HPRA"}}
-			<div>
-				同樣的9/11劫機恐怖份子的合作網絡。這次我們把每一個人物（點），依據他們的「重要程度」（指標D）用顏色深淺區分，顏色越深的點，它的重要性越高。
-			</div>
-			<br/>
-
-			<div>
-				所謂「重要程度」，是指「和誰連接」這件事會決定一個點的重要性。舉例來說，A與B同樣有兩條連結，但A連到一個「比較重要」的點C，而B連到一個比較不重要的點D，連結對象的不同，導致A的重要性比B來得高。要計算一個網絡裡每一個點的相對重要性，牽涉到一些複雜的數學運算，然而這個指標的應用程度很廣，包括你我熟悉的Google演算法，就憑藉的就是估計每一個點（網站）的重要性，來為我們所搜尋的網站做排序，讓我們可依序瀏覽。
-			</div>
-			<br/>
-			
-			<div>
-				現在請您挑選一個點，像是顏色最深的那個點（人物），將之移除，看看移除之後對整個網絡所產生的效應。
-			</div>
-		{{ else }}
-			Page 10           <div class="legend">
-				<h2>Legend</h2>
-				<div class="icon">
-					<div class="red-line"></div>
-					<div class="text">Red Line Meaning</div>
-				</div>
-				<div class="icon">
-					<div class="gray-line"></div>
-					<div class="text">Gray Line Meaning</div>
-				</div>
-			</div>  
-		{{ endif }}
-
-		{{next_button}}
-
-		<div class="outer">
-			<div class="middle">
-
-			<div id="graph" 
-					style="border-color: black; border-width: 1px; border-style: solid; padding:5px; width:fit-content;"></div>
-
-			<script>
-				var prng = new Math.seedrandom('abcde');
-				const gData = { nodes: {{nodes}}, links: {{links}} };
-				gData.nodes.forEach(node => { node.fx = node.x; node.fy = node.y; });
-				const stage = "{{stage}}";
-				const tool = "{{tool}}";
-				const degree_color = {{degree_color}};
-				const closeness_color = {{closeness_color}};
-				const betweenness_color = {{betweenness_color}};
-				const page_rank_color = {{page_rank_color}};
-
-				const degree_ranking = {{degree_ranking}};
-				const closeness_ranking = {{closeness_ranking}};
-				const betweenness_ranking = {{betweenness_ranking}};
-				const page_rank_ranking = {{page_rank_ranking}};
-				const NODE_R = 10;
-				let highlight_node = -1;
-				
-				gData.nodes.forEach(node => { node.fx = node.x; node.fy = node.y; });
-
-				const Graph = ForceGraph()
-					(document.getElementById('graph'))
-					.graphData(gData)
-					.width(document.querySelector('.otree-body').offsetWidth*1.2)
-					.height(window.innerHeight*0.4)
-					.minZoom(1)
-					.maxZoom(1)
-					.linkWidth(2)
-					.linkColor(link => "#000000")
-					.linkVisibility(link => link["display"] == "False" ? false : true)
-					.nodeVisibility(node => node["display"] == "False" ? false : true)
-					.nodeCanvasObject((node, ctx) => {
-					// 預設的著色
-					ctx.strokeStyle = '#568EA6';
-					if (node.id == highlight_node) {
-						ctx.fillStyle = "#B22222";
-						ctx.strokeStyle = "#B22222";
-					}
-					else if (stage == "basic" || (stage=="official" && tool == "no_help")) {
-						ctx.fillStyle = "#ffffff";
-					}
-					else if (stage == "HDA" || (stage=="official" && tool == "degree")){
-						ctx.fillStyle = degree_color[node.id];
-					}
-					else if (stage == "HCA" || (stage=="official" && tool == "closeness")){
-						ctx.fillStyle = closeness_color[node.id];
-					}
-					else if (stage == "HBA" || (stage=="official" && tool == "betweenness")){
-						ctx.fillStyle = betweenness_color[node.id];
-					}
-					else if (stage == "HPRA" || (stage=="official" && tool == "page_rank")){
-						ctx.fillStyle = page_rank_color[node.id];
-					}
-					else{
-						ctx.fillStyle = "#ffffff";
-					}
-
-					ctx.beginPath(); ctx.arc(node.x, node.y, NODE_R, 0, 2 * Math.PI, false); ctx.closePath();
-					ctx.fill()
-					ctx.stroke()
-				})
-			Graph.d3Force('center', null);
-			Graph.onEngineTick(() => Graph.zoomToFit(0, 10, node => true));
-			</script>
-			</div>
+<body>
+	{{ if stage == "basic"}}
+		<div>
+			接下來我們透過一個範例來讓您體會一下遊戲的過程！
 		</div>
-	</body>
+		<br/>
+	
+		<div>
+			以下這個網絡圖，展示的是2001年9月11日劫機攻擊美國本土的蓋達組織恐怖份子關係圖。圖中每一個點是一位劫機犯，
+			每一條線顯示他們曾經有通聯紀錄，因此推斷有密謀關係。
+		</div>
+		<br/>
+	
+		<div>
+			現在請您開始每次挑選一個點（人物），直到這個恐怖份子的所有關係被移除為止，達成任務。
+		</div>
+		<br/>
+	{{ elif stage == "HDA"}}
+		<div>
+			讓我們回到之前那個9/11劫機恐怖份子的合作網絡。這次我們把每一個人物（點），
+			依據他們的「連結程度」（指標A）用顏色深淺區分，顏色越深的連結程度越高，越淺的越低。
+		</div>
+		<br/>
+		<div>
+			「連結程度」是指，只要不是孤立的點，每一個點都會有連線。一個網絡裡，有一些點所連的線比較多，有一些比較少。
+		</div>
+		<br/>
+		
+		<div>
+			現在請您挑選一個點，像是顏色最深的那個點（人物），將之移除，看看移除之後對整個網絡所產生的效應。
+		</div>
+		<br/>
+	{{ elif stage == "HCA"}}
+		<div>
+			同樣的9/11劫機恐怖份子的合作網絡。這次我們把每一個人物（點），依據他們的「距離長短」（指標B）用顏色深淺區分，顏色越深的點，平均而言與其他點之間的距離越短。
+		</div>
+		<br/>
+		<div>
+			所謂「距離長短」，是指從一個點走到另外一個指定的點，需要幾步（如圖示）。一個網絡裡，有一些點跟其他點彼此之間的路徑距離比較短，有一些則比較長。
+		</div>
+		<br/>
+	
+		<div>
+			現在請您挑選一個點，像是顏色最深的那個點（人物），將之移除，看看移除之後對整個網絡所產生的效應。
+		</div>
+		<br/>
+	{{ elif stage == "HBA"}}
+		<div>
+			同樣的9/11劫機恐怖份子的合作網絡。這次我們把每一個人物（點），依據他們的「中介程度」（指標C）用顏色深淺區分，顏色越深的點，它的中介程度越高。
+		</div>
+		<br/>
+
+		<div>
+			所謂「中介程度」，是指從一個點A到另外一個點B，需要經過某個點C（如圖示），這裡C就扮演A與之B之間的中介。一個網絡裡，有一些點的中介程度很強；換句話說，它扮演了重要的橋接角色，而其他點的中介性就比較弱。
+		</div>
+		<br/>
+
+		<div>
+			現在請您挑選一個點，像是顏色最深的那個點（人物），將之移除，看看移除之後對整個網絡所產生的效應。
+		</div>
+		<br/>
+	{{ elif stage == "HPRA"}}
+		<div>
+			同樣的9/11劫機恐怖份子的合作網絡。這次我們把每一個人物（點），依據他們的「重要程度」（指標D）用顏色深淺區分，顏色越深的點，它的重要性越高。
+		</div>
+		<br/>
+
+		<div>
+			所謂「重要程度」，是指「和誰連接」這件事會決定一個點的重要性。舉例來說，A與B同樣有兩條連結，但A連到一個「比較重要」的點C，而B連到一個比較不重要的點D，連結對象的不同，導致A的重要性比B來得高。要計算一個網絡裡每一個點的相對重要性，牽涉到一些複雜的數學運算，然而這個指標的應用程度很廣，包括你我熟悉的Google演算法，就憑藉的就是估計每一個點（網站）的重要性，來為我們所搜尋的網站做排序，讓我們可依序瀏覽。
+		</div>
+		<br/>
+		
+		<div>
+			現在請您挑選一個點，像是顏色最深的那個點（人物），將之移除，看看移除之後對整個網絡所產生的效應。
+		</div>
+		<br/>
+	{{ else }}
+		Page 10           
+		<div class="legend">
+			<h2>Legend</h2>
+			<div class="icon">
+				<div class="red-line"></div>
+				<div class="text">Red Line Meaning</div>
+			</div>
+			<div class="icon">
+				<div class="gray-line"></div>
+				<div class="text">Gray Line Meaning</div>
+			</div>
+		</div>  
+	{{ endif }}
+
+	<div class="mb-3 _formfield">
+		<label class="col-form-label" for="id_to_be_removed">
+			請在以下的網絡圖中，挑選一個點，進行移除。
+		</label>
+		<div class="controls">
+			<input type="number" class="form-control" inputmode="numeric" id="id_to_be_removed" value={{to_be_removed}} name="to_be_removed" required="" readonly>
+		</div>
+		<div id="info" style="display: none;">連結程度排名第 {{to_be_removed_ranking}} 高</div>
+	</div>
+
+	{{next_button}}
+
+	<div class="outer">
+		<div class="middle">
+
+		<div id="graph" 
+				style="border-color: black; border-width: 1px; border-style: solid; padding:5px; width:fit-content;"></div>
+
+		<script>
+			var prng = new Math.seedrandom('abcde');
+			const gData = { nodes: {{nodes}}, links: {{links}} };
+			gData.nodes.forEach(node => { node.fx = node.x; node.fy = node.y; });
+			const stage = "{{stage}}";
+			const tool = "{{tool}}";
+			const degree_color = {{degree_color}};
+			const closeness_color = {{closeness_color}};
+			const betweenness_color = {{betweenness_color}};
+			const page_rank_color = {{page_rank_color}};
+
+			const degree_ranking = {{degree_ranking}};
+			const closeness_ranking = {{closeness_ranking}};
+			const betweenness_ranking = {{betweenness_ranking}};
+			const page_rank_ranking = {{page_rank_ranking}};
+			const NODE_R = 10;
+			let highlight_node = -1;
+			
+			gData.nodes.forEach(node => { node.fx = node.x; node.fy = node.y; });
+
+			const Graph = ForceGraph()
+				(document.getElementById('graph'))
+				.graphData(gData)
+				.width(document.querySelector('.otree-body').offsetWidth*1)
+				.height(window.innerHeight*0.4)
+				.minZoom(1)
+				.maxZoom(1)
+				.linkWidth(2)
+				.linkColor(link => "#000000")
+				.linkVisibility(link => link["display"] == "False" ? false : true)
+				.nodeVisibility(node => node["display"] == "False" ? false : true)
+				.nodeCanvasObject((node, ctx) => {
+				// 預設的著色
+				ctx.strokeStyle = '#568EA6';
+				if (node.id == highlight_node) {
+					ctx.fillStyle = "#B22222";
+					ctx.strokeStyle = "#B22222";
+				}
+				else if (stage == "basic" || (stage=="official" && tool == "no_help")) {
+					ctx.fillStyle = "#ffffff";
+				}
+				else if (stage == "HDA" || (stage=="official" && tool == "degree")){
+					ctx.fillStyle = degree_color[node.id];
+				}
+				else if (stage == "HCA" || (stage=="official" && tool == "closeness")){
+					ctx.fillStyle = closeness_color[node.id];
+				}
+				else if (stage == "HBA" || (stage=="official" && tool == "betweenness")){
+					ctx.fillStyle = betweenness_color[node.id];
+				}
+				else if (stage == "HPRA" || (stage=="official" && tool == "page_rank")){
+					ctx.fillStyle = page_rank_color[node.id];
+				}
+				else{
+					ctx.fillStyle = "#ffffff";
+				}
+				if ({{to_be_removed_ranking}} !== 0) {
+					document.getElementById('info').style.display = "block";
+				}
+
+				ctx.beginPath(); ctx.arc(node.x, node.y, NODE_R, 0, 2 * Math.PI, false); ctx.closePath();
+				ctx.fill()
+				ctx.stroke()
+			})
+		Graph.d3Force('center', null);
+		Graph.onEngineTick(() => Graph.zoomToFit(0, 10, node => true));
+		</script>
+		</div>
+	</div>
+</body>
 
 {{ endblock }}
