@@ -44,12 +44,17 @@ def fetch_gml(github_file_path):
     return nx.relabel_nodes(G, map_dct, copy=True)
 
 def upload_gml(file_path, file_content):
-    load_dotenv()
-    git_auth = os.getenv("git_auth")
-    g = Github(git_auth)
-    repo = g.get_user("johnny890122").get_repo("FINDER_deploy")
+    github_user = os.environ.get("github_user")
+    
+    github_repo = os.environ.get("github_repo")
+    github_branch = os.environ.get("github_branch")
+    git_auth = os.environ.get("git_auth")
+    print(github_user, github_branch, github_repo, git_auth)
 
-    branch = repo.get_branch('seeker_game')
+    g = Github(git_auth)
+    repo = g.get_user(github_user).get_repo(github_repo)
+
+    branch = repo.get_branch(github_branch)
     try:
         # Get the existing file if it exists
         file = repo.get_contents(file_path, ref=branch.name)
@@ -265,13 +270,12 @@ def converter(dct):
 
     return str_
 
-def convert_to_FINDER_format(file_name, input_dir, output_dir):
-    G = nx.read_edgelist(f"{input_dir}/{file_name}.txt")
+def convert_to_FINDER_format(G):
     data = json_graph.node_link_data(G)
+    str_ = converter(data)
 
-    with io.open(f"{output_dir}/{file_name}.txt", 'w', encoding='utf8') as outfile:
-        str_ = converter(data)
-        outfile.write(str_)
+    return str_
+
 
 def complete_genertor(n=20):
     return nx.complete_graph(n)

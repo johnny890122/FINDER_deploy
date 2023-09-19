@@ -678,7 +678,7 @@ class FINDER:
         return best_model
 
 
-    def Evaluate(self, g, model_file=None):
+    def Evaluate(self, content, model_file=None):
         # if model_file == None:  #if user do not specify the model_file
         #     model_file = self.findModel()
         # print ('The best model is :%s'%(model_file))
@@ -686,7 +686,7 @@ class FINDER:
 
         result_list_score = []
         result_list_time = []
-
+        g = nx.read_gml(content)
         self.InsertGraph(g, is_test=True)
         t1 = time.time()
         val, sol = self.GetSol(0)

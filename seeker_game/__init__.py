@@ -2,10 +2,11 @@ from otree.api import *
 import sys, os, json
 import networkx as nx
 import numpy as np
-from seeker_game.utility import G_links, G_nodes, to_list, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria, GCC_size, complete_genertor, read_sample, current_dismantle_G, current_dismantle_stage, copy_G, relabel_G, upload_gml, fetch_gml
+from seeker_game.utility import G_links, G_nodes, to_list, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria, GCC_size, complete_genertor, read_sample, current_dismantle_G, current_dismantle_stage, copy_G, relabel_G, convert_to_FINDER_format
 
 sys.path.append(os.path.dirname(__file__) + os.sep + './')
 from FINDER import FINDER
+from io import BytesIO
 
 doc = """
 human seeker 單機版 
@@ -65,13 +66,13 @@ class Player(BasePlayer):
 def creating_session(subsession: Subsession):
     for player in subsession.get_players():
         if player.round_number == 1:
-            upload_gml(file_path="testing.txt", file_content="hey")
             initial_G = read_sample(player.in_round(1).playing_graph)
-            
+
             model_file = f'./models/Model_EMPIRICAL/{player.in_round(1).playing_graph}.ckpt'
             # TODO
-            _, sol = dqn.Evaluate(initial_G.copy(), model_file)
-            # sol = []
+            
+            content = BytesIO(convert_to_FINDER_format(initial_G).encode('utf-8'))
+            _, sol = dqn.Evaluate(content, model_file)
             hist_G = initial_G.copy()
             payoff_finder_lst = [0]
             
@@ -88,10 +89,7 @@ def creating_session(subsession: Subsession):
             # player.node_plot_finder = ",".join([str(n) for n in GCC_hist_lst])
             player.payoff_finder = ",".join([str(p) for p in payoff_finder_lst])
 
-
-            basic_ = fetch_gml("./sample_data/911.gml")
-            
-            read_sample(player.session.config["basic_sample_data"])
+            basic_ = read_sample(player.session.config["basic_sample_data"])
             copy_G(source_G= basic_, target_G=player.group.basic_G)
 
             HXA_ = read_sample(player.session.config["HXA_sample_data"])
@@ -291,7 +289,9 @@ class Seeker_dismantle(Page):
             model_file = f'./models/Model_EMPIRICAL/{player.playing_graph}.ckpt'
             g = G.copy()
             g, map_dct = relabel_G(g)
-            _, sol = dqn.Evaluate(g, model_file)
+
+            content = BytesIO(convert_to_FINDER_format(g).encode('utf-8'))
+            _, sol = dqn.Evaluate(content, model_file)
             not_sol = [n for n in g.nodes() if n not in sol]
             sol = [map_dct[s] for s in sol]
             not_sol = [map_dct[s] for s in not_sol]
