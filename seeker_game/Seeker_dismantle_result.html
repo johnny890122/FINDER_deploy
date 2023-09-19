@@ -48,7 +48,7 @@
 		<br/>
 	{{ elif stage == "HDA"}}
 		<div>
-			讓我們回到之前那個9/11劫機恐怖份子的合作網絡。這次我們把每一個人物（點），
+			讓我們用一個簡單明瞭的網絡來做示範。這次我們把每一個人物（點），
 			依據他們的「連結程度」（指標A）用顏色深淺區分，顏色越深的連結程度越高，越淺的越低。
 		</div>
 		<br/>
@@ -63,7 +63,7 @@
 		<br/>
 	{{ elif stage == "HCA"}}
 		<div>
-			同樣的9/11劫機恐怖份子的合作網絡。這次我們把每一個人物（點），依據他們的「距離長短」（指標B）用顏色深淺區分，顏色越深的點，平均而言與其他點之間的距離越短。
+			同樣的示範網絡，這次我們把每一個人物（點），依據他們的「距離長短」（指標B）用顏色深淺區分，顏色越深的點，平均而言與其他點之間的距離越短。
 		</div>
 		<br/>
 		<div>
@@ -77,7 +77,7 @@
 		<br/>
 	{{ elif stage == "HBA"}}
 		<div>
-			同樣的9/11劫機恐怖份子的合作網絡。這次我們把每一個人物（點），依據他們的「中介程度」（指標C）用顏色深淺區分，顏色越深的點，它的中介程度越高。
+			同樣的示範網絡，這次我們把每一個人物（點），依據他們的「中介程度」（指標C）用顏色深淺區分，顏色越深的點，它的中介程度越高。
 		</div>
 		<br/>
 
@@ -92,7 +92,7 @@
 		<br/>
 	{{ elif stage == "HPRA"}}
 		<div>
-			同樣的9/11劫機恐怖份子的合作網絡。這次我們把每一個人物（點），依據他們的「重要程度」（指標D）用顏色深淺區分，顏色越深的點，它的重要性越高。
+			同樣的示範網絡，這次我們把每一個人物（點），依據他們的「重要程度」（指標D）用顏色深淺區分，顏色越深的點，它的重要性越高。
 		</div>
 		<br/>
 
@@ -122,12 +122,12 @@
 
 	<div class="mb-3 _formfield">
 		<label class="col-form-label" for="id_to_be_removed">
-			請在以下的網絡圖中，挑選一個點，進行移除。
+			請在以下的網絡圖中，挑選一個點，進行移除。您所選取的節點，會以紅色標示。
 		</label>
 		<div class="controls">
 			<input type="number" class="form-control" inputmode="numeric" id="id_to_be_removed" value={{to_be_removed}} name="to_be_removed" required="" readonly>
 		</div>
-		<div id="info" style="display: none;">連結程度排名第 {{to_be_removed_ranking}} 高</div>
+		<div id="info" style="display: none;">「{{tool_display_name}}」排名第 {{to_be_removed_ranking}} 高</div>
 	</div>
 
 	{{next_button}}

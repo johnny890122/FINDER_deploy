@@ -61,7 +61,7 @@
 			<br/>
 		{{ elif stage == "HDA"}}
 			<div>
-				讓我們回到之前那個9/11劫機恐怖份子的合作網絡。這次我們把每一個人物（點），依據他們的「連結程度」（指標A）用顏色深淺區分，顏色越深的連結程度越高，越淺的越低。
+				用一個簡單明瞭的網絡來做示範，這次我們把每一個人物（點），依據他們的「連結程度」（指標A）用顏色深淺區分，顏色越深的連結程度越高，越淺的越低。
 			</div>
 			<br/>
 			<div>
@@ -75,7 +75,7 @@
 			<br/>
 		{{ elif stage == "HCA"}}
 			<div>
-				同樣的9/11劫機恐怖份子的合作網絡。這次我們把每一個人物（點），依據他們的「距離長短」（指標B）用顏色深淺區分，顏色越深的點，平均而言與其他點之間的距離越短。
+				同樣的示範網絡，這次我們把每一個人物（點），依據他們的「距離長短」（指標B）用顏色深淺區分，顏色越深的點，平均而言與其他點之間的距離越短。
 			</div>
 			<br/>
 			<div>
@@ -89,7 +89,7 @@
 			<br/>
 		{{ elif stage == "HBA"}}
 			<div>
-				同樣的9/11劫機恐怖份子的合作網絡。這次我們把每一個人物（點），依據他們的「中介程度」（指標C）用顏色深淺區分，顏色越深的點，它的中介程度越高。
+				同樣的示範網絡，這次我們把每一個人物（點），依據他們的「中介程度」（指標C）用顏色深淺區分，顏色越深的點，它的中介程度越高。
 			</div>
 			<br/>
 
@@ -104,12 +104,12 @@
 			<br/>
 		{{ elif stage == "HPRA"}}
 			<div>
-				同樣的9/11劫機恐怖份子的合作網絡。這次我們把每一個人物（點），依據他們的「重要程度」（指標D）用顏色深淺區分，顏色越深的點，它的重要性越高。
+				同樣的示範網絡，這次我們把每一個人物（點），依據他們的「重要程度」（指標D）用顏色深淺區分，顏色越深的點，它的重要性越高。
 			</div>
 			<br/>
 
 			<div>
-				所謂「重要程度」，是指「和誰連接」這件事會決定一個點的重要性。舉例來說，A與B同樣有兩條連結，但A連到一個「比較重要」的點C，而B連到一個比較不重要的點D，連結對象的不同，導致A的重要性比B來得高。要計算一個網絡裡每一個點的相對重要性，牽涉到一些複雜的數學運算，然而這個指標的應用程度很廣，包括你我熟悉的Google演算法，就憑藉的就是估計每一個點（網站）的重要性，來為我們所搜尋的網站做排序，讓我們可依序瀏覽。
+				所謂「重要程度」，是指「和誰連接」這件事會決定一個點的重要性。這個指標的應用程度很廣，包括你我熟悉的Google演算法，就憑藉的就是估計每一個點（網站）的重要性，來為我們所搜尋的網站做排序，讓我們可依序瀏覽。
 			</div>
 			<br/>
 			
@@ -118,11 +118,11 @@
 			</div>
 			<br/>
 		{{ else }}
-			Page 10: Round {{which_round}} 
+			
 		{{ endif }}
 		<div class="mb-3 _formfield">
 			<label class="col-form-label" for="id_to_be_removed">
-				請在以下的網絡圖中，挑選一個點，進行移除。
+				請在以下的網絡圖中，挑選一個點，進行移除。您所選取的節點，會以紅色標示。
 			</label>
 			
 			<div class="controls">
@@ -199,20 +199,23 @@
 						}
 						else if (stage == "HDA" || (stage=="official" && tool == "degree")){
 							ranking = degree_ranking[node.id]
+							metric = "連結程度"
+							document.getElementById("info").innerHTML = `「連結程度」排名第 ${ranking} 高`;
 						}
 						else if (stage == "HCA" || (stage=="official" && tool == "closeness")){
 							ranking = closeness_ranking[node.id]
+							document.getElementById("info").innerHTML = `「距離短的」排名第 ${ranking} 高`;
 						}
 						else if (stage == "HBA" || (stage=="official" && tool == "betweenness")){
 							ranking = betweenness_ranking[node.id]
+							document.getElementById("info").innerHTML = `「中介程度」排名第 ${ranking} 高`;
 						}
 						else if (stage == "HPRA" || (stage=="official" && tool == "page_rank")){
 							ranking = page_rank_ranking[node.id]
+							document.getElementById("info").innerHTML = `「重要性」排名第 ${ranking} 高`;
 						}
 						else if (stage=="official" && tool == "AI_FINDER"){
 							ranking = FINDER_ranking[node.id]
-						}
-						if (ranking !== 0) {
 							document.getElementById("info").innerHTML = `連結程度排名第 ${ranking} 高`;
 						}
 						document.getElementById('info').style.display = "block";

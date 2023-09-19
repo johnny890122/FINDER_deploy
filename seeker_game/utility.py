@@ -3,82 +3,13 @@ import numpy as np
 import pygsheets, json, requests
 from networkx.readwrite import json_graph
 from typing import Type
-from dotenv import load_dotenv
-from github import Github
 import os
-from io import BytesIO
 
 def copy_G(source_G, target_G):
     for n in source_G.nodes():
         target_G.add_node(n)
     for e in source_G.edges():
         target_G.add_edge(e[0], e[1])
-
-def fetch_gml(github_file_path):
-    github_user = "johnny890122"
-    github_repo = "FINDER_deploy"
-    github_branch = "seeker_game"
-    load_dotenv()
-    git_auth = os.getenv("git_auth")
-
-    # API URL to fetch the file content
-    api_url = f"https://api.github.com/repos/{github_user}/{github_repo}/contents/{github_file_path}?ref={github_branch}"
-
-    # Headers for authentication using the PAT
-    headers = {
-        "Authorization": f"token {git_auth}",
-        "Accept": "application/vnd.github.v3.raw"  # To get the raw content of the file
-    }
-
-    # Make a GET request to fetch the file content
-    response = requests.get(api_url, headers=headers)
-
-    # Check if the request was successful (status code 200)
-    if response.status_code == 200:
-        # Print the content of the file
-        G = nx.read_gml(BytesIO(response.content))
-        map_dct = {node: int(idx) for idx, node in enumerate(G.nodes())}
-        print("downlaod successfully")
-    else:
-        print(f"Failed to fetch file. Status code: {response.status_code}")
-    return nx.relabel_nodes(G, map_dct, copy=True)
-
-def upload_gml(file_path, file_content):
-    github_user = os.environ.get("github_user")
-    
-    github_repo = os.environ.get("github_repo")
-    github_branch = os.environ.get("github_branch")
-    git_auth = os.environ.get("git_auth")
-    print(github_user, github_branch, github_repo, git_auth)
-
-    g = Github(git_auth)
-    repo = g.get_user(github_user).get_repo(github_repo)
-
-    branch = repo.get_branch(github_branch)
-    try:
-        # Get the existing file if it exists
-        file = repo.get_contents(file_path, ref=branch.name)
-        
-        # Update the existing file
-        repo.update_file(
-            file.path,
-            "Update file content",
-            file_content,
-            file.sha,
-            branch=branch.name
-        )
-
-        print(f"File '{file_path}' updated successfully.")
-    except Exception as e:
-        # If the file does not exist, create a new one
-        repo.create_file(
-            file_path,
-            "Create file",
-            file_content,
-            branch=branch.name
-        )
-        
-        print(f"File '{file_path}' created successfully.")
 
 def read_sample(sample):
     assert sample in [

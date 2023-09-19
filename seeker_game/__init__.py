@@ -35,8 +35,15 @@ class Player(BasePlayer):
     # seeker 需要的 field
     seeker_payoff = models.FloatField(initial=0)
     tool = models.StringField(
-        # choices = ["no_help", "degree", "closeness", "betweenness", "page_rank"],
-        choices = ["no_help", "degree", "closeness", "betweenness", "page_rank", "AI_FINDER"],
+        choices = [
+            ["no_help", "自行判斷"], 
+            ["degree", "連結程度"], 
+            ["closeness", "距離長短"], 
+            ["betweenness", "中介程度"],
+            ["page_rank", "重要程度"],
+            ["AI_FINDER", "AI_FINDER"]
+        ],
+        label="請選擇您要使用的輔助指標。", 
         widget=widgets.RadioSelect,
         initial="empty"
     )
@@ -238,7 +245,13 @@ class Seeker_dismantle_result(Page):
         graph_layout = {}
         for dct in eval(player.graph_layout):
             graph_layout[dct["id"]] = {"x": dct["x"], "y": dct["y"]}
-
+        tool_dct = {
+            "basic": None,
+            "HDA": "連結程度", 
+            "HCA": "距離短的",
+            "HBA": "中介程度",
+            "HPRA": "重要性",
+        }
         return {
             "to_be_removed_ranking": player.in_round(player.round_number).to_be_removed_ranking,
             "to_be_removed": player.to_be_removed, 
@@ -255,7 +268,8 @@ class Seeker_dismantle_result(Page):
             "degree_color": json.dumps(color_map["degree"]),
             "closeness_color": json.dumps(color_map["closeness"]), 
             "betweenness_color": json.dumps(color_map["betweenness"]), 
-            "page_rank_color": json.dumps(color_map["page_rank"]), 
+            "page_rank_color": json.dumps(color_map["page_rank"]),
+            "tool_display_name": tool_dct[player.stage], 
         }
 
 # Seeker 破壞的頁面

@@ -14,7 +14,7 @@
     <br/>
 
     <div>
-        [插入靜態網絡圖]
+        <img src="{{ static 'seeker_game/911HijackersMap.png' }}"/>
     </div>
     <br/>
 
@@ -27,15 +27,33 @@
         每一回合，請您在圖中挑選一個點（人物），接著，電腦會移除您所挑選的那個點，以及所有連接到這個點的線。您每一次移除一個點，直到圖中所有的邊被移除為止，就算任務完成。
     </div>
     <br/>
-
+    <div>
+        <li>範例一</li>
+        <div>
+            <img src="{{ static 'seeker_game/ex1.PNG' }}">
+        </div>
+        <li>範例二</li>
+        <div>
+            <img src="{{ static 'seeker_game/ex2.PNG' }}"/>
+        </div>
+    </div>
     <div>
         我們會為您的表現評分，分數的計算原則如下：
         <ol>
             <li>每一次所移除的點以及相關的邊，若是越能讓其他人物彼此之間斷聯，分數越高！</li>
-            [圖示舉例]
+            <li>移除第一個例子中所選取的點，所得到的分數，比第二個例子中所移除的點來得高。</li>
             <li>能用越短的次數（回合數）移除所有的網絡關係，分數越高！</li>
         </ol>
     </div>
+    <script>
+        var otreeBodyWidth = document.querySelector('.otree-body').offsetWidth;
+
+        // Select the first <img> tag within the document
+        var imgTags = document.getElementsByTagName('img');
+        for (var obj of imgTags) {
+            obj.style.width = otreeBodyWidth*0.7 + 'px';
+        }
+    </script>
 
     {{next_button}}
 {{ endblock }}
