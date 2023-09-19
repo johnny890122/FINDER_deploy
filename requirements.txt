@@ -71,3 +71,6 @@ wrapt==1.14.1
 WTForms==2.3.3
 WTForms-SQLAlchemy==0.2
 zipp==3.10.0
+python-dotenv==0.21.1
+PyGithub==1.59.1
+requests==2.30.0

@@ -2,7 +2,7 @@ from otree.api import *
 import sys, os, json
 import networkx as nx
 import numpy as np
-from seeker_game.utility import G_links, G_nodes, to_list, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria, GCC_size, complete_genertor, read_sample, current_dismantle_G, current_dismantle_stage, copy_G, relabel_G
+from seeker_game.utility import G_links, G_nodes, to_list, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria, GCC_size, complete_genertor, read_sample, current_dismantle_G, current_dismantle_stage, copy_G, relabel_G, upload_gml, fetch_gml
 
 sys.path.append(os.path.dirname(__file__) + os.sep + './')
 from FINDER import FINDER
@@ -11,9 +11,9 @@ doc = """
 human seeker 單機版 
 """
 
-randint = np.random.randint(5)
 HXA = ["HDA", "HCA", "HBA", "HPRA"]
 dqn = FINDER()
+
 class C(BaseConstants):
     NAME_IN_URL = 'seeker_game'
     PLAYERS_PER_GROUP = None
@@ -34,8 +34,8 @@ class Player(BasePlayer):
     # seeker 需要的 field
     seeker_payoff = models.FloatField(initial=0)
     tool = models.StringField(
-        choices = ["no_help", "degree", "closeness", "betweenness", "page_rank"],
-        # choices = ["no_help", "degree", "closeness", "betweenness", "page_rank", "AI_FINDER"],
+        # choices = ["no_help", "degree", "closeness", "betweenness", "page_rank"],
+        choices = ["no_help", "degree", "closeness", "betweenness", "page_rank", "AI_FINDER"],
         widget=widgets.RadioSelect,
         initial="empty"
     )
@@ -65,13 +65,13 @@ class Player(BasePlayer):
 def creating_session(subsession: Subsession):
     for player in subsession.get_players():
         if player.round_number == 1:
-
+            upload_gml(file_path="testing.txt", file_content="hey")
             initial_G = read_sample(player.in_round(1).playing_graph)
             
             model_file = f'./models/Model_EMPIRICAL/{player.in_round(1).playing_graph}.ckpt'
             # TODO
-            # _, sol = dqn.Evaluate(initial_G.copy(), model_file)
-            sol = []
+            _, sol = dqn.Evaluate(initial_G.copy(), model_file)
+            # sol = []
             hist_G = initial_G.copy()
             payoff_finder_lst = [0]
             
@@ -89,7 +89,9 @@ def creating_session(subsession: Subsession):
             player.payoff_finder = ",".join([str(p) for p in payoff_finder_lst])
 
 
-            basic_ = read_sample(player.session.config["basic_sample_data"])
+            basic_ = fetch_gml("./sample_data/911.gml")
+            
+            read_sample(player.session.config["basic_sample_data"])
             copy_G(source_G= basic_, target_G=player.group.basic_G)
 
             HXA_ = read_sample(player.session.config["HXA_sample_data"])
@@ -285,25 +287,25 @@ class Seeker_dismantle(Page):
         tool = player.in_round(player.round_number).tool
         tool_selected = player.in_round(player.round_number).tool
         if tool_selected == "AI_FINDER":
-            pass
-            # model_file = f'./models/Model_EMPIRICAL/{player.playing_graph}.ckpt'
-            # g = G.copy()
-            # g, map_dct = relabel_G(g)
-            # _, sol = dqn.Evaluate(g, model_file)
-            # not_sol = [n for n in g.nodes() if n not in sol]
-            # sol = [map_dct[s] for s in sol]
-            # not_sol = [map_dct[s] for s in not_sol]
+            # pass
+            model_file = f'./models/Model_EMPIRICAL/{player.playing_graph}.ckpt'
+            g = G.copy()
+            g, map_dct = relabel_G(g)
+            _, sol = dqn.Evaluate(g, model_file)
+            not_sol = [n for n in g.nodes() if n not in sol]
+            sol = [map_dct[s] for s in sol]
+            not_sol = [map_dct[s] for s in not_sol]
 
-            # value = []
-            # for idx in range(len(sol)):
-            #     value.append(idx+1)
-            # for idx in range(len(not_sol)):
-            #     value.append(len(sol)+1)
+            value = []
+            for idx in range(len(sol)):
+                value.append(idx+1)
+            for idx in range(len(not_sol)):
+                value.append(len(sol)+1)
 
-            # centrality["AI_FINDER"] = {
-            #     "node": sol + not_sol, 
-            #     "value": value, 
-            # }
+            centrality["AI_FINDER"] = {
+                "node": sol + not_sol, 
+                "value": value, 
+            }
 
         gradient_color = ["#000000", "#4d4d4d", "#949494", "#d6d6d6", "#ffffff"]
         color_map = {}
@@ -343,7 +345,6 @@ class Seeker_dismantle(Page):
             "betweenness_color": json.dumps(color_map["betweenness"]), 
             "page_rank_color": json.dumps(color_map["page_rank"]), 
             "FINDER_color": json.dumps(color_map["AI_FINDER"]) if tool == "AI_FINDER" else {}, 
-            "g_number": randint, 
         }
 
     @staticmethod
