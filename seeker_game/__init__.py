@@ -50,7 +50,7 @@ class Player(BasePlayer):
     playing_graph = models.StringField(
         choices = ["911", "DOMESTICTERRORWEB", "suicide", "MAIL", "HEROIN_DEALING", "HAMBURG_TIE_YEAR", "SWINGERS_club"], 
         widget=widgets.RadioSelect,
-        initial="HAMBURG_TIE_YEAR", 
+        initial="", 
     )
 
     # Graph 需要的 field 
@@ -73,11 +73,12 @@ class Player(BasePlayer):
 def creating_session(subsession: Subsession):
     for player in subsession.get_players():
         if player.round_number == 1:
-            initial_G = read_sample(player.in_round(1).playing_graph)
+            
+            player.playing_graph = player.session.config["first_playing_data"]
+            initial_G = read_sample(player.playing_graph)
 
             model_file = f'./models/Model_EMPIRICAL/{player.in_round(1).playing_graph}.ckpt'
-            # TODO
-            
+
             content = BytesIO(convert_to_FINDER_format(initial_G).encode('utf-8'))
             _, sol = dqn.Evaluate(content, model_file)
             hist_G = initial_G.copy()
@@ -298,9 +299,14 @@ class Seeker_dismantle(Page):
         centrality = node_centrality_criteria(G)
         tool = player.in_round(player.round_number).tool
         tool_selected = player.in_round(player.round_number).tool
+
+        if player.round_number != 1:
+            playing_graph = player.in_round(player.round_number-1).playing_graph
+        else:
+            playing_graph = player.session.config["first_playing_data"]
         if tool_selected == "AI_FINDER":
             # pass
-            model_file = f'./models/Model_EMPIRICAL/{player.playing_graph}.ckpt'
+            model_file = f'./models/Model_EMPIRICAL/{playing_graph}.ckpt'
             g = G.copy()
             g, map_dct = relabel_G(g)
 
@@ -338,7 +344,7 @@ class Seeker_dismantle(Page):
         elif stage in HXA:
             round_number = read_sample(player.session.config["HXA_sample_data"]).number_of_nodes() - G.number_of_nodes() + 1
         else:
-            round_number = read_sample(player.playing_graph).number_of_nodes() - G.number_of_nodes() + 1
+            round_number = read_sample(playing_graph).number_of_nodes() - G.number_of_nodes() + 1
         
         return {
             "stage": stage, 
@@ -365,15 +371,19 @@ class Seeker_dismantle(Page):
     def before_next_page(player: Player, timeout_happened):
         player.stage = current_dismantle_stage(player)
         G = current_dismantle_G(player, player.stage)
+        if player.round_number != 1:
+            player.playing_graph = player.in_round(player.round_number-1).playing_graph
         # 計算 reward
         player.num_edge = G.number_of_edges()
         player.num_node = G.number_of_nodes()
         player.GCC_size = GCC_size(G)
-        original_G = read_sample(player.in_round(1).playing_graph)
+        original_G = read_sample(player.playing_graph)
         player.seeker_payoff = getRobustness(full_g=original_G, G=G, sol=player.to_be_removed) / original_G.number_of_nodes()
         
         player.edge_remain = G.number_of_edges()
         player.remainGCC_size = GCC_size(G)
+
+
         
 # Seeker 確認該回合的破壞成果
 class Seeker_confirm(Page):
@@ -397,11 +407,13 @@ class Seeker_confirm(Page):
         stage = player.in_round(player.round_number).stage
         G = current_dismantle_G(player, stage)
         
-        if stage != "official":
+        if stage == "basic":
             round_number = read_sample(player.session.config["basic_sample_data"]).number_of_nodes() - G.number_of_nodes()
+        elif stage in HXA:
+            round_number = read_sample(player.session.config["HXA_sample_data"]).number_of_nodes() - G.number_of_nodes()
         else:
-            round_number = read_sample(player.in_round(1).playing_graph).number_of_nodes() - G.number_of_nodes()
-
+            round_number = read_sample(player.playing_graph).number_of_nodes() - G.number_of_nodes()
+        
         # Accumulate payoff
         payoff = [0] + [p.seeker_payoff for p in player.in_previous_rounds()[player.round_number-round_number:]] + [player.seeker_payoff]
         accum_payoff = np.add.accumulate(payoff)
@@ -438,6 +450,7 @@ class Next_Link(Page):
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
+        
         initial_G = read_sample(player.playing_graph)
         stage = player.in_round(player.round_number).stage
         G = current_dismantle_G(player, stage)
