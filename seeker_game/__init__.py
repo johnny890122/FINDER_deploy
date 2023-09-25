@@ -2,7 +2,7 @@ from otree.api import *
 import sys, os, json
 import networkx as nx
 import numpy as np
-from seeker_game.utility import G_links, G_nodes, to_list, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria, GCC_size, complete_genertor, read_sample, current_dismantle_G, current_dismantle_stage, copy_G, relabel_G, convert_to_FINDER_format
+from seeker_game.utility import G_links, G_nodes, to_list, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria, GCC_size, complete_genertor, read_sample, current_dismantle_G, current_dismantle_stage, copy_G, relabel_G, convert_to_FINDER_format, compute_finder_payoff
 
 sys.path.append(os.path.dirname(__file__) + os.sep + './')
 from FINDER import FINDER
@@ -73,28 +73,14 @@ class Player(BasePlayer):
 def creating_session(subsession: Subsession):
     for player in subsession.get_players():
         if player.round_number == 1:
-            
+
             player.playing_graph = player.session.config["first_playing_data"]
             initial_G = read_sample(player.playing_graph)
 
             model_file = f'./models/Model_EMPIRICAL/{player.in_round(1).playing_graph}.ckpt'
-
-            content = BytesIO(convert_to_FINDER_format(initial_G).encode('utf-8'))
-            _, sol = dqn.Evaluate(content, model_file)
-            hist_G = initial_G.copy()
-            payoff_finder_lst = [0]
-            
-            for node in sol:
-                payoff_finder_lst.append(getRobustness(initial_G, hist_G, node))
-
-            for _ in range(initial_G.number_of_nodes() - len(payoff_finder_lst)):
-                GCCsize = len(max(nx.connected_components(initial_G), key=len))
-                payoff_finder_lst.append(1 - 1/GCCsize)
-                
-            payoff_finder_lst = (np.cumsum(payoff_finder_lst) / initial_G.number_of_nodes()).tolist()
+            payoff_finder_lst = compute_finder_payoff(initial_G, dqn, model_file)
 
             player.num_node = initial_G.number_of_nodes()
-            # player.node_plot_finder = ",".join([str(n) for n in GCC_hist_lst])
             player.payoff_finder = ",".join([str(p) for p in payoff_finder_lst])
 
             basic_ = read_sample(player.session.config["basic_sample_data"])
@@ -419,8 +405,9 @@ class Seeker_confirm(Page):
         accum_payoff = np.add.accumulate(payoff)
         payoff_plot = [[i, p] for (i, p) in enumerate(accum_payoff)]
 
-        payoff_finder = [[i, p] for (i, p) in enumerate(to_list(player.in_round(1).payoff_finder, "float"))]
-
+        initial_G = read_sample(player.playing_graph)
+        model_file = f'./models/Model_EMPIRICAL/{player.playing_graph}.ckpt'
+        payoff_finder = [[i, p] for (i, p) in enumerate(compute_finder_payoff(initial_G, dqn, model_file))]
 
         return {
             "stage": stage, 

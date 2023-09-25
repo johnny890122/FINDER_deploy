@@ -4,6 +4,23 @@ import pygsheets, json, requests
 from networkx.readwrite import json_graph
 from typing import Type
 import os
+from io import BytesIO
+
+def compute_finder_payoff(G, dqn, model_file):
+    hist_G = G.copy()
+    content = BytesIO(convert_to_FINDER_format(G).encode('utf-8'))
+    _, sol = dqn.Evaluate(content, model_file)
+
+    payoff_finder_lst = [0]
+    for node in sol:
+        payoff_finder_lst.append(getRobustness(G, hist_G, node))
+    for _ in range(G.number_of_nodes() - len(payoff_finder_lst)):
+        GCCsize = len(max(nx.connected_components(G), key=len))
+        payoff_finder_lst.append(1 - 1/GCCsize)
+    
+    payoff_finder_lst = (np.cumsum(payoff_finder_lst) / G.number_of_nodes()).tolist()
+
+    return payoff_finder_lst
 
 def copy_G(source_G, target_G):
     for n in source_G.nodes():

@@ -9,33 +9,40 @@ from typing import Type
 import numpy as np
 import pandas as pd
 import json, time
+from io import BytesIO
+from networkx.readwrite import json_graph
 
-def write_gml(G, path, file_name):
-    
-    dct = dict()
+def converter(dct):
+    tmp_dct = dict()
     cnt = 0
-
-    for node in G.nodes():
-        dct["node"+ "_" +str(cnt)]= {"id": node, "label": node}
+    for node in dct["nodes"]:
+        node["label"] = node["id"]
+        tmp_dct["node_"+str(cnt)]= node
         cnt += 1
 
-    for edge in G.edges():
-        dct["edge"+ "_" +str(cnt)] = {"source": edge[0], "target": edge[1]}
+    for edge in dct["links"]:
+        tmp_dct["edge_"+str(cnt)] = edge
         cnt += 1
 
-    str_ = str(json.dumps(dct, indent=2, ensure_ascii=False))
+    str_ = str(json.dumps(tmp_dct, indent=2, ensure_ascii=False))
 
     for idx in range(cnt, -1, -1):
         str_ = str_.replace("_"+str(idx), "")
     str_ = "graph [" + str_[1:]
     str_ = str_.replace('\"', '').replace(',', '').replace(':', '').replace('{', '[').replace('}', ']')
 
-    with io.open(f"{path}/{file_name}", 'w', encoding='utf8') as outfile:
-        outfile.write(str_)
+    return str_
+
+def convert_to_FINDER_format(G):
+    data = json_graph.node_link_data(G)
+    str_ = converter(data)
+
+    return str_
 
 def read_gml(data_dir: str, file_name: str) -> Type[nx.classes.graph.Graph]:
     G = nx.read_gml(data_dir + file_name, destringizer=int)
-    return nx.relabel_nodes(G, lambda x: int(x))
+    map_dct = {node: int(idx) for idx, node in enumerate(G.nodes())}
+    return nx.relabel_nodes(G, map_dct)
 
 def hxa(g, method):
     G = g.copy()
@@ -67,75 +74,52 @@ def getRobustness(full_g: Type[nx.classes.graph.Graph], G: Type[nx.classes.graph
         remainGCCsize = 1
     return 1 - remainGCCsize/fullGCCsize
 
-# def hxa_finder_mixed(g, G, h_method, cnt, model_file):
-#     assert h_method in ["HDA", "HBA", "HCA", "HPRA", "ALL"]
-#     if h_method == "ALL":
-#         h_method = np.random.choice(["HDA", "HBA", "HCA", "HPRA"])
+def main(dqn, g_name, h_method):
 
-#     method = np.random.choice(["FINDER", h_method])
+    g = read_gml(data_dir="./empirical_data/", file_name=f"{g_name}.gml")
+    G = g.copy()
 
-#     if method == "FINDER":
-#         dqn = FINDER()
-#         val, sol = dqn.Evaluate(f"tmpG/g_{cnt-1}", model_file)
-#         node = sol[0]
-#     else: # use HXA
-#         node = hxa(G, h_method)
+    reward_lst = []
 
-#     time.sleep(1)
-
-#     reward = getRobustness(g, G, int(node))
-#     write_gml(G, "./tmpG/", f"g_{cnt}")
-
-#     return method, int(node), reward
-
-def main(dqn, model_file, h_method):
-    score_lst = []
-    for i in trange(100):
-        g = read_gml(data_dir="./data/ba/", file_name=f"g_{i}")
-        G = g.copy()
-        write_gml(G, "./tmpG/", "g_0")
-        cnt = 1
-
-        reward_lst = []
-        while (nx.number_of_edges(G)>0):
-
-            if h_method == "ALL":
-                h_method = np.random.choice(["HDA", "HBA", "HCA", "HPRA"])
-
-            method = np.random.choice(["FINDER", h_method])
-
-            if method == "FINDER":
-                _, sol = dqn.Evaluate(f"tmpG/g_{cnt-1}", model_file)
-                node = sol[0]
-            else: # use HXA
-                node = hxa(G, h_method)
-
+    if method == "FINDER":
+        content = BytesIO(convert_to_FINDER_format(G).encode('utf-8'))
+        model_file = f"./models/Model_EMPIRICAL/{g_name}.ckpt"
+        _, sol = dqn.Evaluate(content, model_file)
+        for node in sol:
             reward = getRobustness(g, G, node)
             reward_lst.append(reward)
 
-            node_mapping = {
-                node: cnt for cnt, node in enumerate(G.nodes())
-            }
-            G = nx.relabel_nodes(G, node_mapping)
+    while (nx.number_of_edges(G)>0):
+        if method == "RAND":
 
-            write_gml(G, "./tmpG/", f"g_{cnt}")
+            node = np.random.choice(list(G.nodes()))
+            reward = getRobustness(g, G, node)
+            reward_lst.append(reward)
 
-            cnt += 1
-
-        for _ in range(g.number_of_nodes() - len(reward_lst)):
-            GCCsize = len(max(nx.connected_components(g), key=len))
-            reward_lst.append(1 - 1/GCCsize)
-        reward_lst = (np.cumsum(reward_lst) / g.number_of_nodes()).tolist()
-        score = reward_lst[-1]
-        score_lst.append(score)
-    return score_lst
+        elif method in ["HDA", "HBA", "HCA", "HPRA"]: # use HXA
+            node = hxa(G, h_method)
+            reward = getRobustness(g, G, node)
+            reward_lst.append(reward)
     
+    for _ in range(g.number_of_nodes() - len(reward_lst)):
+        GCCsize = len(max(nx.connected_components(g), key=len))
+        reward_lst.append(1 - 1/GCCsize)
+    
+    reward_lst = (np.cumsum(reward_lst) / g.number_of_nodes()).tolist()
 
-
+    return reward_lst[-1]    
 
 if __name__=="__main__":
     dqn = FINDER()
-    model_file = './models/Model_barabasi_albert/nrange_200_200_iter_154500.ckpt'
-    for h_method in ["HDA", "HBA", "HCA", "HPRA", "ALL"]:
-        score_lst = main(dqn, model_file, h_method)
-        print(h_method, np.mean(score_lst))
+    graphs_name = ["DOMESTICTERRORWEB", "HEROIN_DEALING", "MAIL", "SWINGERS_club", "HAMBURG_TIE_YEAR", "suicide",]
+
+    for g_name in graphs_name:
+        print(g_name)
+        for method in ["RAND"]:
+            score_lst = []
+            for i in range(100):
+                score = main(dqn, g_name, method)
+                score_lst.append(score)
+            print(method, np.mean(score_lst))
+
+        print("="*20)
