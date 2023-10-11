@@ -5,7 +5,7 @@ import numpy as np
 from seeker_game.utility import G_links, G_nodes, to_list, remove_node, getRobustness, generate_ba_graph_with_density, node_centrality_criteria, GCC_size, complete_genertor, read_sample, current_dismantle_G, current_dismantle_stage, copy_G, relabel_G, convert_to_FINDER_format, compute_finder_payoff
 
 sys.path.append(os.path.dirname(__file__) + os.sep + './')
-from FINDER import FINDER
+# from FINDER import FINDER
 from io import BytesIO
 
 doc = """
@@ -13,7 +13,7 @@ human seeker 單機版
 """
 
 HXA = ["HDA", "HCA", "HBA", "HPRA"]
-dqn = FINDER()
+# dqn = FINDER()
 
 class C(BaseConstants):
     NAME_IN_URL = 'seeker_game'
@@ -41,7 +41,7 @@ class Player(BasePlayer):
             ["closeness", "距離長短"], 
             ["betweenness", "中介程度"],
             ["page_rank", "重要程度"],
-            ["AI_FINDER", "AI_FINDER"]
+            # ["AI_FINDER", "AI_FINDER"]
         ],
         label="請選擇您要使用的輔助指標。", 
         widget=widgets.RadioSelect,
@@ -77,11 +77,11 @@ def creating_session(subsession: Subsession):
             player.playing_graph = player.session.config["first_playing_data"]
             initial_G = read_sample(player.playing_graph)
 
-            model_file = f'./models/Model_EMPIRICAL/{player.in_round(1).playing_graph}.ckpt'
-            payoff_finder_lst = compute_finder_payoff(initial_G, dqn, model_file)
+            # model_file = f'./models/Model_EMPIRICAL/{player.in_round(1).playing_graph}.ckpt'
+            # payoff_finder_lst = compute_finder_payoff(initial_G, dqn, model_file)
 
-            player.num_node = initial_G.number_of_nodes()
-            player.payoff_finder = ",".join([str(p) for p in payoff_finder_lst])
+            # player.num_node = initial_G.number_of_nodes()
+            # player.payoff_finder = ",".join([str(p) for p in payoff_finder_lst])
 
             basic_ = read_sample(player.session.config["basic_sample_data"])
             copy_G(source_G= basic_, target_G=player.group.basic_G)
@@ -405,10 +405,10 @@ class Seeker_confirm(Page):
         accum_payoff = np.add.accumulate(payoff)
         payoff_plot = [[i, p] for (i, p) in enumerate(accum_payoff)]
 
-        initial_G = read_sample(player.playing_graph)
-        model_file = f'./models/Model_EMPIRICAL/{player.playing_graph}.ckpt'
-        payoff_finder = [[i, p] for (i, p) in enumerate(compute_finder_payoff(initial_G, dqn, model_file))]
-
+        # initial_G = read_sample(player.playing_graph)
+        # model_file = f'./models/Model_EMPIRICAL/{player.playing_graph}.ckpt'
+        # payoff_finder = [[i, p] for (i, p) in enumerate(compute_finder_payoff(initial_G, dqn, model_file))]
+        payoff_finder = []
         return {
             "stage": stage, 
             "original_size": player.in_round(1).GCC_size, 
