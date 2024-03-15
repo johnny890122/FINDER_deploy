@@ -133,17 +133,17 @@ class FINDER:
 
         self.UpdateTargetQNetwork = tf.group(*self.copyTargetQNetworkOperation)
         # saving and loading networks
-        self.saver = tf.train.Saver(max_to_keep=None)
+        self.saver = tf.compat.v1.train.Saver(max_to_keep=None)
         #self.session = tf.InteractiveSession()
-        config = tf.ConfigProto(device_count={"CPU": 8},  # limit to num_cpu_core CPU usage
+        config = tf.compat.v1.ConfigProto(device_count={"CPU": 8},  # limit to num_cpu_core CPU usage
                                 inter_op_parallelism_threads=100,
                                 intra_op_parallelism_threads=100,
                                 log_device_placement=False)
         config.gpu_options.allow_growth = True
-        self.session = tf.Session(config = config)
+        self.session = tf.compat.v1.Session(config = config)
 
         # self.session = tf_debug.LocalCLIDebugWrapperSession(self.session)
-        self.session.run(tf.global_variables_initializer())
+        self.session.run(tf.compat.v1.global_variables_initializer())
 
 #################################################New code for FINDER#####################################
     def BuildNet(self):
@@ -304,7 +304,7 @@ class FINDER:
 
         loss = loss_rl + Alpha * loss_recons
 
-        trainStep = tf.train.AdamOptimizer(self.learning_rate).minimize(loss)
+        trainStep = tf.compat.v1.train.AdamOptimizer(self.learning_rate).minimize(loss)
         #[node_cnt, batch_size] * [batch_size, embed_dim] = [node_cnt, embed_dim]
         rep_y = tf.sparse.sparse_dense_matmul(tf.cast(self.rep_global, tf.float32), y_potential)
 
@@ -337,7 +337,7 @@ class FINDER:
         #f reg_hidden > 0: , [node_cnt, reg_hidden + aux_dim] * [reg_hidden + aux_dim, 1] = [node_cnt，1]
         q_on_all = tf.matmul(last_output, last_w)
 
-        return loss, trainStep, q_pred, q_on_all, tf.trainable_variables()
+        return loss, trainStep, q_pred, q_on_all, tf.compat.v1.trainable_variables()
 
 
     def gen_graph(self, num_min, num_max):
